@@ -1,3 +1,5 @@
+# pycharm migrations, 应该是要同步到版本库的, 暂时不用考虑数据迁移所以就不同步先
+*migrations
 # pycharm
 *.idea
 
