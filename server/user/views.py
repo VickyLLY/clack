@@ -2,22 +2,21 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
 import json
-from server.decorators import login_required, post_required
+from server.decorators import login_required, post_required, check_json
 from entity.models import User
 import hashlib
 from server import error_code
 from uuid import uuid1
+from server import schema
 
 
 def encode_password(password: str):
     return hashlib.sha256(password.encode("utf8")).hexdigest()
 
 
-@post_required
+@check_json(schema.user_login)
 def login(request):
     request_json = json.loads(request.body)
-    if 'user_name' not in request_json or 'user_password' not in request_json:
-        return JsonResponse({**error_code.CLACK_REQUEST_JSON_ERROR})
     query_result = list(User.objects.filter(user_name=request_json['user_name']))
     if len(query_result) is 0:
         return JsonResponse({**error_code.CLACK_USER_LOGIN_FAILED})
@@ -31,15 +30,14 @@ def login(request):
 
 @login_required
 def logout(request):
-    return HttpResponse('unimplemented')
+    return JsonResponse({**error_code.CLACK_UNIMPLEMENTED_API})
 
 
+@check_json(schema.user_signup)
 @post_required
 def signup(request):
     request_json = json.loads(request.body)
     new_user = User()
-    if 'user_name' not in request_json or 'user_password' not in request_json or 'user_type' not in request_json:
-        return JsonResponse({**error_code.CLACK_REQUEST_JSON_ERROR})
     new_user.user_name = request_json['user_name']
     new_user.user_password = encode_password(request_json['user_password'])
     new_user.user_type = request_json['user_type']

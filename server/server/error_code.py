@@ -20,3 +20,12 @@ CLACK_USER_LOGIN_FAILED = {"error_code": 4, "error_message": "登录失败,用�
 
 # 用户未登录
 CLACK_LOGIN_REQUIRED = {"error_code": 5, "error_message": "请先登录"}
+
+# 需要系统管理员权限
+CLACK_ADMIN_REQUIRED = {"error_code": 6, "error_message": "只有系统管理员才能进行此操作"}
+
+# 创建Model失败
+CLACK_CREATE_NEW_MODELS_FAILED = {"error_code": 7, "error_message": "创建失败"}
+
+# 接口还未实现
+CLACK_UNIMPLEMENTED_API = {"error_code": 8, "error_message": "API接口尚未实现"}
