@@ -22,7 +22,7 @@ class Classroom(models.Model):
 class Banji(models.Model):
     banji_name = models.TextField(default='', unique=True)
     banji_major = models.ForeignKey(Major, on_delete=models.CASCADE, null=False)
-    banji_department = models.ForeignKey(Department, on_delete=models.CASCADE, null=False)
+    # banji_department = models.ForeignKey(Department, on_delete=models.CASCADE, null=False)
 
 
 # 课程
@@ -52,8 +52,8 @@ class Student(models.Model):
     student_name = models.TextField(default='')
     student_banji = models.ForeignKey(Banji, null=False, on_delete=models.CASCADE)
     student_email = models.EmailField(default="test@test.com")
-    student_department = models.ForeignKey(Department, null=False, on_delete=models.CASCADE)
-    student_major = models.ForeignKey(Major, null=False, on_delete=models.CASCADE)
+    # student_department = models.ForeignKey(Department, null=False, on_delete=models.CASCADE)
+    # student_major = models.ForeignKey(Major, null=False, on_delete=models.CASCADE)
     student_start_year = models.IntegerField(default=2016)
     student_end_year = models.IntegerField(default=2020)
 
