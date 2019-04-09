@@ -1,3 +1,121 @@
+entity_major_list = {
+    "type": "object",
+    "title": "empty object",
+    "properties": {
+        "major": {
+            "type": "object",
+            "properties": {
+                "major_department_id": {
+                    "type": "integer",
+                    "mock": {
+                        "mock": "1"
+                    }
+                }
+            },
+            "required": [
+                "major_department_id"
+            ]
+        }
+    }
+}
+entity_new_major = {
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+        "user_name": {
+            "type": "string"
+        },
+        "user_token": {
+            "type": "string"
+        },
+        "major": {
+            "type": "object",
+            "properties": {
+                "major_name": {
+                    "type": "string"
+                },
+                "major_department_id": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "major_name",
+                "major_department_id"
+            ]
+        }
+    },
+    "required": [
+        "user_name",
+        "user_token",
+        "major"
+    ]
+}
+entity_new_department = {
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+        "user_name": {
+            "type": "string"
+        },
+        "user_token": {
+            "type": "string"
+        },
+        "department": {
+            "type": "object",
+            "properties": {
+                "department_name": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "department_name"
+            ]
+        }
+    },
+    "required": [
+        "user_name",
+        "user_token",
+        "department"
+    ]
+}
+entity_new_banji = {
+    "type": "object",
+    "title": "empty object",
+    "properties": {
+        "user_name": {
+            "type": "string"
+        },
+        "user_token": {
+            "type": "string"
+        },
+        "banji": {
+            "type": "object",
+            "properties": {
+                "banji_name": {
+                    "type": "string"
+                },
+                "banji_major_id": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "banji_name",
+                "banji_major_id"
+            ]
+        }
+    },
+    "required": [
+        "user_name",
+        "banji",
+        "user_token"
+    ]
+}
+entity_banji_list = {
+    "type": "object",
+    "title": "empty object",
+    "properties": {},
+    "required": []
+}
 entity_new_classroom = {
     "type": "object",
     "title": "empty object",
@@ -8,18 +126,26 @@ entity_new_classroom = {
         "user_token": {
             "type": "string"
         },
-        "classroom_name": {
-            "type": "string"
-        },
-        "classroom_capacity": {
-            "type": "integer"
+        "classroom": {
+            "type": "object",
+            "properties": {
+                "classroom_name": {
+                    "type": "string"
+                },
+                "classroom_capacity": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "classroom_name",
+                "classroom_capacity"
+            ]
         }
     },
     "required": [
         "user_name",
-        "classroom_capacity",
-        "classroom_name",
-        "user_token"
+        "user_token",
+        "classroom"
     ]
 }
 entity_classroom_list = {
@@ -96,32 +222,151 @@ entity_new_course = {
         "course_semester"
     ]
 }
-user_signup = {
+user_signup_student = {
+    "type": "object",
+    "title": "empty object",
+    "properties": {
+        "user": {
+            "type": "object",
+            "properties": {
+                "user_name": {
+                    "type": "string"
+                },
+                "user_password": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "user_name",
+                "user_password"
+            ]
+        },
+        "student": {
+            "type": "object",
+            "properties": {
+                "student_name": {
+                    "type": "string"
+                },
+                "student_number": {
+                    "type": "string"
+                },
+                "student_email": {
+                    "type": "string"
+                },
+                "student_start_year": {
+                    "type": "integer"
+                },
+                "student_end_year": {
+                    "type": "integer"
+                },
+                "student_banji_id": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "student_name",
+                "student_number",
+                "student_email",
+                "student_start_year",
+                "student_end_year",
+                "student_banji_id"
+            ]
+        }
+    },
+    "required": [
+        "user",
+        "student"
+    ]
+}
+user_signup_teacher = {
+    "type": "object",
+    "title": "empty object",
+    "properties": {
+        "user": {
+            "type": "object",
+            "properties": {
+                "user_name": {
+                    "type": "string"
+                },
+                "user_password": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "user_name",
+                "user_password"
+            ]
+        },
+        "teacher": {
+            "type": "object",
+            "properties": {
+                "teacher_name": {
+                    "type": "string"
+                },
+                "teacher_number": {
+                    "type": "string"
+                },
+                "teacher_email": {
+                    "type": "string"
+                },
+                "teacher_department_id": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "teacher_name",
+                "teacher_number",
+                "teacher_email",
+                "teacher_department_id"
+            ]
+        }
+    },
+    "required": [
+        "user",
+        "teacher"
+    ]
+}
+user_signup_admin = {
+    "type": "object",
+    "title": "empty object",
+    "properties": {
+        "user": {
+            "type": "object",
+            "properties": {
+                "user_name": {
+                    "type": "string"
+                },
+                "user_password": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "user_name",
+                "user_password"
+            ]
+        }
+    },
+    "required": [
+        "user"
+    ]
+}
+user_login_status = {
     "type": "object",
     "title": "empty object",
     "properties": {
         "user_name": {
             "type": "string"
         },
-        "user_password": {
+        "user_token": {
             "type": "string"
-        },
-        "user_type": {
-            "type": "integer",
-            "enum": [
-                0,
-                1,
-                2
-            ]
         }
     },
     "required": [
         "user_name",
-        "user_password",
-        "user_type"
+        "user_token"
     ]
 }
-user_test_status = {
+user_logout = {
     "type": "object",
     "title": "empty object",
     "properties": {
