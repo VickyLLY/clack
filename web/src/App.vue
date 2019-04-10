@@ -5,11 +5,9 @@
 </template>
 
 <script>
-  import login from './components/schedule/login'
   export default {
     name: 'App',
     components:{
-      login
     }
   }
 </script>
