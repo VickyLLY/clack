@@ -9,8 +9,7 @@ import $ from 'jquery'   //引入jQuery
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import '../node_modules/bootstrap/dist/js/bootstrap.min'
 Vue.use(Resource)
-Vue.prototype.PC_Api=Api.PC_Api //登录接口
-Vue.prototype.Mobile_Api=Api.Mobile_Api //登录接口
+Vue.prototype.Global_Api=Api.Global_Api
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
