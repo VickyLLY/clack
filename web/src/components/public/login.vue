@@ -5,7 +5,10 @@
       <input type="text" placeholder="请输入用户名" v-model="username">
       <input type="password" placeholder="请输入密码" v-model="password">
       <button v-on:click="login">登录</button>
-      <span v-on:click="register">没有账号？马上注册</span>
+      <p>没有账号？选择点击以下方式注册</p>
+      <router-link to="/admin_register"><a>我是管理员</a></router-link><br>
+      <router-link to="/stu_register"><a>我是学生</a></router-link><br>
+      <router-link to="/tea_register"><a>我是老师</a></router-link><br>
     </div>
   </div>
 </template>
@@ -56,10 +59,6 @@
           })
         }
       },
-      register:function () {
-        this.$router.push('/register')
-        location.reload()
-      }
     }
   }
 </script>

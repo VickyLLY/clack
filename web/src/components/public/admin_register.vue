@@ -1,20 +1,12 @@
 <template>
   <div>
     <div class="text-center">
-      <h3>注册</h3>
+      <h3>管理员注册</h3>
       <input type="text" class="form-control"  style="margin-left: auto;margin-right: auto;width:300px;" placeholder="请输入用户名" v-model="username" required="required">
       <br>
       <input type="password" class="form-control" style="margin-left: auto;margin-right: auto;width:300px;" placeholder="请输入密码" v-model="password" required="required">
       <br>
       <input type="password" class="form-control" style="margin-left: auto;margin-right: auto;width:300px;" placeholder="请确认密码" v-model="confirm_password" required="required">
-      <br>
-      <label>
-        <select class="form-control" style="width:300px;" v-model="user_type" required="required">
-          <option>学生</option>
-          <option>教师</option>
-          <option>管理员</option>
-        </select>
-      </label>
       <br>
       <button type="submit" class="btn btn-default" v-on:click="register">注册</button>
       <br>
@@ -29,13 +21,11 @@
 
 <script>
   export default{
-    inject:['reload'],
     data(){
       return{
         username: '',
         password: '',
         confirm_password:'',
-        user_type:''
       }
     },
     methods: {
@@ -46,21 +36,18 @@
           if (this.password != this.confirm_password)
             alert("两次输入的密码不一致")
           else {
-            if (this.user_type == "管理员")
-              this.user_type = 0
-            else if (this.user_type == "教师")
-              this.user_type = 1
-            else
-              this.user_type = 2
-
-            let data = {'user_name': this.username, 'user_password': this.password, 'user_type': this.user_type}
-            this.$http.post('http://127.0.0.1:8000/user/signup', data).then((res) => {
+              let data = {
+                "user": {
+                  'user_name': this.username,
+                  'user_password': this.password,
+                }
+              }
+            this.$http.post(this.Global_Api+'/user/signup_admin', data).then((res) => {
               if (res.body.error_code !== 0) {
                 alert(res.body.error_message)
               } else {
                 alert("注册成功")
                 this.$router.push('/')
-                location.reload()
               }
             })
           }
