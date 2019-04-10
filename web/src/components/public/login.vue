@@ -36,6 +36,7 @@
     methods: {
       login:function () {
         if (this.username == "" || this.password == "") {
+
           alert("请输入用户名或密码")
         } else {
           let data = {'user_name': this.username, 'user_password': this.password}
@@ -48,9 +49,17 @@
               this.$cookie.set('username', this.username, 600);
               this.$cookie.set('user_token', res.body.user_token, 600);
               this.$cookie.set('user_type', res.body.user_type, 600);
-              this.$router.push({
-                path: '/main',
-              })
+              if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
+                this.$router.push({
+                  path: '/main_mob',
+                })
+                location.reload()
+              }else{
+                this.$router.push({
+                  path: '/main',
+                })
+              }
+
               //location.reload()
             }
           })
