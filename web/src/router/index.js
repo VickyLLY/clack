@@ -6,7 +6,7 @@ import Stu_Register from '@/components/public/stu_register'  //学生注册
 import Tea_Register from '@/components/public/tea_register'  //老师注册
 import Main from '@/components/public/main' //主页
 import VueCookie from 'vue-cookie'
-
+import main_mob from '@/components/schedule/main_mob'
 Vue.use(VueCookie)
 Vue.use(Router)
 
@@ -32,6 +32,11 @@ export default new Router({
       path: '/tea_register',
       name: 'Tea_Register',
       component: Tea_Register,
+    },
+    {
+      path: '/main_mob',
+      name: 'main_mob',
+      component: main_mob,
     },
     {
       path:'/main',
