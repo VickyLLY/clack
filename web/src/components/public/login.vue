@@ -40,7 +40,7 @@
         } else {
           let data = {'user_name': this.username, 'user_password': this.password}
           /*接口请求*/
-          this.$http.post(this.Login_Api+'/user/login', data).then((res) => {
+          this.$http.post(this.Global_Api+'/user/login', data).then((res) => {
             if (res.body.error_code !== 0) {
               alert("登录失败"+res.body.error_message)
             } else {
