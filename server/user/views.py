@@ -26,7 +26,12 @@ def login(request):
         return JsonResponse({**error_code.CLACK_USER_LOGIN_FAILED})
     user.user_token = uuid1()
     user.save()
-    return JsonResponse({**error_code.CLACK_SUCCESS, 'user_type': user.user_type, 'user_token': user.user_token})
+    number = {}
+    if user.user_type == 1:
+        number = {"user_teacher_number":user.user_teacher.teacher_number}
+    elif user.user_type == 2:
+        number = {"user_student_number":user.user_student.student_number}
+    return JsonResponse({**error_code.CLACK_SUCCESS, 'user_type': user.user_type, 'user_token': user.user_token, **number})
 
 
 @check_json(schema.user_logout)
