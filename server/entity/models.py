@@ -57,6 +57,18 @@ class Student(models.Model):
     student_start_year = models.IntegerField(default=2016)
     student_end_year = models.IntegerField(default=2020)
 
+    def to_dict(self):
+        return {
+            "student_number": self.student_number,
+            "student_name": self.student_name,
+            "student_banji_id": self.student_banji_id,
+            "student_email": self.student_email,
+            # student_department = models.ForeignKey(Department, null=False, on_delete=models.CASCADE)
+            # student_major = models.ForeignKey(Major, null=False, on_delete=models.CASCADE)
+            "student_start_year": self.student_start_year,
+            "student_end_year": self.student_end_year
+        }
+
 
 # 教师
 class Teacher(models.Model):
@@ -64,6 +76,14 @@ class Teacher(models.Model):
     teacher_number = models.TextField(default="", unique=True)
     teacher_email = models.EmailField(default="test@test.com")
     teacher_department = models.ForeignKey(Department, on_delete=models.CASCADE, null=False)
+
+    def to_dict(self):
+        return {
+            "teacher_name": self.teacher_name,
+            "teacher_number": self.teacher_number,
+            "teacher_email": self.teacher_email,
+            "teacher_department_id": self.teacher_department_id
+        }
 
 
 # 用户
