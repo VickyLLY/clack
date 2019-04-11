@@ -13,7 +13,7 @@
       <li class="col-md-7">
       <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-          {{username}}
+          {{realname}}
           <b class="caret"></b>
         </a>
         <ul class="dropdown-menu">
@@ -31,7 +31,8 @@
         name: "main",
       data(){
           return{
-            username:this.$cookie.get('username')
+            username:this.$cookie.get('username'),
+            realname:this.$cookie.get('realname')
           }
       },
       methods:{
