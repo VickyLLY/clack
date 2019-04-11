@@ -9,13 +9,13 @@
         </div>
 
         <ul class="list-unstyled components">
-          <h2>教务管理</h2><br>
+          <h2 @click="main_mob">教务管理</h2><br>
 
           <!-- <li class="active">
              <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">排课子系统</a>
            </li>-->
           <li>
-            <a v-on:click="">排课子系统</a><!--需要什么自己替换函数跳转，并且在路由中修改-->
+            <a @click="schedule_mob">排课子系统</a><!--需要什么自己替换函数跳转，并且在路由中修改-->
           </li>
           <li>
             <a v-on:click="">选课子系统</a>
@@ -76,6 +76,7 @@
 
         <!--用来填写正文信息-->
         <div class="line"></div>
+        <router-view/>
         <!--用来填写正文信息-->
         <div class="line"></div>
         <!--用来填写正文信息-->
@@ -109,8 +110,19 @@
     methods:{
       quit:function () {
         this.$cookie.delete('username');
+      },
+      schedule_mob:function () {
+        this.$router.push({
+          path: '/main_mob/schedule_mob',
+        })
+        location.reload()
+      },
+      main_mob:function () {
+        this.$router.push({
+          path: '/main_mob',
+        })
+        location.reload()
       }
-
     }
   }
 </script>
@@ -176,7 +188,7 @@
   }
 
   #sidebar {
-    min-width: 225px;
+    min-width: 240px;
     max-width: 225px;
     background: #7386D5;
     color: #fff;
