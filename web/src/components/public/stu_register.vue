@@ -13,15 +13,16 @@
       <br>
       <input type="text" class="form-control"  placeholder="请输入邮箱" v-model="stu_email" required="required">
       <br>
-      <div style="height: 100px">
-      <v-select max-height="80px" style="width:300px;" placeholder="请选择入学年份" :options="start_year"  v-model="stu_start_year"></v-select>
-        <v-select max-height="80px" style=";width:300px;" placeholder="请选择毕业年份" :options="end_year"  v-model="stu_end_year"></v-select>
+      <div class="v_select">
+      <v-select max-height="80px" placeholder="请选择入学年份" :options="start_year"  v-model="stu_start_year"></v-select>
+      <br>
+        <v-select max-height="80px" placeholder="请选择毕业年份" :options="end_year"  v-model="stu_end_year"></v-select>
       </div>
+      <br>
         <input type="text" class="form-control"  placeholder="请输入班级" v-model="stu_banji_id" required="required">
       <br>
       <button type="submit" class="btn btn-default" v-on:click="register">注册</button>
       <br>
-      <router-link to="/"><button class="btn btn-link">已有账号？马上登录</button></router-link>
   </div>
 </template>
 
@@ -66,20 +67,4 @@
 </script>
 <style >
 
-  h3{
-    text-align: center;
-  }
-  input.form-control{
-    display:block;
-    margin:0 auto;
-    width:300px;
-  }
-  v-select{
-
-  }
-  button.btn{
-    display:block;
-    margin:0 auto;
-    width:300px;
-  }
 </style>

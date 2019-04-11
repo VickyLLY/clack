@@ -10,7 +10,6 @@
       <br>
       <button type="submit" class="btn btn-default" v-on:click="register">注册</button>
       <br>
-      <router-link to="/"><button class="btn btn-link">已有账号？马上登录</button></router-link>
     </div>
   </div>
 </template>
