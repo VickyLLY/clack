@@ -1,3 +1,65 @@
+entity_teacher = {
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+        "user_name": {
+            "type": "string"
+        },
+        "user_token": {
+            "type": "string"
+        },
+        "teacher": {
+            "type": "object",
+            "properties": {
+                "teacher_number": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "teacher_number"
+            ]
+        }
+    },
+    "required": [
+        "user_name",
+        "user_token",
+        "teacher"
+    ]
+}
+entity_student = {
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+        "user_name": {
+            "type": "string"
+        },
+        "user_token": {
+            "type": "string"
+        },
+        "student": {
+            "type": "object",
+            "properties": {
+                "student_number": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "student_number"
+            ]
+        }
+    },
+    "required": [
+        "user_name",
+        "user_token",
+        "student"
+    ]
+}
+entity_banji_list = {
+    "type": "object",
+    "title": "empty object",
+    "properties": {},
+    "required": []
+}
 entity_major_list = {
     "type": "object",
     "title": "empty object",
@@ -17,6 +79,32 @@ entity_major_list = {
             ]
         }
     }
+}
+entity_classroom_list = {
+    "type": "object",
+    "title": "empty object",
+    "properties": {
+        "capacity_range": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "min_capacity": {
+                        "type": "integer"
+                    },
+                    "max_capacity": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "description": "capacity \u5728 [min_capacity, max_capacity] \u4e2d"
+        },
+        "limit": {
+            "type": "integer",
+            "description": "\u6700\u591a\u8fd4\u56de\u7684\u6559\u5ba4\u6570\u76ee"
+        }
+    },
+    "required": []
 }
 entity_new_major = {
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -48,6 +136,38 @@ entity_new_major = {
         "user_name",
         "user_token",
         "major"
+    ]
+}
+entity_new_classroom = {
+    "type": "object",
+    "title": "empty object",
+    "properties": {
+        "user_name": {
+            "type": "string"
+        },
+        "user_token": {
+            "type": "string"
+        },
+        "classroom": {
+            "type": "object",
+            "properties": {
+                "classroom_name": {
+                    "type": "string"
+                },
+                "classroom_capacity": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "classroom_name",
+                "classroom_capacity"
+            ]
+        }
+    },
+    "required": [
+        "user_name",
+        "user_token",
+        "classroom"
     ]
 }
 entity_new_department = {
@@ -109,70 +229,6 @@ entity_new_banji = {
         "banji",
         "user_token"
     ]
-}
-entity_banji_list = {
-    "type": "object",
-    "title": "empty object",
-    "properties": {},
-    "required": []
-}
-entity_new_classroom = {
-    "type": "object",
-    "title": "empty object",
-    "properties": {
-        "user_name": {
-            "type": "string"
-        },
-        "user_token": {
-            "type": "string"
-        },
-        "classroom": {
-            "type": "object",
-            "properties": {
-                "classroom_name": {
-                    "type": "string"
-                },
-                "classroom_capacity": {
-                    "type": "integer"
-                }
-            },
-            "required": [
-                "classroom_name",
-                "classroom_capacity"
-            ]
-        }
-    },
-    "required": [
-        "user_name",
-        "user_token",
-        "classroom"
-    ]
-}
-entity_classroom_list = {
-    "type": "object",
-    "title": "empty object",
-    "properties": {
-        "capacity_range": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "min_capacity": {
-                        "type": "integer"
-                    },
-                    "max_capacity": {
-                        "type": "integer"
-                    }
-                }
-            },
-            "description": "capacity \u5728 [min_capacity, max_capacity] \u4e2d"
-        },
-        "limit": {
-            "type": "integer",
-            "description": "\u6700\u591a\u8fd4\u56de\u7684\u6559\u5ba4\u6570\u76ee"
-        }
-    },
-    "required": []
 }
 entity_new_course = {
     "type": "object",
@@ -396,5 +452,25 @@ user_login = {
     "required": [
         "user_name",
         "user_password"
+    ]
+}
+scoremng_teacher_upload = {
+    "type": "object",
+    "title": "empty object",
+    "properties": {
+        "\u5b66\u751f\u5b66\u53f7": {
+            "type": "string"
+        },
+        "\u6240\u9009\u8bfe\u7a0b\u8bfe\u53f7": {
+            "type": "string"
+        },
+        "\u5206\u6570": {
+            "type": "integer"
+        }
+    },
+    "required": [
+        "\u5b66\u751f\u5b66\u53f7",
+        "\u6240\u9009\u8bfe\u7a0b\u8bfe\u53f7",
+        "\u5206\u6570"
     ]
 }
