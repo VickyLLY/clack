@@ -58,7 +58,12 @@
             </button>
             <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
               <i class="fas fa-align-justify"></i>
-              {{username}}<!--用来修改用户姓名-->
+              {{realname}}<!--用来修改用户姓名-->
+            </button>
+
+            <button type="button" id="sidebarCollapse" class="btn btn-info" @click="news_mob">
+              <i class="fas fa-align-left"></i>
+              显示通知
             </button>
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -75,7 +80,6 @@
         </nav>
 
         <!--用来填写正文信息-->
-        <div class="line"></div>
         <router-view/>
         <!--用来填写正文信息-->
         <div class="line"></div>
@@ -92,9 +96,19 @@
 
 <script>
   export default {
+    mounted(){
+      location.reload()
+    },
+    watch:{
+      $route(to,from){
+        console.log(to.path);
+        location.reload()
+      }
+    },
     data(){
       return{
-        username:this.$cookie.get('username')
+        username:this.$cookie.get('username'),
+        realname:this.$cookie.get('realname'),
       }
     },
     mounted: function() {
@@ -106,14 +120,28 @@
         )
       })
     },
-
+    beforeRouteLeave(to, from, next) {
+      // 设置下一个路由的 meta
+      to.meta.keepAlive = false;  // 让 A 缓存，即不刷新
+      next();
+    },
     methods:{
+      qiehuan:function(){
+        this.switch_mob=!this.switch_mob;
+      },
       quit:function () {
         this.$cookie.delete('username');
+
       },
       schedule_mob:function () {
         this.$router.push({
           path: '/main_mob/schedule_mob',
+        })
+        location.reload()
+      },
+      news_mob:function () {
+        this.$router.push({
+          path: '/main_mob/news_mob',
         })
         location.reload()
       },
