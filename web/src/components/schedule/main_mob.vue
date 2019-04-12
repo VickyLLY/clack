@@ -96,9 +96,7 @@
 
 <script>
   export default {
-    mounted(){
-      location.reload()
-    },
+
     watch:{
       $route(to,from){
         console.log(to.path);
@@ -119,11 +117,6 @@
           }
         )
       })
-    },
-    beforeRouteLeave(to, from, next) {
-      // 设置下一个路由的 meta
-      to.meta.keepAlive = false;  // 让 A 缓存，即不刷新
-      next();
     },
     methods:{
       qiehuan:function(){
