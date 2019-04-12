@@ -15,7 +15,12 @@
              <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">排课子系统</a>
            </li>-->
           <li>
-            <a @click="schedule_mob">排课子系统</a><!--需要什么自己替换函数跳转，并且在路由中修改-->
+            <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">排课子系统</a>
+            <ul class="collapse list-unstyled" id="pageSubmenu">
+              <li>
+                <a @click="schedule_mob">查看课表</a>
+              </li>
+            </ul>
           </li>
           <li>
             <a v-on:click="">选课子系统</a>
@@ -29,20 +34,7 @@
           <li>
             <a v-on:click="">成绩管理系统</a>
           </li>
-          <!-- <li>
-             <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Pages</a>
-             <ul class="collapse list-unstyled" id="pageSubmenu">
-               <li>
-                 <a href="#">Page 1</a>
-               </li>
-               <li>
-                 <a href="#">Page 2</a>
-               </li>
-               <li>
-                 <a href="#">Page 3</a>
-               </li>
-             </ul>
-           </li>-->
+
         </ul>
       </nav>
 
