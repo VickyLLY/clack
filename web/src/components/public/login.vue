@@ -88,9 +88,22 @@
               alert("登录失败" + res.body.error_message)
             } else {
               //alert("登录成功")
+
               this.$cookie.set('username', this.username, 600);
               this.$cookie.set('user_token', res.body.user_token, 600);
               this.$cookie.set('user_type', res.body.user_type, 600);
+
+              if (res.body.user_type === 1) {
+                this.$cookie.set('realname', res.body.teacher.teacher_name, 600);
+                this.$cookie.set('user_teacher_number', res.body.teacher.teacher_number, 600);
+              }
+              else if (res.body.user_type === 2) {
+                this.$cookie.set('realname', res.body.student.student_name, 600);
+                this.$cookie.set('user_student_number', res.body.student.student_number, 600);
+              }
+              else {
+                this.$cookie.set('realname', this.username, 600);
+              }
               if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
                 this.$router.push({
                   path: '/main_mob',
