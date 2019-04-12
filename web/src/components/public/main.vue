@@ -20,8 +20,9 @@
           <li><a href="#">修改个人信息</a></li>
           <li><a href="#/" @click="quit">注销</a></li>
         </ul>
-      </nav>
-    </div>
+    </li>
+      </ul>
+  </nav>
 
     <br><br><br>
 
