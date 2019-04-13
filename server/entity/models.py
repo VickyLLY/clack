@@ -1,5 +1,6 @@
 from django.db import models
 import datetime
+from django.utils.timezone import make_aware
 
 # 放飞自我
 每节课开始时间 = {
@@ -46,18 +47,10 @@ class Banji(models.Model):
 # 课程
 class Course(models.Model):
     course_name = models.TextField(default="")
-    # 星期几
-
-    # 第几节上课
-    course_start = models.IntegerField(default=1)
-    # 第几节下课
-    course_end = models.IntegerField(default=3)
     # 课程学分
     course_credit = models.IntegerField(default=1)
     # 课程类型
     course_type = models.IntegerField(default=0)
-    # 课程所在教室
-    course_classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE, null=False)
     # 课程所在学年开始年份
     course_year = models.IntegerField(default=2018)
     # 课程学期
@@ -68,9 +61,6 @@ class Course(models.Model):
 class Exam(models.Model):
     exam_name = models.TextField(default='')
     exam_course = models.ForeignKey(Course, on_delete=models.CASCADE, null=False)
-    exam_classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE, null=False)
-    exam_start_time = models.DateTimeField()
-    exam_end_time = models.DateTimeField()
 
 
 # 学生
@@ -187,11 +177,27 @@ class DateAndClassroom(models.Model):
         return result
 
     def conflict(self, date_and_classroom) -> bool:
-        if type(date_and_classroom) != DateAndClassroom:
-            print("调用时间冲突判断, 参数类型错了= =")
-            return True
+        assert isinstance(date_and_classroom, DateAndClassroom)
         for i in self.to_date_time_list():
             for j in date_and_classroom.to_date_time_list():
                 if not (i[0] >= j[1] or i[1] <= j[0]):
                     return True
         return False
+
+    def save(self, *args, **kwargs):
+        if type == 0:
+            if self.start_week > self.end_week:
+                raise Exception("开始周大于结束周")
+            if self.start > self.end:
+                raise Exception("开始节次大于结束节次")
+        elif type == 1:
+            self.start_date_time = make_aware(self.start_date_time)
+            self.end_date_time = make_aware(self.end_date_time)
+            if self.start_date_time > self.end_date_time:
+                raise Exception("开始时间大于结束时间")
+        # 存储时判断同一教室是否存在时间冲突
+        for DAC in DateAndClassroom.objects.filter(classroom_id=self.classroom_id):
+            if self.conflict(DAC):
+                raise Exception('当前时间教室内存在其它事件')
+
+        super(DateAndClassroom, self).save(*args, **kwargs)
