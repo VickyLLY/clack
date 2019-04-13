@@ -4,7 +4,7 @@
     <a class="navbar-brand"><strong>教务管理系统</strong></a>
     <ul class="nav navbar-nav">
       <li><a href="">排课子系统</a></li>
-      <li><a href="">选课子系统</a></li>
+      <li><router-link to="/select_course">选课子系统</router-link></li>
       <li><a href="">后台管理子系统</a></li>
       <li><a href="">毕业设计管理子系统</a></li>
       <li><a href="">成绩管理子系统</a></li>

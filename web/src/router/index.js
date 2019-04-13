@@ -7,6 +7,7 @@ import VueCookie from 'vue-cookie'
 import main_mob from '@/components/schedule/main_mob' //手机端主页
 import schedule_mob from  '@/components/schedule/schedule_mob'
 import news_mob from  '@/components/schedule/news_mob'
+import select_course from "../components/stu_sel_course/select_course";
 Vue.use(VueCookie)
 Vue.use(Router)
 
@@ -51,6 +52,11 @@ export default new Router({
       path: '/main',
       name: 'Main',
       component: Main
+    },
+    {
+      path: '/select_course',
+      name: 'select_course',
+      component: select_course
     }
   ]
 })
