@@ -55,6 +55,22 @@ class Course(models.Model):
     course_year = models.IntegerField(default=2018)
     # 课程学期
     course_semester = models.IntegerField(default=2)
+    # 课程容量
+    course_capacity = models.IntegerField()
+    # 开课学院
+    course_department = models.ForeignKey(Department, on_delete=models.CASCADE)
+
+    def to_dict(self):
+        return {
+            "course_id": self.id,
+            "course_name": self.course_name,
+            "course_credit": self.course_credit,
+            "course_type": self.course_type,
+            "course_year": self.course_year,
+            "course_semester": self.course_semester,
+            "course_capacity": self.course_capacity,
+            "course_department_id": self.course_department_id
+        }
 
 
 # 考试
