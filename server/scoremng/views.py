@@ -7,7 +7,6 @@ from django.shortcuts import render
 from server.decorators import check_json
 
 
-@check_json(schema.entity_new_course)
 def teacher_upload(request):
     request_json = json.loads(request.body)
     # 把新增的学生成绩添加到数据库中
