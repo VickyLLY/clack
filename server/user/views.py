@@ -26,7 +26,12 @@ def login(request):
         return JsonResponse({**error_code.CLACK_USER_LOGIN_FAILED})
     user.user_token = uuid1()
     user.save()
-    return JsonResponse({**error_code.CLACK_SUCCESS, 'user_type': user.user_type, 'user_token': user.user_token})
+    result = {**error_code.CLACK_SUCCESS, 'user_type': user.user_type, 'user_token': user.user_token}
+    if user.user_type == 1:
+        result = {**result, "teacher": user.user_teacher.to_dict()}
+    elif user.user_type == 2:
+        result = {**result, "student": user.user_student.to_dict()}
+    return JsonResponse(result)
 
 
 @check_json(schema.user_logout)
@@ -76,7 +81,7 @@ def signup_teacher(request):
             teacher.save()
             teacher_user = entity.models.User(user_name=request_json['user']['user_name'],
                                               user_password=encode_password(request_json['user']['user_password']),
-                                              user_type=2,
+                                              user_type=1,
                                               user_teacher_id=teacher.id)
             teacher_user.save()
     except Exception as e:
