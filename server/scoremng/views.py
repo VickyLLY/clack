@@ -17,3 +17,7 @@ def teacher_upload(request):
     except Exception:
         return JsonResponse({**error_code.CLACK_CREATE_NEW_MODELS_FAILED})
     return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+def test(request):
+    pass
