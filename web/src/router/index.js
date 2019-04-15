@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Login from '@/components/public/login'  //登录
 import Register from '@/components/public/register' //注册
 import Main from '@/components/public/main' //PC端主页
+import Add_course from '@/components/schedule/add_course'
 import VueCookie from 'vue-cookie'
 import main_mob from '@/components/schedule/main_mob' //手机端主页
 import schedule_mob from  '@/components/schedule/schedule_mob'
@@ -50,7 +51,12 @@ export default new Router({
     {
       path: '/main',
       name: 'Main',
-      component: Main
+      component: Main,
+    },
+    {
+      path:'/main/add_course',
+      name:'Add_course',
+      component:Add_course,
     }
   ]
 })
