@@ -53,11 +53,6 @@
               {{realname}}<!--用来修改用户姓名-->
             </button>
 
-            <button type="button" id="sidebarCollapse" class="btn btn-info" @click="news_mob">
-              <i class="fas fa-align-left"></i>
-              显示通知
-            </button>
-
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="nav navbar-nav ml-auto">
                 <li class="nav-item active">
@@ -72,29 +67,21 @@
         </nav>
 
         <!--用来填写正文信息-->
+        <slot></slot><!--标记组件位置-->
         <router-view/>
         <!--用来填写正文信息-->
         <div class="line"></div>
         <!--用来填写正文信息-->
         <div class="line"></div>
         <!--用来填写正文信息-->
-
       </div>
     </div>
   </div>
 </template>
 
 
-
 <script>
   export default {
-
-    watch:{
-      $route(to,from){
-        console.log(to.path);
-        location.reload()
-      }
-    },
     data(){
       return{
         username:this.$cookie.get('username'),
@@ -120,21 +107,13 @@
       },
       schedule_mob:function () {
         this.$router.push({
-          path: '/main_mob/schedule_mob',
+          path: '/schedule_mob',
         })
-        location.reload()
-      },
-      news_mob:function () {
-        this.$router.push({
-          path: '/main_mob/news_mob',
-        })
-        location.reload()
       },
       main_mob:function () {
         this.$router.push({
           path: '/main_mob',
         })
-        location.reload()
       }
     }
   }
