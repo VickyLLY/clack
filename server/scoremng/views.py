@@ -20,4 +20,5 @@ def teacher_upload(request):
 
 
 def test(request):
+    sdfghjk
     pass
