@@ -7,6 +7,7 @@ import json
 import jsonschema
 from server import schema
 from django.db import transaction
+import datetime
 
 
 @check_json(schema.entity_classroom_list)
@@ -39,8 +40,8 @@ def classroom_list(request):
 @admin_required
 def new_classroom(request):
     request_json = json.loads(request.body)
-    classroom = entity.models.Classroom(classroom_name=request_json["classroom_name"],
-                                        classroom_capacity=request_json["classroom_capacity"])
+    classroom = entity.models.Classroom(classroom_name=request_json["classroom"]["classroom_name"],
+                                        classroom_capacity=request_json["classroom"]["classroom_capacity"])
     try:
         classroom.save()
     except Exception:
@@ -133,3 +134,72 @@ def banji_list(request):
         'banji_department_id': banji.banji_major.major_department_id
     } for banji in banjis]
     return JsonResponse({**error_code.CLACK_SUCCESS, 'banji_list': result_list})
+
+
+# 返回查询学号的学生信息
+@check_json(schema.entity_student)
+@login_required
+def student(request):
+    request_json = json.loads(request.body)
+    user = entity.models.User.objects.get(user_name=request_json['user_name'])
+    if not (user.user_type == 0 or
+            user.user_type == 1 or
+            (user.user_type == 2 and user.user_student.student_number == request_json['student']['student_number'])):
+        return JsonResponse({**error_code.CLACK_NO_PERMISSION})
+    try:
+        student_result = entity.models.Student.objects.get(student_number=request_json['student']['student_number'])
+    except:
+        return JsonResponse({**error_code.CLACK_STUDENT_NOT_EXISTS})
+    return JsonResponse({
+        "student": {
+            "student_name": student_result.student_name,
+            "student_number": student_result.student_number,
+            "student_banji_id": student_result.student_banji_id,
+            "student_email": student_result.student_email,
+            "student_start_year": student_result.student_start_year,
+            "student_end_year": student_result.student_end_year
+        }
+    })
+
+
+# 返回查询教师工号的教师信息
+@check_json(schema.entity_teacher)
+@login_required
+def teacher(request):
+    request_json = json.loads(request.body)
+    try:
+        teacher_result = entity.models.Teacher.objects.get(teacher_number=request_json['teacher']['teacher_number'])
+    except:
+        return JsonResponse({**error_code.CLACK_TEACHER_NOT_EXISTS})
+    return JsonResponse({
+        "teacher": {
+            "teacher_name": teacher_result.teacher_name,
+            "teacher_number": teacher_result.teacher_number,
+            "teacher_email": teacher_result.teacher_email,
+            "teacher_department_id": teacher_result.teacher_department_id
+        }
+    })
+
+
+@admin_required
+def new_semester(request):
+    request_json = json.loads(request.body)
+    try:
+        semester = entity.models.Semester.objects.get(year=request_json['semester']['year'],
+                                                      semester=request_json['semester']['semester'])
+        semester.start_date = datetime.date(year=request_json['semester']['start_date_year'],
+                                            month=request_json['semester']['start_date_month'],
+                                            day=request_json['semester']['start_date_day'])
+    except:
+        semester = entity.models.Semester(year=request_json['semester']['year'],
+                                          semester=request_json['semester']['semester'],
+                                          start_date=datetime.date(year=request_json['semester']['start_date_year'],
+                                                                   month=request_json['semester']['start_date_month'],
+                                                                   day=request_json['semester']['start_date_day']))
+
+    try:
+        semester.save()
+    except:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR})
+
+    return JsonResponse({**error_code.CLACK_SUCCESS})

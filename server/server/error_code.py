@@ -29,3 +29,12 @@ CLACK_CREATE_NEW_MODELS_FAILED = {"error_code": 7, "error_message": "创建失�
 
 # 接口还未实现
 CLACK_UNIMPLEMENTED_API = {"error_code": 8, "error_message": "API接口尚未实现"}
+
+# 没有权限
+CLACK_NO_PERMISSION = {"error_code": 9, "error_message": "没有调用这个接口的权限"}
+
+# student不存在
+CLACK_STUDENT_NOT_EXISTS = {"error_code": 10, "error_message": "查询的学生不存在"}
+
+# student不存在
+CLACK_TEACHER_NOT_EXISTS = {"error_code": 11, "error_message": "查询的教师不存在"}
