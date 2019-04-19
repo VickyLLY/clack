@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'entity',
     'corsheaders',
+    'scoremng',
 ]
 
 MIDDLEWARE = [
