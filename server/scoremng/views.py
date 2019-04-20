@@ -18,7 +18,7 @@ def teacher_upload(request):
     student_number = request_json['student_number']
     course_name = request_json['course_name']
     score = request_json['score']
-
+qwsdefghjkl;
     # 由student_number找到student_id
     student = Student.objects.get(student_number=student_number)
 
