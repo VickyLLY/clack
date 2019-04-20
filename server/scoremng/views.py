@@ -11,14 +11,12 @@ from entity.models import Student, Course
 # 老师上传成绩
 def teacher_upload(request):
     request_json = json.loads(request.body)
-    print(request_json)
-    print(request_json['student_number'])
 
     # 从json中获得学生的学号，课程的课号，课程分数
     student_number = request_json['student_number']
     course_name = request_json['course_name']
     score = request_json['score']
-qwsdefghjkl;
+
     # 由student_number找到student_id
     student = Student.objects.get(student_number=student_number)
 
