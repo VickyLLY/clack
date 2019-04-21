@@ -16,6 +16,7 @@ def teacher_upload(request):
     student_number = request_json['student_number']
     course_name = request_json['course_name']
     score = request_json['score']
+    print(student_number, course_name, score)
 
     # 由student_number找到student_id
     student = Student.objects.get(student_number=student_number)
@@ -36,12 +37,11 @@ def teacher_upload(request):
 # 登录后，进入成绩查看界面,选择查看成绩
 # 学号为student_number的学生查看自己的成绩
 def student_scores(request, student_number):
+    year = request.GET.get("year")
+    semester = request.GET.get("semester")
+
     # 学号为student_number的学生的所有成绩
     score_list = []
-
-    request_json = json.loads(request.body)
-    year = request_json['year']
-    semester = request_json['semester']
 
     # 得到该学生的student_id
     student = Student.objects.get(student_number=student_number)
@@ -57,7 +57,7 @@ def student_scores(request, student_number):
         course = Course.objects.get(id=course_id)
 
         # 如果这门课程的年份和学期刚好对应学生查询时输入的课程和年份
-        if year == course.course_year and semester == course.course_semester:
+        if year == str(course.course_year) and semester == str(course.course_semester):
             course_info = {
                 'course_name': course.course_name,
                 'course_credit': course.course_credit,
@@ -72,5 +72,9 @@ def student_scores(request, student_number):
                 'score': item.score,
             }
             score_list.append(course_and_score)
-
     return JsonResponse({**error_code.CLACK_SUCCESS, 'score_list': score_list})
+
+
+def courses_comment(request, student_number):
+    print(student_number)
+    return HttpResponse("hello world.")
