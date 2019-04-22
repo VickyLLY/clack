@@ -80,7 +80,7 @@ def student_scores(request, student_number):
 def courses_comment(request, student_number):
     if request.method == "GET":
         # 这名学生所选的全部课程的列表
-        course_list_list = []
+        course_list = []
 
         # 在选课表中查找这名学生所选的全部课程，填写course_name -> 需要scoremng_SelectCourse
         # 用这门课程在课程中查询这门课程的type，如0,填写course_type -> 已有entity_Course
