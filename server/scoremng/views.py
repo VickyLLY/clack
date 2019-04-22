@@ -57,21 +57,20 @@ def student_scores(request, student_number):
         course = Course.objects.get(id=course_id)
 
         # 如果这门课程的年份和学期刚好对应学生查询时输入的课程和年份
-        if year == str(course.course_year) and semester == str(course.course_semester):
-            course_info = {
-                'course_name': course.course_name,
-                'course_credit': course.course_credit,
-                'course_year': course.course_credit,
-                'course_semester': course.course_semester,
-                'course_type': course.course_type,
-            }
-
-            # 课程信息和分数的打包
-            course_and_score = {
-                'course_info': course_info,
-                'score': item.score,
-            }
-            score_list.append(course_and_score)
+        # if year == str(course.course_year) and semester == str(course.course_semester):
+        #     course_info = {
+        #         'course_name': course.course_name,
+        #         'course_credit': course.course_credit,
+        #         'course_year': course.course_credit,
+        #         'course_semester': course.course_semester,
+        #         'course_type': course.course_type,
+        #     }
+        #
+        #     # 课程信息和分数的打包
+        #     course_and_score = {
+        #         'course_info': course_info,
+        #         'score': item.score,
+        #     }
+        #     score_list.append(course_and_score)
     return JsonResponse({**error_code.CLACK_SUCCESS, 'score_list': score_list})
 
-#srgs
