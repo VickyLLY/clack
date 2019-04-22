@@ -74,7 +74,3 @@ def student_scores(request, student_number):
             score_list.append(course_and_score)
     return JsonResponse({**error_code.CLACK_SUCCESS, 'score_list': score_list})
 
-
-def courses_comment(request, student_number):
-    print(student_number)
-    return HttpResponse("hello world.")
