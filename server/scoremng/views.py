@@ -74,3 +74,4 @@ def student_scores(request, student_number):
             score_list.append(course_and_score)
     return JsonResponse({**error_code.CLACK_SUCCESS, 'score_list': score_list})
 
+#srgs
