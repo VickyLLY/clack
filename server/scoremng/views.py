@@ -12,7 +12,7 @@ from entity.models import Student, Course, Teacher
 
 
 # 老师上传成绩
-def teacher_upload(request):
+def teacher_upload(request, teacher_number):
     if request.method == "GET":
         return JsonResponse({
             'year_list': [2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010],
@@ -25,7 +25,6 @@ def teacher_upload(request):
         student_number = request_json['student_number']
         course_name = request_json['course_name']
         score = request_json['score']
-        print(student_number, course_name, score)
 
         # 由student_number找到student_id
         try:
