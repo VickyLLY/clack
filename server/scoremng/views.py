@@ -1,5 +1,8 @@
 import json
+import os
 
+import xlwt
+from io import StringIO
 import scoremng.models
 from server import error_code, schema
 from django.http import HttpResponse, JsonResponse
@@ -201,3 +204,80 @@ def courses_comment(request, student_number):
             return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR})
         return JsonResponse({**error_code.CLACK_SUCCESS})
 
+
+# 学生下载自己的成绩
+def download_scores(request, student_number):
+    wb = xlwt.Workbook(encoding='utf-8')
+    w = wb.add_sheet(u'学生成绩', cell_overwrite_ok=True)
+    w.write(0, 0, u'课程名称')
+    w.write(0, 1, u'课程学分')
+    w.write(0, 2, u'课程学年')
+    w.write(0, 3, u'课程学期')
+    w.write(0, 4, u'课程种类')
+    w.write(0, 5, u'成绩')
+    excel_row = 1
+
+    # 使用student_scores函数
+    # 学号为student_number的学生查看自己的成绩
+    year = request.GET.get("year")
+    semester = request.GET.get("semester")
+    print(year, semester)
+
+    # 学号为student_number的学生的所有成绩
+    score_list = []
+
+    # 得到该学生的student_id
+    try:
+        student = Student.objects.get(student_number=student_number)
+    except Exception:
+        return JsonResponse({**error_code.CLACK_STUDENT_NOT_EXISTS})
+
+    # 由学生id过滤出该生所有的成绩记录
+    try:
+        items_in_score = scoremng.models.Score.objects.filter(student_id=student.id)
+    except Exception:
+        return JsonResponse({**error_code.CLACK_SCORE_NOT_EXISTS})
+
+    for item in items_in_score:
+        # 由一条成绩记录找出记录中的course_id
+        course_id = item.course_id
+
+        # 由course_id在Course表中找到这门课程
+        try:
+            course = Course.objects.get(id=course_id)
+        except Exception:
+            return JsonResponse({**error_code.CLACK_COURSE_NOT_EXISTS})
+
+        # 如果这门课程的年份和学期刚好对应学生查询时输入的课程和年份
+        if year == str(course.course_year) and semester == str(course.course_semester):
+            course_info = {
+                'course_name': course.course_name,
+                'course_credit': course.course_credit,
+                'course_year': course.course_year,
+                'course_semester': course.course_semester,
+                'course_type': course.course_type,
+            }
+
+            # 课程信息和分数的打包
+            course_and_score = {
+                'course_info': course_info,
+                'score': item.score,
+            }
+
+            # 把这些成绩存放到excel表格中
+            w.write(excel_row, 0, course.course_name)
+            w.write(excel_row, 1, course.course_credit)
+            w.write(excel_row, 2, course.course_year)
+            w.write(excel_row, 3, course.course_semester)
+            w.write(excel_row, 4, course.course_type)
+            w.write(excel_row, 5, item.score)
+            excel_row += 1
+
+            # 把成绩放入成绩单列表中
+            score_list.append(course_and_score)
+
+    exist_file = os.path.exists(student.student_name + '的成绩单.xls')
+    if exist_file:
+        os.remove(student.student_name + '的成绩单.xls')
+    wb.save(student.student_name + '的成绩单.xls')
+    return JsonResponse({**error_code.CLACK_SUCCESS, 'score_list': score_list})
