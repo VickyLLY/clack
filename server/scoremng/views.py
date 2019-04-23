@@ -205,7 +205,7 @@ def courses_comment(request, student_number):
 
 
 # 学生下载自己的成绩
-def download_scores(request, student_number):
+def student_download_scores(request, student_number):
     wb = xlwt.Workbook(encoding='utf-8')
     w = wb.add_sheet(u'学生成绩', cell_overwrite_ok=True)
     w.write(0, 0, u'课程名称')
