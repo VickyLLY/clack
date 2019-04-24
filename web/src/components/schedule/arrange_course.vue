@@ -11,18 +11,50 @@
           <div style="white-space: pre-wrap;" id="div-select">
             <div style="height: 458px; overflow-y: scroll">
               <ul id="ul-select" style="">
-                <li class="list-group-item" v-for="name in course" >
-                  <a href="javascript:void(0)" @click="fun">{{ name }}</a>
+                <li class="list-group-item" v-for="name in course" @click="fun">
+                  <a>{{ name }}</a>
                 </li>
               </ul>
             </div>
           </div>
         </div>
-        <div id="xianshi" class="panel-heading">
-              <div id="change-block">
-                课程名字：<input id="name-course" type="text" value="">
+        <div id="xianshi" class="panel-heading" style="overflow-y: scroll">
+          <div id="main" >
+            <h3 id="title" style="margin-left: 20px; margin-top:10px;display: none">基本课程信息</h3>
+            <div id="change-block">
+              <div class="change-content">
+                <span class="interface-title">课程名称：</span><input type="text" class="form-control" required="required">
+                <button id="but1" type="button" class="btn btn-info" style="color: white">√</button>
+              </div>
+              <div class="change-content">
+                <span>课程学分：</span><v-select class="form-select" type="text" value=""></v-select>
                 <button type="button" class="btn btn-info" style="color: white">√</button>
               </div>
+              <div class="change-content">
+                <span>课程类型：</span><input type="text" class="form-control" required="required">
+                <button type="button" class="btn btn-info" style="color: white">√</button>
+              </div>
+              <div class="change-content">
+                <span>课程容量：</span><input type="text" class="form-control" required="required">
+                <button type="button" class="btn btn-info" style="color: white">√</button>
+              </div>
+              <div class="change-content">
+                <span>开课学院：</span><input type="text" class="form-control" required="required">
+                <button type="button" class="btn btn-info" style="color: white">√</button>
+              </div>
+            </div>
+            <h3 id="title2" style="margin-left: 20px; margin-top:10px;display: none">上课时间教室</h3>
+            <div id="change-block2">
+              <div class="change-content">
+                <span>上课时间：</span><input type="text" class="form-control" required="required">
+                <button id="but1" type="button" class="btn btn-info" style="color: white">√</button>
+              </div>
+              <div class="change-content">
+                <span>上课地点：</span><input type="text" class="form-control" required="required">
+                <button id="but1" type="button" class="btn btn-info" style="color: white">√</button>
+              </div>
+            </div>
+          </div>
         </div>
   </div>
 </template>
@@ -128,73 +160,124 @@
           },
           fun:function () {
             document.getElementById("change-block").style.display="block";
-            document.getElementById("name-course").value=this.innerText;
+            document.getElementById("title").style.display="block";
+            document.getElementById("title2").style.display="block";
+            document.getElementById("change-block2").style.display="block";
           }
         }
     }
 </script>
 
 <style scoped>
-*{
-  list-style: none;
-  text-decoration: none;
-  color:black;
-  outline: 0 none;
-}
-a{
-  text-decoration: none;
-  outline: 0 none;
-}
-li{
-  display: block;
-  height: 50px;
-  width: 313px;
-  border-left: 0px solid black;
-  border-bottom: 0px solid black;
-  border-right: 0px solid black;
-  line-height: 50px;
-  padding: 0;
-}
-li::before{
-  content: "";
-  display: inline-block;
-  width: 30px;
-}
-ul{
-  margin-left: -55px;
-}
-li:hover{
-  background: #f5f5f5;
-}
-::-webkit-scrollbar {
-  width: 0px;  /* Remove scrollbar space */
-  background: transparent;  /* Optional: just make scrollbar invisible */
-}
-#cnmx{
-  margin-left:60px;
-  margin-top: 30px;
-  height: 600px;
-  width: 300px;
-  float: left
-}
-#selecttype{
-  padding: 0;
-  margin: 10px;
-}
-#xianshi{
-  border: 1px solid #ddd;
-  position: absolute;
-  width: 1100px;
-  height: 605px;
-  margin-left: 383px;
-  margin-top: 31px;
-}
-  #change-block{
-    border: 3px solid #f5f5f5;
-    width: 1000px;
-    height: 550px;
-    display: none;
-    margin: 20px auto;
+  *{
+    list-style: none;
+    text-decoration: none;
+    color:black;
+    outline: 0 none;
   }
-
+  a{
+    text-decoration: none;
+    outline: 0 none;
+  }
+  a:hover{color:black;}
+  li{
+    display: block;
+    height: 50px;
+    width: 313px;
+    border-left: 0px solid black;
+    border-bottom: 0px solid black;
+    border-right: 0px solid black;
+    line-height: 50px;
+    padding: 0;
+  }
+  li::before{
+    content: "";
+    display: inline-block;
+    width: 30px;
+  }
+  ul{
+    margin-left: -55px;
+  }
+  li:hover{
+    background: #f5f5f5;
+  }
+  ::-webkit-scrollbar {
+    width: 0px;  /* Remove scrollbar space */
+    background: transparent;  /* Optional: just make scrollbar invisible */
+  }
+  #cnmx{
+    margin-left:15%;
+    margin-top: 30px;
+    height: 600px;
+    width: 300px;
+    float: left
+  }
+  #selecttype{
+    padding: 0;
+    margin: 10px;
+  }
+  #xianshi{
+    border: 1px solid #ddd;
+    position: absolute;
+    width: 50%;
+    height: 79.5%;
+    margin-left: 40%;
+    margin-top: 31px;
+  }
+  #change-block,#change-block2{
+    border: 3px solid #f5f5f5;
+    width: 90%;
+    height: 75%;
+    display: none;
+    margin: 0 auto;
+    margin-top: 15px;
+    background-color: #f5f5f5;
+    animation: donghua 2s;
+  }
+  #change-block span,
+  #change-block2 span{
+    font-weight: bold;
+  }
+  li{
+    cursor: pointer;
+  }
+  .change-content{
+      border-bottom: 1px solid #ddd;
+      margin: 30px 10%;
+    padding: 5px;
+  }
+  .btn-info{
+    display: inline-block;
+    margin-left: 50px;
+    height: 30px;
+    vertical-align:0px;
+  }
+  #change-block v-select{
+    width: 50px;
+  }
+  #title,#title2{
+    animation: donghua 2s;
+  }
+  @keyframes donghua{
+    0%{
+      opacity: 0;
+    }
+    100%{
+      opacity: 1;
+    }
+  }
+  .form-control,.form-select{
+    width:250px;
+    display: inline-block;
+  }
+  #change-block{
+    margin-bottom: 50px;
+  }
+  #change-block2{
+    height: 400px;
+  }
+  #title,#title2{
+    border-left:2px solid rgb(35,149,241);
+    padding-left: 10px;
+  }
 </style>
