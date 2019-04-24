@@ -1,5 +1,9 @@
 <template>
-  <v-select max-height="80px" :options="department_name" placeholder="请选择学院" v-model="choose_name" :on-change="post"
+  <v-select max-height="80px"
+            :options="department_name"
+            placeholder="请选择学院"
+            v-model="choose_name"
+            :on-change="post"
             required="required">
   </v-select>
 </template>
@@ -9,8 +13,8 @@
     name: "department_list",
     data() {
       return {
-        choose_id: '',
-        choose_name: '',
+        choose_id: undefined,
+        choose_name: null,
         department_list: [],
         department_name: [],
         department_name_to_id: {},
@@ -29,7 +33,10 @@
     methods: {
       post: function () {
         this.choose_id = this.department_name_to_id[this.choose_name]
-        this.$emit('listenToChild', this.choose_id);
+        if(this.choose_id===undefined)
+          this.$emit('listenToChild', null);
+        else
+          this.$emit('listenToChild', this.choose_id);
       }
     }
   }
