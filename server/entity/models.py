@@ -36,6 +36,13 @@ class Classroom(models.Model):
     classroom_name = models.TextField(default='', unique=True)
     classroom_capacity = models.IntegerField(default=30)
 
+    def to_dict(self):
+        return {
+            'classroom_id': self.id,
+            'classroom_name': self.classroom_name,
+            'classroom_capacity': self.classroom_capacity
+        }
+
 
 # 班级
 class Banji(models.Model):
@@ -206,14 +213,26 @@ class DateAndClassroom(models.Model):
                 raise Exception("开始周大于结束周")
             if self.start > self.end:
                 raise Exception("开始节次大于结束节次")
+            if self.course.course_capacity > self.classroom.classroom_capacity:
+                raise Exception("教室容量小于课程容量")
         elif type == 1:
             self.start_date_time = make_aware(self.start_date_time)
             self.end_date_time = make_aware(self.end_date_time)
             if self.start_date_time > self.end_date_time:
                 raise Exception("开始时间大于结束时间")
+            if self.classroom.classroom_capacity < self.exam.exam_course.course_capacity:
+                pass
+                # TODO 一个课程多个考试教室
+                # raise Exception("教室容量小于考试对应课程容量")
         # 存储时判断同一教室是否存在时间冲突
         for DAC in DateAndClassroom.objects.filter(classroom_id=self.classroom_id):
             if self.conflict(DAC):
                 raise Exception('当前时间教室内存在其它事件')
 
         super(DateAndClassroom, self).save(*args, **kwargs)
+
+    def check_is_valid(self):
+        for DAC in DateAndClassroom.objects.filter(classroom_id=self.classroom_id):
+            if self.conflict(DAC):
+                return False
+        return True
