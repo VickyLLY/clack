@@ -6,7 +6,7 @@
     <input type="text" class="form-control" placeholder="请输入课程学分" v-model="course_credit" required="required">
     <br>
     <div class="v_select">
-      <v-select max-height="80px" placeholder="请选择课程类型(1:必修；2:选修)" :options="type" v-model="course_type"></v-select>
+      <v-select max-height="80px" placeholder="请选择课程类型(0:必修；1:选修)" :options="type" v-model="course_type"></v-select>
       <br>
       <v-select max-height="80px" placeholder="请选择学年" :options="year" v-model="course_year"></v-select>
       <br>
@@ -42,7 +42,7 @@
         year: year,
         semester: semester,
         capacity: capacity,
-        user_name: this.$cookie.get('user_name'),
+        user_name: this.$cookie.get('username'),
         user_token: this.$cookie.get('user_token'),
         course_name: '',
         course_credit: '',
@@ -59,7 +59,7 @@
         this.course_department_id = val
       },
       confirm: function () {
-        //alert(this.course_department_id)
+        //console.log(this.user_name)
         if (
           this.course_name === "" || this.course_credit === "" || this.course_type === "" || this.course_year === "" ||
           this.course_semester === "" || this.course_capacity === "" || this.course_department_id === ""
