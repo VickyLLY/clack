@@ -84,7 +84,7 @@
               alert(res.body.error_message)
             } else {
               alert("添加成功")
-              this.$router.push('/main')
+              location.reload()
             }
           })
         }
