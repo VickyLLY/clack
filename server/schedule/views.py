@@ -76,3 +76,75 @@ def course_add_dc(request):
     except:
         pass
 
+
+@admin_required
+def change_course_name(request):
+    request_json = json.loads(request.body)
+    try:
+        course = entity.models.Course.objects.get(id=request_json['course_id'])
+        course.course_name = request_json['course_name']
+        course.save()
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": str(e)})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+@admin_required
+def change_course_credit(request):
+    request_json = json.loads(request.body)
+    try:
+        course = entity.models.Course.objects.get(id=request_json['course_id'])
+        course.course_credit = request_json['course_credit']
+        course.save()
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": str(e)})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+@admin_required
+def change_course_type(request):
+    request_json = json.loads(request.body)
+    try:
+        course = entity.models.Course.objects.get(id=request_json['course_id'])
+        course.course_type = request_json['course_type']
+        course.save()
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": str(e)})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+@admin_required
+def change_course_semester(request):
+    request_json = json.loads(request.body)
+    try:
+        course = entity.models.Course.objects.get(id=request_json['course_id'])
+        course.course_year = request_json['course_year']
+        course.course_semester = request_json['course_semester']
+        course.save()
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": str(e)})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+@admin_required
+def change_course_capacity(request):
+    request_json = json.loads(request.body)
+    try:
+        course = entity.models.Course.objects.get(id=request_json['course_id'])
+        course.course_capacity = request_json['course_capacity']
+        course.save()
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": str(e)})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+@admin_required
+def change_course_department(request):
+    request_json = json.loads(request.body)
+    try:
+        course = entity.models.Course.objects.get(id=request_json['course_id'])
+        course.course_department_id = request_json['course_department_id']
+        course.save()
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": str(e)})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
