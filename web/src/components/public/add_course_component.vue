@@ -53,7 +53,6 @@
         course_department_id: ''
       }
     },
-
     methods: {
       get(val) {
         this.course_department_id = val
