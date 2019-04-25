@@ -11,8 +11,8 @@
           <div style="white-space: pre-wrap;" id="div-select">
             <div style="height: 458px; overflow-y: scroll">
               <ul id="ul-select" style="">
-                <li class="list-group-item" v-for="name in course" @click="fun">
-                  <a>{{ name }}</a>
+                <li class="list-group-item" v-for="each in course" @click="fun(each)">
+                  <a>{{ each.course_name }}</a>
                 </li>
               </ul>
             </div>
@@ -23,23 +23,23 @@
             <h3 id="title" style="margin-left: 20px; margin-top:10px;display: none">基本课程信息</h3>
             <div id="change-block">
               <div class="change-content">
-                <span class="interface-title">课程名称：</span><input type="text" class="form-control" required="required">
-                <button id="but1" type="button" class="btn btn-info" style="color: white">√</button>
+                <span class="interface-title">课程名称：</span><input type="text" id="cs_name" class="form-control" v-on:input ="myfun($event)" required="required">
+                <button id="but1" type="button" class="btn btn-info" style="color: white" @click="confirm">√</button>
               </div>
               <div class="change-content">
-                <span>课程学分：</span><v-select class="form-select" type="text" value=""></v-select>
+                <span>课程学分：</span><input type="text" id="cs_credit" class="form-control" v-on:input ="myfun($event)" required="required">
                 <button type="button" class="btn btn-info" style="color: white">√</button>
               </div>
               <div class="change-content">
-                <span>课程类型：</span><input type="text" class="form-control" required="required">
+                <span>课程类型：</span><input type="text" id="cs_type" class="form-control" v-on:input ="myfun($event)" required="required">
                 <button type="button" class="btn btn-info" style="color: white">√</button>
               </div>
               <div class="change-content">
-                <span>课程容量：</span><input type="text" class="form-control" required="required">
+                <span>课程容量：</span><input type="text" id="cs_capacity" class="form-control" v-on:input ="myfun($event)" required="required">
                 <button type="button" class="btn btn-info" style="color: white">√</button>
               </div>
               <div class="change-content">
-                <span>开课学院：</span><input type="text" class="form-control" required="required">
+                <span>开课学院：</span><input type="text" id="cs_department" class="form-control" v-on:input ="myfun($event)" required="required">
                 <button type="button" class="btn btn-info" style="color: white">√</button>
               </div>
             </div>
@@ -79,14 +79,17 @@
             department_id:undefined,
             coursetype:undefined,
             list:'',
-            course:[]
+            course:[],
+            select_course:''
           }
         },
         mounted(){
+          if(this.$cookie.get('username')==null)
+            this.$router.push('/')
           this.$http.post(this.Global_Api + '/schedule/course_list', {}).then((res) => {
             this.list=res.body.course_list
             for(let i=0;i<this.list.length;i++)
-              this.course.push(this.list[i].course_name)
+              this.course.push(this.list[i])
             //alert(this.course.length)
           })
         },
@@ -113,7 +116,7 @@
             this.$http.post(this.Global_Api + '/schedule/course_list', data).then((res) => {
               this.list=res.body.course_list
               for(let i=0;i<this.list.length;i++)
-                this.course.push(this.list[i].course_name)
+                this.course.push(this.list[i])
             })
           },
           department(val){
@@ -134,7 +137,7 @@
             this.$http.post(this.Global_Api + '/schedule/course_list', data).then((res) => {
               this.list=res.body.course_list
               for(let i=0;i<this.list.length;i++)
-                this.course.push(this.list[i].course_name)
+                this.course.push(this.list[i])
             })
           },
           course_type(val){
@@ -155,14 +158,27 @@
             this.$http.post(this.Global_Api + '/schedule/course_list', data).then((res) => {
               this.list=res.body.course_list
               for(let i=0;i<this.list.length;i++)
-                this.course.push(this.list[i].course_name)
+                this.course.push(this.list[i])
             })
           },
-          fun:function () {
+          fun:function (val) {
             document.getElementById("change-block").style.display="block";
             document.getElementById("title").style.display="block";
             document.getElementById("title2").style.display="block";
             document.getElementById("change-block2").style.display="block";
+            document.getElementById("cs_name").value=val.course_name;
+            document.getElementById("cs_credit").value=val.course_credit;
+            document.getElementById("cs_type").value=val.course_type;
+            document.getElementById("cs_capacity").value=val.course_capacity;
+            document.getElementById("cs_department").value=val.course_department_id;
+          },
+          confirm:function () {
+            alert(document.getElementById("cs_name").value)
+          },
+          myfun:function (node) {
+            var thisDom = node.currentTarget
+            thisDom.parentNode.lastChild.style.display="inline-block"
+
           }
         }
     }
@@ -232,7 +248,7 @@
     margin: 0 auto;
     margin-top: 15px;
     background-color: #f5f5f5;
-    animation: donghua 2s;
+    animation: donghua 1s;
   }
   #change-block span,
   #change-block2 span{
@@ -247,10 +263,11 @@
     padding: 5px;
   }
   .btn-info{
-    display: inline-block;
+    display: none;
     margin-left: 50px;
     height: 30px;
     vertical-align:0px;
+    animation: donghua 2s;
   }
   #change-block v-select{
     width: 50px;

@@ -14,6 +14,10 @@
     components: {
       PC_bar,
       News
+    },
+    mounted() {
+      if(this.$cookie.get('username')==null)
+        this.$router.push('/')
     }
   }
 </script>
