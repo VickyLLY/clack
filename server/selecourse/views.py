@@ -15,6 +15,7 @@ from django.db import transaction
 
 def student_sele(request):
     pass
+    pass
 
 
 def student_inquiry(request):
