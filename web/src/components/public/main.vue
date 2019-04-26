@@ -4,7 +4,7 @@
     <a class="navbar-brand"><strong>教务管理系统</strong></a>
     <ul class="nav navbar-nav">
       <li><a href="">排课子系统</a></li>
-      <li><router-link to="/select_course">选课子系统</router-link></li>
+      <li><a v-on:click="select_course">选课子系统</a></li>
       <li><a href="">后台管理子系统</a></li>
       <li><a href="">毕业设计管理子系统</a></li>
       <li><a href="">成绩管理子系统</a></li>
@@ -103,12 +103,26 @@
       data(){
           return{
             username:this.$cookie.get('username'),
-            realname:this.$cookie.get('realname')
+            realname:this.$cookie.get('realname'),
+            user_type:this.$cookie.get('user_type'),
           }
       },
       methods:{
           quit:function () {
             this.$cookie.delete('username');
+          },
+          select_course:function(){
+            if(user_type===1){
+              this.$router.push({
+                path: '/stu_sel_course',
+              });
+              location.reload()
+            }else if(user_type===2){
+              this.$router.push({
+                path: '/tea_sel_course',
+              });
+              location.reload()
+            }
           }
       }
     }

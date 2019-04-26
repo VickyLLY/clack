@@ -7,7 +7,9 @@ import VueCookie from 'vue-cookie'
 import main_mob from '@/components/schedule/main_mob' //手机端主页
 import schedule_mob from  '@/components/schedule/schedule_mob'
 import news_mob from  '@/components/schedule/news_mob'
-import select_course from "../components/stu_sel_course/select_course";
+import stu_sel_course from "@/components/select_course/stu_sel_course"
+import tea_sel_course from "@/components/select_course/tea_sel_course"
+import man_sel_course from "@/components/select_course/man_sel_course"
 Vue.use(VueCookie)
 Vue.use(Router)
 
@@ -54,9 +56,19 @@ export default new Router({
       component: Main
     },
     {
-      path: '/select_course',
-      name: 'select_course',
-      component: select_course
+      path: '/stu_sel_course',
+      name: 'stu_sel_course',
+      component: stu_sel_course
+    },
+    {
+      path: '/tea_sel_course',
+      name: 'tea_sel_course',
+      component: tea_sel_course
+    },
+    {
+      path: '/man_sel_course',
+      name: 'man_sel_course',
+      component: man_sel_course
     }
   ]
 })
