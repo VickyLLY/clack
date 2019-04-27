@@ -23,7 +23,8 @@
         </li>
       </ul>
     </nav>
-    <div id="aside" class="container left" style="width:700px;height:700px;border:1px solid red;position:relative;top:100px;" >
+    <div id="aside" class="container left"
+         style="width:700px;height:700px;border:1px solid red;position:relative;top:100px;">
       <div class="row">
         <div class="col-lg-1" style="background: red;height:700px;position: relative;">
           <p style="width: 20px;height: 100px;position:absolute;top:140px;line-height: 30px;">选课信息</p>
@@ -182,71 +183,8 @@
 
 
 <script>
-  window.onload=function ()
-  {
-    var oDiv1=document.getElementById('aside');
-    alert(oDiv1);
-    oDiv1.onmouseover=function ()
-    {
-      startMove(this, 'left', 700);
-
-    };
-    oDiv1.onmouseout=function ()
-    {
-      startMove(this, 'left', 200);
-    };
-  };
-
-  function getStyle(obj, name)
-  {
-    if(obj.currentStyle)
-    {
-      return obj.currentStyle[name];
-    }
-    else
-    {
-      return getComputedStyle(obj, false)[name];
-    }
-  }
-  function startMove(obj, attr, iTarget)
-  {
-    clearInterval(obj.timer);
-    obj.timer=setInterval(function (){
-      var cur=0;
-
-      if(attr==='opacity')
-      {
-        cur=parseFloat(getStyle(obj, attr))*100;
-      }
-      else
-      {
-        cur=parseInt(getStyle(obj, attr));
-      }
-
-      var speed=(iTarget-cur)/6;
-      speed=speed>0?Math.ceil(speed):Math.floor(speed);
-
-      if(cur===iTarget)
-      {
-        clearInterval(obj.timer);
-      }
-      else
-      {
-        if(attr==='opacity')
-        {
-          obj.style.filter='alpha(opcity:'+(cur+speed)+')';
-          obj.style.opacity=(cur+speed)/100;
-          document.getElementById('txt1').value=obj.style.opacity;
-        }
-        else
-        {
-          obj.style[attr]=cur+speed+'px';
-        }
-      }
-    }, 30);
-  }
   export default {
-    name: "select_course",
+    name: "stu_sel_course",
     data() {
       return {
         oDiv1: document.getElementById('aside'),
@@ -257,12 +195,55 @@
     methods: {
       quit: function () {
         this.$cookie.delete('username');
-      },
-      stu_sel_course: function () {
-        this.$router.push('/stu_sel_course')
-        location.reload()
       }
     },
+    mounted: function () {
+      var oDiv1 = document.getElementById('aside');
+      alert(oDiv1);
+      oDiv1.onmouseover = function () {
+        startMove(this, 'left', 700);
+
+      };
+      oDiv1.onmouseout = function () {
+        startMove(this, 'left', 200);
+      };
+
+      function getStyle(obj, name) {
+        if (obj.currentStyle) {
+          return obj.currentStyle[name];
+        } else {
+          return getComputedStyle(obj, false)[name];
+        }
+      }
+
+      function startMove(obj, attr, iTarget) {
+        clearInterval(obj.timer);
+        obj.timer = setInterval(function () {
+          var cur = 0;
+
+          if (attr === 'opacity') {
+            cur = parseFloat(getStyle(obj, attr)) * 100;
+          } else {
+            cur = parseInt(getStyle(obj, attr));
+          }
+
+          var speed = (iTarget - cur) / 6;
+          speed = speed > 0 ? Math.ceil(speed) : Math.floor(speed);
+
+          if (cur === iTarget) {
+            clearInterval(obj.timer);
+          } else {
+            if (attr === 'opacity') {
+              obj.style.filter = 'alpha(opcity:' + (cur + speed) + ')';
+              obj.style.opacity = (cur + speed) / 100;
+              document.getElementById('txt1').value = obj.style.opacity;
+            } else {
+              obj.style[attr] = cur + speed + 'px';
+            }
+          }
+        }, 30);
+      }
+    }
   }
 </script>
 

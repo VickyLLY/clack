@@ -1,29 +1,28 @@
 <template>
   <div>
-<<<<<<< HEAD
-  <nav class="navbar navbar-default navbar-fixed-top">
-    <a class="navbar-brand"><strong>教务管理系统</strong></a>
-    <ul class="nav navbar-nav">
-      <li><a href="">排课子系统</a></li>
-      <li><a v-on:click="select_course">选课子系统</a></li>
-      <li><a href="">后台管理子系统</a></li>
-      <li><a href="">毕业设计管理子系统</a></li>
-      <li><a href="">成绩管理子系统</a></li>
-    </ul>
-    <ul class="nav navbar-nav navbar-right">
-      <li class="col-md-7">
-      <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-          {{realname}}
-          <b class="caret"></b>
-        </a>
-        <ul class="dropdown-menu">
-          <li><a href="#">修改个人信息</a></li>
-          <li><a href="#/" @click="quit">注销</a></li>
-        </ul>
-    </li>
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <a class="navbar-brand"><strong>教务管理系统</strong></a>
+      <ul class="nav navbar-nav">
+        <li><a href="">排课子系统</a></li>
+        <li><a v-on:click="select_course">选课子系统</a></li>
+        <li><a href="">后台管理子系统</a></li>
+        <li><a href="">毕业设计管理子系统</a></li>
+        <li><a href="">成绩管理子系统</a></li>
       </ul>
-  </nav>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="col-md-7">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            {{realname}}
+            <b class="caret"></b>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="#">修改个人信息</a></li>
+            <li><a href="#/" @click="quit">注销</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
 
     <br><br><br>
 
@@ -94,44 +93,12 @@
       </div>
 
     </div><!--首页新闻部分-->
-
-=======
     <PC_bar></PC_bar>
     <News></News>
->>>>>>> 5772c1f48958d257633d26d12805fcbda726e1d8
   </div>
 </template>
 
 <script>
-<<<<<<< HEAD
-    export default {
-        name: "main",
-      data(){
-          return{
-            username:this.$cookie.get('username'),
-            realname:this.$cookie.get('realname'),
-            user_type:this.$cookie.get('user_type'),
-          }
-      },
-      methods:{
-          quit:function () {
-            this.$cookie.delete('username');
-          },
-          select_course:function(){
-            if(user_type===1){
-              this.$router.push({
-                path: '/stu_sel_course',
-              });
-              location.reload()
-            }else if(user_type===2){
-              this.$router.push({
-                path: '/tea_sel_course',
-              });
-              location.reload()
-            }
-          }
-      }
-=======
   import PC_bar from './PC_bar'
   import News from './news'
 
@@ -141,12 +108,36 @@
       PC_bar,
       News
     },
+    data(){
+      return{
+
+      }
+    },
     mounted() {
-      if(this.$cookie.get('username')==null)
+      if (this.$cookie.get('username') == null)
         this.$router.push('/')
->>>>>>> 5772c1f48958d257633d26d12805fcbda726e1d8
+    },
+    method: {
+      select_course: function () {
+        if (this.$cookie.get('user_type') === 1) {
+          this.$router.push({
+            path: '/main/stu_sel_course',
+          });
+        } else if (this.$cookie.get('user_type') === 2) {
+          this.$router.push({
+            path: '/main/tea_sel_course',
+          });
+          location.reload()
+        }else{
+          this.$router.push({
+            path: '/main/man_sel_course',
+          });
+          location.reload();
+        }
+      }
     }
   }
+
 </script>
 
 <style>
