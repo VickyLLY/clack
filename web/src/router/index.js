@@ -13,6 +13,7 @@ import schedule_mob from "@/components/mob/schedule_mob";
 import man_sel_course from "@/components/select_course/man_sel_course";
 import tea_sel_course from "@/components/select_course/tea_sel_course";
 import stu_sel_course from "@/components/select_course/stu_sel_course";
+import stu_timetable from "@/components/select_course/stu_timetable";
 
 Vue.use(VueCookie)
 Vue.use(Router)
@@ -75,6 +76,11 @@ export default new Router({
       path: '/main/man_sel_course',
       name: 'man_sel_course',
       component: man_sel_course
+    },
+    {
+      path: '/main/stu_sel_course/stu_timetable',
+      name: 'stu_timetable',
+      component: stu_timetable
     }
   ],
 

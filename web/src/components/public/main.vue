@@ -24,25 +24,6 @@
       if (this.$cookie.get('username') == null)
         this.$router.push('/')
     },
-    method: {
-      select_course: function () {
-        if (this.$cookie.get('user_type') === 1) {
-          this.$router.push({
-            path: '/main/stu_sel_course',
-          });
-        } else if (this.$cookie.get('user_type') === 2) {
-          this.$router.push({
-            path: '/main/tea_sel_course',
-          });
-          location.reload()
-        }else{
-          this.$router.push({
-            path: '/main/man_sel_course',
-          });
-          location.reload();
-        }
-      }
-    }
   }
 
 </script>
