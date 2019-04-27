@@ -23,8 +23,8 @@
         </li>
       </ul>
     </nav>
-    <div id="aside" class="container left"
-         style="width:700px;height:700px;border:1px solid red;position:relative;top:100px;">
+    <div id="aside" class="container right"
+         style="width:700px;height:700px;border:1px solid red;position:relative;top:100px;left:1140px;">
       <div class="row">
         <div class="col-lg-1" style="background: red;height:700px;position: relative;">
           <p style="width: 20px;height: 100px;position:absolute;top:140px;line-height: 30px;">选课信息</p>
@@ -187,7 +187,6 @@
     name: "stu_sel_course",
     data() {
       return {
-        oDiv1: document.getElementById('aside'),
         username: this.$cookie.get('username'),
         realname: this.$cookie.get('realname'),
       }
@@ -198,14 +197,14 @@
       }
     },
     mounted: function () {
-      var oDiv1 = document.getElementById('aside');
+      var oDiv1=document.getElementById('aside');
       alert(oDiv1);
       oDiv1.onmouseover = function () {
-        startMove(this, 'left', 700);
+        startMove(this, 'left',500 );
 
       };
       oDiv1.onmouseout = function () {
-        startMove(this, 'left', 200);
+        startMove(this, 'left', 1140);
       };
 
       function getStyle(obj, name) {
@@ -229,7 +228,7 @@
 
           var speed = (iTarget - cur) / 6;
           speed = speed > 0 ? Math.ceil(speed) : Math.floor(speed);
-
+          console.log(speed);
           if (cur === iTarget) {
             clearInterval(obj.timer);
           } else {
