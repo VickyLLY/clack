@@ -1,5 +1,6 @@
 <template>
   <div>
+<<<<<<< HEAD
   <nav class="navbar navbar-default navbar-fixed-top">
     <a class="navbar-brand"><strong>教务管理系统</strong></a>
     <ul class="nav navbar-nav">
@@ -94,10 +95,15 @@
 
     </div><!--首页新闻部分-->
 
+=======
+    <PC_bar></PC_bar>
+    <News></News>
+>>>>>>> 5772c1f48958d257633d26d12805fcbda726e1d8
   </div>
 </template>
 
 <script>
+<<<<<<< HEAD
     export default {
         name: "main",
       data(){
@@ -125,7 +131,22 @@
             }
           }
       }
+=======
+  import PC_bar from './PC_bar'
+  import News from './news'
+
+  export default {
+    name: "main",
+    components: {
+      PC_bar,
+      News
+    },
+    mounted() {
+      if(this.$cookie.get('username')==null)
+        this.$router.push('/')
+>>>>>>> 5772c1f48958d257633d26d12805fcbda726e1d8
     }
+  }
 </script>
 
 <style>
