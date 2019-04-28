@@ -51,6 +51,7 @@ def teacher_upload(request, teacher_number):
 # 登录后，进入成绩查看界面,选择查看成绩
 # 学号为student_number的学生查看自己的成绩
 def student_scores(request, student_number):
+
     year = request.GET.get("year")
     semester = request.GET.get("semester")
 
@@ -95,6 +96,9 @@ def student_scores(request, student_number):
                 'score': item.score,
             }
             score_list.append(course_and_score)
+
+    # print(score_list)
+
     return JsonResponse({**error_code.CLACK_SUCCESS, 'score_list': score_list})
 
 

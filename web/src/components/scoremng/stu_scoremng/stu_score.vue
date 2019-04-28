@@ -12,6 +12,7 @@
           <button class="btn btn-default" type="submit" @click="stu_find_score">查询</button>
 <!--          <router-link :to="{name:'stu_score'}">成绩管理子系统</router-link>-->
         </div>
+<!--        <get_year_semester @listenToChild="year_semester" ></get_year_semester>-->
       </div>
 
 
@@ -46,34 +47,40 @@
 </template>
 
 <script>
+  // import get_year_semester from '../../schedule/get_year_semester'
+
     export default {
       name: "stu_score",
       data() {
         return {
           student_number:this.$cookie.get('user_student_number'),
           // score_list: '',
-          message:''
-
+          message:null,
+          year:'',
+          semester:''
         }
       },
-
+      // components:{
+      //   get_year_semester,
+      // },
       methods:{
 
           stu_find_score:function () {
 
             let data = {'year': this.year, 'semester': this.semester};
+            //this.message=data;
             /*接口请求*/
-            this.$http.get(this.Global_Api + '/scoremng/student_scores/2015014069/', data).then((res) => {
+            this.$http.get(this.Global_Api + '/scoremng/student_scores/2015014069/',data).then((res) => {
               if (res.body.error_code !== 0) {
                 alert("error!  " + res.body.error_message)
               } else {
 
-                this.message=res.body;
-                //this.score_list = res.body.score_list;
+                this.message = res.body;
+                // this.score_list = res.body.score_list;
               }
             });
 
-            // this.$http.get(this.Global_Api + '/entity/department_list').then((res) =>{
+            // this.$http.get(this.Global_Api + '/schedule/course_list').then((res) =>{
             //   if (res.body.error_code !== 0) {
             //     alert("error!" + res.body.error_message)
             //   } else {
