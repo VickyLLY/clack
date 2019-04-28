@@ -18,9 +18,7 @@
       <br>
       <v-select max-height="80px" placeholder="请选择毕业年份" :options="end_year" v-model="stu_end_year"></v-select>
       <br>
-      <v-select max-height="80px" :options="banji_name" :value="banji_id" placeholder="请选择班级" v-model="stu_banji_name"
-                required="required">
-      </v-select>
+      <v-select max-height="80px" placeholder="请选择班级" :options="banji_name" v-model="stu_banji_name"></v-select>
     </div>
     <br>
     <button type="submit" class="btn btn-default" v-on:click="register">注册</button>
@@ -76,9 +74,9 @@
         else {
           if (this.password !== this.confirm_password)
             alert("两次输入的密码不一致")
-          else{
-            this.stu_banji_id=this.banji_name_to_id[this.stu_banji_name]
-            let data={
+          else {
+            this.stu_banji_id = this.banji_name_to_id[this.stu_banji_name]
+            let data = {
               "user": {
                 "user_name": this.username,
                 "user_password": this.password

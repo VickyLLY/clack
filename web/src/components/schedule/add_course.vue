@@ -1,19 +1,19 @@
 <template>
   <div>
     <PC_bar></PC_bar>
-    <News></News>
+    <add_course_component></add_course_component>
   </div>
 </template>
 
 <script>
-  import PC_bar from './PC_bar'
-  import News from './news'
+  import PC_bar from '../public/PC_bar'
+  import add_course_component from '../public/add_course_component'
 
   export default {
-    name: "main",
+    name: "add_course",
     components: {
       PC_bar,
-      News
+      add_course_component
     },
     mounted() {
       if(this.$cookie.get('username')==null)
@@ -22,6 +22,6 @@
   }
 </script>
 
-<style>
+<style scoped>
 
 </style>
