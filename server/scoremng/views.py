@@ -55,9 +55,10 @@ def teacher_upload(request, teacher_number):
 # 登录后，进入成绩查看界面,选择查看成绩
 # 学号为student_number的学生查看自己的成绩
 def student_scores(request, student_number):
-    print(student_number)  # 添加这句话 看打印出来是不是2015014069
-    year = request.GET.get("year")
-    semester = request.GET.get("semester")
+    request_json = json.loads(request.body)
+    year = request_json['year']
+    semester = request_json['semester']
+    # print(student_number, year, semester)
 
     # 学号为student_number的学生的所有成绩
     score_list = []
@@ -68,11 +69,13 @@ def student_scores(request, student_number):
     except Exception:
         return JsonResponse({**error_code.CLACK_STUDENT_NOT_EXISTS})
 
+
     # 由学生id过滤出该生所有的成绩记录
     try:
         items_in_score = scoremng.models.Score.objects.filter(student_id=student.id)
     except Exception:
         return JsonResponse({**error_code.CLACK_SCORE_NOT_EXISTS})
+    # print(len(items_in_score))
 
     for item in items_in_score:
         # 由一条成绩记录找出记录中的course_id
@@ -84,8 +87,9 @@ def student_scores(request, student_number):
         except Exception:
             return JsonResponse({**error_code.CLACK_COURSE_NOT_EXISTS})
 
+        # print(year, type(year), course.course_year, type(course.course_year))
         # 如果这门课程的年份和学期刚好对应学生查询时输入的课程和年份
-        if year == str(course.course_year) and semester == str(course.course_semester):
+        if year == course.course_year and semester == course.course_semester:
             course_info = {
                 'course_name': course.course_name,
                 'course_credit': course.course_credit,
