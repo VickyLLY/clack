@@ -3,6 +3,8 @@
 
     <div class="panel-body">
 
+<!--      <router-view></router-view>-->
+
       <div class="panel panel-default" style="width: 49%;margin: auto;float: left"><!--每一个块的新闻部分-->
         <div class="panel-heading">
           <h3>张东东喜提奔驰</h3>

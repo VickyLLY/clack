@@ -3,6 +3,12 @@ import Router from 'vue-router'
 import Login from '@/components/public/login'  //登录
 import Register from '@/components/public/register' //注册
 import Main from '@/components/public/main' //PC端主页
+
+//成绩管理
+import Stu_navigation from '@/components/scoremng/stu_scoremng/Stu_navigation'
+import Stu_score from '@/components/scoremng/stu_scoremng/stu_score'
+import Stu_complain from '@/components/scoremng/stu_scoremng/stu_complain'
+
 import Add_course from '@/components/schedule/add_course'
 import Arrange_course from '@/components/schedule/arrange_course'
 import VueCookie from 'vue-cookie'
@@ -56,6 +62,24 @@ export default new Router({
       path:'/main/arrange_semester',
       name:'Arrange_course',
       component:Arrange_course
+    },
+    //成绩管理
+    {
+      path:'/main/stu_navigation',
+      name:'Stu_navigation',
+      component:Stu_navigation,
+      children: [
+            {
+              path:'stu_score',
+              name:'stu_score',
+              component:Stu_score
+            },
+            {
+              path:'stu_complain',
+              name:'stu_complain',
+              component:Stu_complain
+            }
+          ]
     }
   ]
 })

@@ -18,7 +18,8 @@
           <li><a href="">选课子系统</a></li>
           <li><a href="">后台管理子系统</a></li>
           <li><a href="">毕业设计管理子系统</a></li>
-          <li><a href="">成绩管理子系统</a></li>
+<!--          <li><a ><router-link :to= "{name:'navigation'}">成绩管理子系统</router-link></a></li>-->
+          <li><a href="javascript:void(0)" @click="scoremng">安排课程</a></li>
         </ul>
       </ul>
         <ul class="nav navbar-nav navbar-right">
@@ -64,6 +65,9 @@
       },
       arrange_course:function () {
         this.$router.push('/main/arrange_semester')
+      },
+      scoremng:function () {
+        this.$router.push('/main/stu_navigation')
       }
     }
   }
