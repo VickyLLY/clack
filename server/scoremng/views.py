@@ -8,10 +8,14 @@ from server import error_code, schema
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from server.decorators import check_json
-from entity.models import Student, Course, Teacher
+from entity.models import Student, Course, Teacher, Banji
 
 
 # 老师上传成绩
+# 由老师所带的所有课程，以一门课为例，找到选这门课的学生
+# 需要讨论一下做成下拉框的形式 一个老师选择了一门课后 下一个框就是他到的所有学生
+# 或者开始时把这个老师带的所有学生都显示出来，然后要求老师去选择那门课，这个信息由前端传过来
+# 然后后端由这个老师和这门课给前端传所有学生的信息，让这个老师去填写
 def teacher_upload(request, teacher_number):
     if request.method == "GET":
         return JsonResponse({
@@ -51,6 +55,7 @@ def teacher_upload(request, teacher_number):
 # 登录后，进入成绩查看界面,选择查看成绩
 # 学号为student_number的学生查看自己的成绩
 def student_scores(request, student_number):
+    print(student_number)  # 添加这句话 看打印出来是不是2015014069
     year = request.GET.get("year")
     semester = request.GET.get("semester")
 
@@ -95,6 +100,7 @@ def student_scores(request, student_number):
                 'score': item.score,
             }
             score_list.append(course_and_score)
+    print(len(score_list))  # 添加这句看一下打印出来的是不是和预想的课程数量是一致的
     return JsonResponse({**error_code.CLACK_SUCCESS, 'score_list': score_list})
 
 
@@ -358,3 +364,43 @@ def teacher_download_scores(request, teacher_number):
         os.remove(teacher.teacher_name + '所带学生的成绩单.xls')
     wb.save(teacher.teacher_name + '所带学生的成绩单.xls')
     return JsonResponse({**error_code.CLACK_SUCCESS, 'student_score_list': student_score_list})
+
+
+def admin_check(request, admin_number):
+    print(admin_number)
+    # 管理员进入页面后可以选择需要查看的学年和学期
+    if request.method == "GET":
+        # 返回所有可选择的班级
+        banji_list = Banji.objects.all()
+        banji_name_list = []
+        for banji in banji_list:
+            banji_name_list.append(banji.banji_name)
+            print(banji.banji_name)
+
+        return JsonResponse({**error_code.CLACK_SUCCESS,
+                             'banji_name_list': banji_name_list,
+                             'year_list': [2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010],
+                             'semester_list': [1, 2, 3],})
+
+    elif request.method == 'POST':
+        # 从前端获得管理员需要查询的学年，学期和班级名称
+        request_json = json.loads(request.body)
+        year = request_json['year']
+        semester = request_json['semester']
+        banji_name = request_json['banji_name']
+
+        # 找到这个班级的banji_id
+        try:
+            banji_id = Banji.objects.all().get(banji_name=banji_name).id
+        except Exception:
+            return JsonResponse({**error_code.CLACK_BANJI_NOT_EXISTS})
+
+        # 查询这个班的学生
+        student_list = Student.objects.all().filter(student_banji=banji_id)
+        for student in student_list:
+            print(student.id)
+
+        return HttpResponse("hello world.")
+
+
+

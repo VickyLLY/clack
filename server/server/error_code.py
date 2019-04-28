@@ -47,3 +47,6 @@ CLACK_SCORE_NOT_EXISTS = {"error_code": 13, "error_message": "这名学生的成
 
 # 老师没有教过这名学生
 CLACK_TEACH_NOT_EXISTS = {"error_code": 14, "error_message": "这名老师没有教过这名学生课"}
+
+# 班级不存在
+CLACK_BANJI_NOT_EXISTS = {"error_code": 15, "error_message": "查询的班级不存在"}
