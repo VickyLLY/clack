@@ -50,7 +50,7 @@
                 <test v-for=" (x,index) in items"
                       :index="index"
                       :items="items"
-                      @say="sayhello"
+                      @del="delete_time"
                       @myfun="myfun"
                 >
                 </test>
@@ -86,18 +86,20 @@
           list: '',
           course: [],
           select_course: '',
-          items: [
+          items: [//课程时间地点具体请问ppg
             {
-              time: "一年",
-              place: "A-302"
+              start_week: 1,
+              end_week: 11,
+              day_of_week: 4,
+              start: 1,
+              end: 3,
             },
             {
-              time: "两天",
-              place: "B-304"
-            },
-            {
-              time: "四分",
-              place: "报告厅"
+              start_week: 1,
+              end_week: 2,
+              day_of_week: 3,
+              start: 4,
+              end: 5,
             }
           ],
           count:0,
@@ -115,7 +117,7 @@
         })
       },
       methods: {
-        sayhello: function(e){
+        delete_time: function(e){
           this.items.splice(e, 1)
         },
         add: function () {
