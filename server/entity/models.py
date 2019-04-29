@@ -89,7 +89,8 @@ class Course(models.Model):
             "course_semester": self.course_semester,
             "course_capacity": self.course_capacity,
             # "course_department_id": self.course_department_id
-            "course_department": self.course_department.to_dict()
+            "course_department": self.course_department.to_dict(),
+            "date_and_classroom": [dc.to_dict() for dc in self.dateandclassroom_set.all()]
         }
 
 
@@ -256,3 +257,16 @@ class DateAndClassroom(models.Model):
             if self.conflict(DAC):
                 return False
         return True
+
+    def to_dict(self):
+        if self.type == 0:
+            return {
+                "classroom": self.classroom.to_dict(),
+                "year": self.year,
+                "semester": self.semester,
+                "start_week": self.start_week,
+                "end_week": self.end_week,
+                "day_of_week": self.day_of_week,
+                "start": self.start,
+                "end": self.end
+            }
