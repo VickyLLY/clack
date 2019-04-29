@@ -24,7 +24,7 @@
             <div id="change-block">
               <div class="change-content">
                 <span class="interface-title">课程名称：</span><input type="text" id="cs_name" class="form-control" v-on:input ="myfun($event)" required="required">
-                <button id="but1" type="button" class="btn btn-info" style="color: white" @click="confirm">√</button>
+                <button id="but1" type="button" class="btn btn-info aabb"  style="color: white" @click="confirm">√</button>
               </div>
               <div class="change-content">
                 <span>课程学分：</span><input type="text" id="cs_credit" class="form-control" v-on:input ="myfun($event)" required="required">
@@ -45,13 +45,15 @@
             </div>
             <h3 id="title2" style="margin-left: 20px; margin-top:10px;display: none">上课时间教室</h3>
             <div id="change-block2">
-              <div class="change-content">
-                <span>上课时间：</span><input type="text" class="form-control" required="required">
-                <button id="but1" type="button" class="btn btn-info" style="color: white">√</button>
-              </div>
-              <div class="change-content">
-                <span>上课地点：</span><input type="text" class="form-control" required="required">
-                <button id="but1" type="button" class="btn btn-info" style="color: white">√</button>
+              <div class="hello">
+                <button @click="add" class="btn2 btn-success">+</button>
+                <test v-for=" (x,index) in items"
+                      :index="index"
+                      :items="items"
+                      @say="sayhello"
+                      @myfun="myfun"
+                >
+                </test>
               </div>
             </div>
           </div>
@@ -60,131 +62,168 @@
 </template>
 
 <script>
+    import test from '../mob/test'
     import get_coursetype from './get_coursetype'
     import get_year_semester from './get_year_semester'
     import PC_bar from '../public/PC_bar'
     import department_list from '../public/department_list'
     export default {
-        name: "arrange_course",
-        components:{
-          get_year_semester,
-          PC_bar,
-          department_list,
-          get_coursetype,
+      name: "arrange_course",
+      components: {
+        get_year_semester,
+        PC_bar,
+        department_list,
+        get_coursetype,
+        test,
+      },
+      data() {
+
+        return {
+          year: undefined,
+          semester: undefined,
+          department_id: undefined,
+          coursetype: undefined,
+          list: '',
+          course: [],
+          select_course: '',
+          items: [
+            {
+              time: "一年",
+              place: "A-302"
+            },
+            {
+              time: "两天",
+              place: "B-304"
+            },
+            {
+              time: "四分",
+              place: "报告厅"
+            }
+          ],
+          count:0,
+          dataRec: [],
+        }
+      },
+      mounted() {
+        if (this.$cookie.get('username') == null)
+          this.$router.push('/')
+        this.$http.post(this.Global_Api + '/schedule/course_list', {}).then((res) => {
+          this.list = res.body.course_list
+          for (let i = 0; i < this.list.length; i++)
+            this.course.push(this.list[i])
+          //alert(this.course.length)
+        })
+      },
+      methods: {
+        sayhello: function(e){
+          this.items.splice(e, 1)
         },
-        data(){
-          return{
-            year:undefined,
-            semester:undefined,
-            department_id:undefined,
-            coursetype:undefined,
-            list:'',
-            course:[],
-            select_course:''
+        add: function () {
+          this.items.push({time: '', place: ''})
+        },
+        del: function (index) {
+          alert(123);
+            this.items.splice(index, 1)
+        },
+        year_semester(val) {
+          if (val != null) {
+            this.year = val.year;
+            this.semester = val.semester;
+          } else {
+            this.year = undefined;
+            this.semester = undefined
           }
-        },
-        mounted(){
-          if(this.$cookie.get('username')==null)
-            this.$router.push('/')
-          this.$http.post(this.Global_Api + '/schedule/course_list', {}).then((res) => {
-            this.list=res.body.course_list
-            for(let i=0;i<this.list.length;i++)
+          let data = {};
+          if (typeof (this.year) != "undefined")
+            data['course_year'] = this.year;
+          if (typeof (this.semester) != "undefined")
+            data['course_semester'] = this.semester;
+          if (typeof (this.department_id) != "undefined")
+            data['course_department_id'] = this.department_id;
+          if (typeof (this.coursetype) != "undefined")
+            data['course_type'] = this.coursetype;
+          this.course = [];
+          this.$http.post(this.Global_Api + '/schedule/course_list', data).then((res) => {
+            this.list = res.body.course_list
+            for (let i = 0; i < this.list.length; i++)
               this.course.push(this.list[i])
-            //alert(this.course.length)
           })
         },
-        methods:{
-          year_semester(val) {
-            if(val!=null) {
-              this.year = val.year;
-              this.semester = val.semester;
-            }
-            else{
-              this.year=undefined;
-              this.semester=undefined
-            }
-            let data={};
-            if(typeof(this.year)!="undefined")
-              data['course_year']=this.year;
-            if(typeof(this.semester)!="undefined")
-              data['course_semester']=this.semester;
-            if(typeof(this.department_id)!="undefined")
-              data['course_department_id']=this.department_id;
-            if(typeof(this.coursetype)!="undefined")
-              data['course_type']=this.coursetype;
-            this.course=[];
-            this.$http.post(this.Global_Api + '/schedule/course_list', data).then((res) => {
-              this.list=res.body.course_list
-              for(let i=0;i<this.list.length;i++)
-                this.course.push(this.list[i])
-            })
-          },
-          department(val){
-            if(val!=null)
-              this.department_id=val;
-            else
-              this.department_id=undefined;
-            let data={};
-            if(typeof(this.year)!="undefined")
-              data['course_year']=this.year;
-            if(typeof(this.semester)!="undefined")
-              data['course_semester']=this.semester;
-            if(typeof(this.department_id)!="undefined")
-              data['course_department_id']=this.department_id;
-            if(typeof(this.coursetype)!="undefined")
-              data['course_type']=this.coursetype;
-            this.course=[];
-            this.$http.post(this.Global_Api + '/schedule/course_list', data).then((res) => {
-              this.list=res.body.course_list
-              for(let i=0;i<this.list.length;i++)
-                this.course.push(this.list[i])
-            })
-          },
-          course_type(val){
-            if(val!=null)
-              this.coursetype=val.coursetype;
-            else
-              this.coursetype=undefined;
-            let data={};
-            if(typeof(this.year)!="undefined")
-              data['course_year']=this.year;
-            if(typeof(this.semester)!="undefined")
-              data['course_semester']=this.semester;
-            if(typeof(this.department_id)!="undefined")
-              data['course_department_id']=this.department_id;
-            if(typeof(this.coursetype)!="undefined")
-              data['course_type']=this.coursetype;
-            this.course=[];
-            this.$http.post(this.Global_Api + '/schedule/course_list', data).then((res) => {
-              this.list=res.body.course_list
-              for(let i=0;i<this.list.length;i++)
-                this.course.push(this.list[i])
-            })
-          },
-          fun:function (val) {
-            document.getElementById("change-block").style.display="block";
-            document.getElementById("title").style.display="block";
-            document.getElementById("title2").style.display="block";
-            document.getElementById("change-block2").style.display="block";
-            document.getElementById("cs_name").value=val.course_name;
-            document.getElementById("cs_credit").value=val.course_credit;
-            document.getElementById("cs_type").value=val.course_type;
-            document.getElementById("cs_capacity").value=val.course_capacity;
-            document.getElementById("cs_department").value=val.course_department_id;
-          },
-          confirm:function () {
-            alert(document.getElementById("cs_name").value)
-          },
-          myfun:function (node) {
-            var thisDom = node.currentTarget
-            thisDom.parentNode.lastChild.style.display="inline-block"
-
+        department(val) {
+          if (val != null)
+            this.department_id = val;
+          else
+            this.department_id = undefined;
+          let data = {};
+          if (typeof (this.year) != "undefined")
+            data['course_year'] = this.year;
+          if (typeof (this.semester) != "undefined")
+            data['course_semester'] = this.semester;
+          if (typeof (this.department_id) != "undefined")
+            data['course_department_id'] = this.department_id;
+          if (typeof (this.coursetype) != "undefined")
+            data['course_type'] = this.coursetype;
+          this.course = [];
+          this.$http.post(this.Global_Api + '/schedule/course_list', data).then((res) => {
+            this.list = res.body.course_list
+            for (let i = 0; i < this.list.length; i++)
+              this.course.push(this.list[i])
+          })
+        },
+        course_type(val) {
+          if (val != null)
+            this.coursetype = val.coursetype;
+          else
+            this.coursetype = undefined;
+          let data = {};
+          if (typeof (this.year) != "undefined")
+            data['course_year'] = this.year;
+          if (typeof (this.semester) != "undefined")
+            data['course_semester'] = this.semester;
+          if (typeof (this.department_id) != "undefined")
+            data['course_department_id'] = this.department_id;
+          if (typeof (this.coursetype) != "undefined")
+            data['course_type'] = this.coursetype;
+          this.course = [];
+          this.$http.post(this.Global_Api + '/schedule/course_list', data).then((res) => {
+            this.list = res.body.course_list
+            for (let i = 0; i < this.list.length; i++)
+              this.course.push(this.list[i])
+          })
+        },
+        fun: function (val) {
+          document.getElementById("change-block").style.display = "block";
+          document.getElementById("title").style.display = "block";
+          document.getElementById("title2").style.display = "block";
+          document.getElementById("change-block2").style.display = "block";
+          document.getElementById("cs_name").value = val.course_name;
+          document.getElementById("cs_credit").value = val.course_credit;
+          document.getElementById("cs_type").value = val.course_type;
+          document.getElementById("cs_capacity").value = val.course_capacity;
+          document.getElementById("cs_department").value = val.course_department_id;
+          var x = document.getElementsByClassName("btn-info");
+          for (let i in x) {
+            x[i].style.display = "none";
           }
+        },
+        confirm: function () {
+          alert(document.getElementById("cs_name").value)
+        },
+        myfun: function (node) {
+          var thisDom = node.currentTarget
+          thisDom.parentNode.lastChild.style.display = "inline-block"
+        },
+        show: function () {
+          alert(this.items[0].place)
         }
+      }
     }
 </script>
 
 <style scoped>
+  .hello{
+    animation: donghua 1s;
+  }
   *{
     list-style: none;
     text-decoration: none;
@@ -250,6 +289,10 @@
     background-color: #f5f5f5;
     animation: donghua 1s;
   }
+  .hello{
+    margin-left: 34px;
+    width: 90%;
+  }
   #change-block span,
   #change-block2 span{
     font-weight: bold;
@@ -258,8 +301,8 @@
     cursor: pointer;
   }
   .change-content{
-      border-bottom: 1px solid #ddd;
-      margin: 30px 10%;
+    border-bottom: 1px solid #ddd;
+    margin: 30px 10%;
     padding: 5px;
   }
   .btn-info{
@@ -290,11 +333,19 @@
   #change-block{
     margin-bottom: 50px;
   }
-  #change-block2{
-    height: 400px;
-  }
   #title,#title2{
     border-left:2px solid rgb(35,149,241);
     padding-left: 10px;
   }
+  .btn2{
+    width: 35px;
+    border: 0;
+    height: 35px;
+    line-height: 35px;
+    border-radius: 5px;
+    font-size: 22px;
+    margin: 25px;
+    color: white;
+  }
+
 </style>
