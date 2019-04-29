@@ -16,19 +16,26 @@ from entity.models import Student, Course, Teacher, Banji
 # 需要讨论一下做成下拉框的形式 一个老师选择了一门课后 下一个框就是他到的所有学生
 # 或者开始时把这个老师带的所有学生都显示出来，然后要求老师去选择那门课，这个信息由前端传过来
 # 然后后端由这个老师和这门课给前端传所有学生的信息，让这个老师去填写
+# 目前状态：未完成
 def teacher_upload(request, teacher_number):
+    # 如果直接进入到老师上传成绩的界面是get方法，此时提供给前端学年列表和学期列表
     if request.method == "GET":
         return JsonResponse({
+            **error_code.CLACK_SUCCESS,
             'year_list': [2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010],
             'semester_list': [1, 2, 3],
         })
+    # 老师选择学年，学期，学生号，课程名称，分数，提交到后端
     elif request.method == "POST":
         request_json = json.loads(request.body)
 
         # 从json中获得学生的学号，课程的课号，课程分数
+        year = request_json['year']
+        semester = request_json['semester']
         student_number = request_json['student_number']
         course_name = request_json['course_name']
         score = request_json['score']
+        print(teacher_number, year, semester, student_number, course_name, score)
 
         # 由student_number找到student_id
         try:
@@ -54,11 +61,13 @@ def teacher_upload(request, teacher_number):
 
 # 登录后，进入成绩查看界面,选择查看成绩
 # 学号为student_number的学生查看自己的成绩
-def student_scores(request, student_number):
+# 如果返回信息中不包含任课老师的信息，就不需要用其他组的表
+# 目前状态：已完成
+def student_check_scores(request, student_number):
     request_json = json.loads(request.body)
     year = request_json['year']
     semester = request_json['semester']
-    # print(student_number, year, semester)
+    print(student_number, year, semester)
 
     # 学号为student_number的学生的所有成绩
     score_list = []
@@ -104,12 +113,13 @@ def student_scores(request, student_number):
                 'score': item.score,
             }
             score_list.append(course_and_score)
-    print(len(score_list))  # 添加这句看一下打印出来的是不是和预想的课程数量是一致的
+    # print(len(score_list))  # 添加这句看一下打印出来的是不是和预想的课程数量是一致的
     return JsonResponse({**error_code.CLACK_SUCCESS, 'score_list': score_list})
 
 
 # 学生课程评价
 # 应该是老师填写完成绩后，才能填写课程评价，才能看成绩
+# 目前状态：未完成
 def courses_comment(request, student_number):
     if request.method == "GET":
         # 这名学生所选的全部课程的列表
@@ -215,6 +225,8 @@ def courses_comment(request, student_number):
 
 
 # 学生下载自己的成绩
+# 如果不需要返回任课教师的信息，就不需要用其他组的表
+# 目前状态：已完成
 def student_download_scores(request, student_number):
     wb = xlwt.Workbook(encoding='utf-8')
     w = wb.add_sheet(u'学生成绩', cell_overwrite_ok=True)
@@ -226,11 +238,10 @@ def student_download_scores(request, student_number):
     w.write(0, 5, u'成绩')
     excel_row = 1
 
-    # 使用student_scores函数
-    # 学号为student_number的学生查看自己的成绩
-    year = request.GET.get("year")
-    semester = request.GET.get("semester")
-    print(year, semester)
+    request_json = json.loads(request.body)
+    year = request_json['year']
+    semester = request_json['semester']
+    print(student_number, year, semester)
 
     # 学号为student_number的学生的所有成绩
     score_list = []
@@ -258,7 +269,7 @@ def student_download_scores(request, student_number):
             return JsonResponse({**error_code.CLACK_COURSE_NOT_EXISTS})
 
         # 如果这门课程的年份和学期刚好对应学生查询时输入的课程和年份
-        if year == str(course.course_year) and semester == str(course.course_semester):
+        if year == course.course_year and semester == course.course_semester:
             course_info = {
                 'course_name': course.course_name,
                 'course_credit': course.course_credit,
@@ -292,16 +303,18 @@ def student_download_scores(request, student_number):
     return JsonResponse({**error_code.CLACK_SUCCESS, 'score_list': score_list})
 
 
-# 老师下载自己所带的学生的成绩
-def teacher_download_scores(request, teacher_number):
+# 老师选择特定的学年和学期，查看学生的成绩
+# 因为用到了排课组的排课表，所以还未完成
+def teacher_check_scores(request, teacher_number):
     """
     在排课表中查找这名老师带的全部课程的id,
     在选课表中由课程id，查找到选这门课的学生的id
     因为先阶段不知道排课表和选课表中的字段设置，所以先给前端返回假数据
     """
-    year = request.GET.get('year')
-    semester = request.GET.get('semester')
-    # print(year, semester)
+    request_json = json.loads(request.body)
+    year = request_json['year']
+    semester = request_json['semester']
+    print(teacher_number, year, semester) # 成功获得post的数据
 
     try:
         teacher = Teacher.objects.get(teacher_number=teacher_number)
@@ -349,25 +362,52 @@ def teacher_download_scores(request, teacher_number):
 
     student_score_list.append(student_score_list1)
     student_score_list.append(student_score_list2)
+    print("---")
 
-    # 把成绩单里的学生成绩信息放入excel表中
-    for student_score in student_score_list:
-        w.write(excel_row, 0, student_score['student_number'])
-        w.write(excel_row, 1, student_score['student_name'])
-        w.write(excel_row, 2, student_score['student_banji_name'])
-        w.write(excel_row, 3, student_score['course_name'])
-        w.write(excel_row, 4, student_score['course_type'])
-        w.write(excel_row, 5, student_score['course_year'])
-        w.write(excel_row, 6, student_score['course_semester'])
-        w.write(excel_row, 7, student_score['course_credit'])
-        w.write(excel_row, 8, student_score['course_score'])
-        excel_row += 1
+    # 在后端判断，如果老师点击的按钮名是"check",就把学生的成绩单返回给后端
+    if "check" in request.POST:
+        print('前端点击了check')
+        return JsonResponse({**error_code.CLACK_SUCCESS, 'student_score_list': student_score_list})
 
-    exist_file = os.path.exists(teacher.teacher_name + '所带学生的成绩单.xls')
-    if exist_file:
-        os.remove(teacher.teacher_name + '所带学生的成绩单.xls')
-    wb.save(teacher.teacher_name + '所带学生的成绩单.xls')
-    return JsonResponse({**error_code.CLACK_SUCCESS, 'student_score_list': student_score_list})
+    # 如果老师点击的按钮名是"download"，就把学生的成绩单以excel的形式保存下来
+    if "download" in request.POST:
+        print('前端点击了download')
+        for student_score in student_score_list:
+            w.write(excel_row, 0, student_score['student_number'])
+            w.write(excel_row, 1, student_score['student_name'])
+            w.write(excel_row, 2, student_score['student_banji_name'])
+            w.write(excel_row, 3, student_score['course_name'])
+            w.write(excel_row, 4, student_score['course_type'])
+            w.write(excel_row, 5, student_score['course_year'])
+            w.write(excel_row, 6, student_score['course_semester'])
+            w.write(excel_row, 7, student_score['course_credit'])
+            w.write(excel_row, 8, student_score['course_score'])
+            excel_row += 1
+
+        exist_file = os.path.exists(teacher.teacher_name + '所带学生的成绩单.xls')
+        if exist_file:
+            os.remove(teacher.teacher_name + '所带学生的成绩单.xls')
+        wb.save(teacher.teacher_name + '所带学生的成绩单.xls')
+        return JsonResponse({**error_code.CLACK_SUCCESS})
+
+    # # 把成绩单里的学生成绩信息放入excel表中
+    # for student_score in student_score_list:
+    #     w.write(excel_row, 0, student_score['student_number'])
+    #     w.write(excel_row, 1, student_score['student_name'])
+    #     w.write(excel_row, 2, student_score['student_banji_name'])
+    #     w.write(excel_row, 3, student_score['course_name'])
+    #     w.write(excel_row, 4, student_score['course_type'])
+    #     w.write(excel_row, 5, student_score['course_year'])
+    #     w.write(excel_row, 6, student_score['course_semester'])
+    #     w.write(excel_row, 7, student_score['course_credit'])
+    #     w.write(excel_row, 8, student_score['course_score'])
+    #     excel_row += 1
+    #
+    # exist_file = os.path.exists(teacher.teacher_name + '所带学生的成绩单.xls')
+    # if exist_file:
+    #     os.remove(teacher.teacher_name + '所带学生的成绩单.xls')
+    # wb.save(teacher.teacher_name + '所带学生的成绩单.xls')
+    # return JsonResponse({**error_code.CLACK_SUCCESS, 'student_score_list': student_score_list})
 
 
 def admin_check(request, admin_number):
