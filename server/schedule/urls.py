@@ -11,5 +11,8 @@ urlpatterns = [
     path(r'change_course_type', views.change_course_type, name='change_course_type'),
     path(r'change_course_semester', views.change_course_semester, name='change_course_semester'),
     path(r'change_course_capacity', views.change_course_capacity, name='change_course_capacity'),
-    path(r'change_course_department', views.change_course_department, name='change_course_department')
+    path(r'change_course_department', views.change_course_department, name='change_course_department'),
+    path(r'course_add_dc', views.course_add_dc, name='course_add_dc'),
+    path(r'mock_xuanke', views.mock_xuanke, name='mock_xuanke'),
+    path(r'student_course_list', views.student_course_list, name='student_course_list')
 ]

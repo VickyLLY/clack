@@ -4,6 +4,7 @@ from server import error_code
 import json
 import entity.models
 from server.decorators import admin_required
+import schedule.models
 
 
 # Create your views here.
@@ -71,12 +72,25 @@ def classroom_list(request):
 def course_add_dc(request):
     request_json = json.loads(request.body)
     try:
-        course = entity.models
-        pass
-    except:
-        pass
+        course = entity.models.Course.objects.get(id=request_json['course_id'])
+        DC = entity.models.DateAndClassroom(type=0)
+        DC.classroom_id = request_json['classroom_id']
+        DC.course_id = request_json['course_id']
+        DC.year = course.course_year
+        DC.semester = course.course_semester
+        DC.start_week = request_json['date']['start_week']
+        DC.end_week = request_json['date']['end_week']
+        DC.day_of_week = request_json['date']['day_of_week']
+        DC.start = request_json['date']['start']
+        DC.end = request_json['date']['end']
+        # TODO 检查时间与任课教师的其他课程是否冲突
+        DC.save()
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": str(e)})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
 
 
+# TODO 修改课程信息的这坨接口非常恶心,感觉是米婆婆喝多了, 如果有时间可以考虑改一下, 大概是不会改了
 @admin_required
 def change_course_name(request):
     request_json = json.loads(request.body)
@@ -148,3 +162,25 @@ def change_course_department(request):
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": str(e)})
     return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+def mock_xuanke(request):
+    request_json = json.loads(request.body)
+    try:
+        student_id = entity.models.Student.objects.get(student_number=request_json['student_number']).id
+        mock = schedule.models.MockStudentCourse(student_id=student_id, course_id=request_json['course_id'])
+        mock.save()
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": str(e)})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+def student_course_list(request):
+    # TODO 替换mock,权限
+    request_json = json.loads(request.body)
+    try:
+        mocks = schedule.models.MockStudentCourse.objects.filter(student__student_number=request_json['student_number'])
+        result = [mock.course.to_dict() for mock in mocks]
+        return JsonResponse({**error_code.CLACK_SUCCESS, "course_list": result})
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": str(e)})

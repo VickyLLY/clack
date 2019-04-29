@@ -24,6 +24,12 @@ from django.utils.timezone import make_aware
 class Department(models.Model):
     department_name = models.TextField(default='', unique=True)
 
+    def to_dict(self):
+        return {
+            "department_id": self.id,
+            "department_name": self.department_name
+        }
+
 
 # 专业
 class Major(models.Model):
@@ -35,6 +41,9 @@ class Major(models.Model):
 class Classroom(models.Model):
     classroom_name = models.TextField(default='', unique=True)
     classroom_capacity = models.IntegerField(default=30)
+
+    def __str__(self):
+        return "%s,%d" % (self.classroom_name, self.classroom_capacity)
 
     def to_dict(self):
         return {
@@ -67,6 +76,9 @@ class Course(models.Model):
     # 开课学院
     course_department = models.ForeignKey(Department, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.course_name + "," + str(self.course_year) + "," + str(self.course_semester)
+
     def to_dict(self):
         return {
             "course_id": self.id,
@@ -76,7 +88,8 @@ class Course(models.Model):
             "course_year": self.course_year,
             "course_semester": self.course_semester,
             "course_capacity": self.course_capacity,
-            "course_department_id": self.course_department_id
+            # "course_department_id": self.course_department_id
+            "course_department": self.course_department.to_dict()
         }
 
 
@@ -145,6 +158,9 @@ class Semester(models.Model):
     # 开学日期
     start_date = models.DateField()
 
+    def __str__(self):
+        return str(self.year) + "," + str(self.semester) + "," + str(self.start_date)
+
 
 class DateAndClassroom(models.Model):
     # 时间地点的类型
@@ -175,8 +191,8 @@ class DateAndClassroom(models.Model):
     # 对应考试
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE, null=True, blank=True)
     # 开始日期时间
-    start_date_time = models.DateTimeField(blank=True)
-    end_date_time = models.DateTimeField(blank=True)
+    start_date_time = models.DateTimeField(blank=True, null=True)
+    end_date_time = models.DateTimeField(blank=True, null=True)
 
     # type 1 结束 -----------------------
 
@@ -200,6 +216,7 @@ class DateAndClassroom(models.Model):
         return result
 
     def conflict(self, date_and_classroom) -> bool:
+        # 如果时间有冲突将会返回True
         assert isinstance(date_and_classroom, DateAndClassroom)
         for i in self.to_date_time_list():
             for j in date_and_classroom.to_date_time_list():
@@ -208,14 +225,17 @@ class DateAndClassroom(models.Model):
         return False
 
     def save(self, *args, **kwargs):
-        if type == 0:
+        Semester.objects.get(year=self.year, semester=self.semester)
+        if self.type == 0:
             if self.start_week > self.end_week:
                 raise Exception("开始周大于结束周")
             if self.start > self.end:
                 raise Exception("开始节次大于结束节次")
             if self.course.course_capacity > self.classroom.classroom_capacity:
                 raise Exception("教室容量小于课程容量")
-        elif type == 1:
+            if self.day_of_week < 1 or self.day_of_week > 7:
+                raise Exception("day_of_week wrong")
+        elif self.type == 1:
             self.start_date_time = make_aware(self.start_date_time)
             self.end_date_time = make_aware(self.end_date_time)
             if self.start_date_time > self.end_date_time:
