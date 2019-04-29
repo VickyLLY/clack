@@ -67,7 +67,7 @@ def student_check_scores(request, student_number):
     request_json = json.loads(request.body)
     year = request_json['year']
     semester = request_json['semester']
-    print(student_number, year, semester)
+    # print(student_number, year, semester)
 
     # 学号为student_number的学生的所有成绩
     score_list = []
@@ -241,7 +241,7 @@ def student_download_scores(request, student_number):
     request_json = json.loads(request.body)
     year = request_json['year']
     semester = request_json['semester']
-    print(student_number, year, semester)
+    # print(student_number, year, semester)
 
     # 学号为student_number的学生的所有成绩
     score_list = []
