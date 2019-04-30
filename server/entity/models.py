@@ -167,8 +167,9 @@ class DateAndClassroom(models.Model):
     # 时间地点的类型
     # type 0 代表课程的时间地点
     # type 1 代表考试的时间地点
+    # type -1 代表被删除
     type = models.IntegerField(default=0)
-    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE, null=False)
+    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE, null=True, blank=True)
     # type 0 开始 -----------------------
     # 对应课程
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
@@ -226,6 +227,10 @@ class DateAndClassroom(models.Model):
         return False
 
     def save(self, *args, **kwargs):
+        if self.type == -1:
+            # 被删除
+            super(DateAndClassroom, self).save(*args, **kwargs)
+            return
         # TODO 判断节次不能大于13
         Semester.objects.get(year=self.year, semester=self.semester)
         if self.type == 0:

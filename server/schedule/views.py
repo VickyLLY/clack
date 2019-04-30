@@ -185,3 +185,17 @@ def student_course_list(request):
         return JsonResponse({**error_code.CLACK_SUCCESS, "course_list": result})
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": str(e)})
+
+
+def del_dc(request):
+    request_json = json.loads(request.body)
+    try:
+        dc = entity.models.DateAndClassroom.objects.get(id=request_json['id'])
+        dc.classroom = None
+        dc.course = None
+        dc.exam = None
+        dc.type = -1
+        dc.save()
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": str(e)})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
