@@ -226,12 +226,15 @@ class DateAndClassroom(models.Model):
         return False
 
     def save(self, *args, **kwargs):
+        # TODO 判断节次不能大于13
         Semester.objects.get(year=self.year, semester=self.semester)
         if self.type == 0:
             if self.start_week > self.end_week:
                 raise Exception("开始周大于结束周")
             if self.start > self.end:
                 raise Exception("开始节次大于结束节次")
+            if self.start < 1 or self.end > 13:
+                raise Exception("开始结束应在1到13范围内")
             if self.course.course_capacity > self.classroom.classroom_capacity:
                 raise Exception("教室容量小于课程容量")
             if self.day_of_week < 1 or self.day_of_week > 7:
@@ -247,7 +250,7 @@ class DateAndClassroom(models.Model):
                 # raise Exception("教室容量小于考试对应课程容量")
         # 存储时判断同一教室是否存在时间冲突
         for DAC in DateAndClassroom.objects.filter(classroom_id=self.classroom_id):
-            if self.conflict(DAC):
+            if DAC.id != self.id and self.conflict(DAC):
                 raise Exception('当前时间教室内存在其它事件')
 
         super(DateAndClassroom, self).save(*args, **kwargs)
@@ -258,9 +261,22 @@ class DateAndClassroom(models.Model):
                 return False
         return True
 
+    def get_free_classroom(self):
+        result = list()
+        for classroom in Classroom.objects.all():
+            flag = True
+            for DC in classroom.dateandclassroom_set.all():
+                if DC.id != self.id and self.conflict(DC):
+                    flag = False
+                    break
+            if flag:
+                result.append(classroom)
+        return result
+
     def to_dict(self):
         if self.type == 0:
             return {
+                "id": self.id,
                 "classroom": self.classroom.to_dict(),
                 "year": self.year,
                 "semester": self.semester,

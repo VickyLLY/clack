@@ -60,13 +60,12 @@ def classroom_list(request):
                                                      end=request_json['course_date']['end'])
         temp = result
         result = list()
-        for classroom in temp:
-            course_date.classroom_id = classroom.id
-            if course_date.check_is_valid():
+        for classroom in course_date.get_free_classroom():
+            if classroom in temp:
                 result.append(classroom)
     # TODO 考试时间还没筛
-    result = [classroom.to_dict() for classroom in classrooms]
-    return {**error_code.CLACK_SUCCESS, 'classroom_list': result}
+    result = [classroom.to_dict() for classroom in result]
+    return JsonResponse({**error_code.CLACK_SUCCESS, 'classroom_list': result})
 
 
 def course_add_dc(request):
