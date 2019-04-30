@@ -58,6 +58,8 @@ def classroom_list(request):
                                                      day_of_week=request_json['course_date']['day_of_week'],
                                                      start=request_json['course_date']['start'],
                                                      end=request_json['course_date']['end'])
+        if 'id' in request_json['course_date']:
+            course_date.id = request_json['course_date']['id']
         temp = result
         result = list()
         for classroom in course_date.get_free_classroom():
