@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from server import error_code
 import json
 import entity.models
-from server.decorators import admin_required
+from server.decorators import admin_required, login_required
 import schedule.models
 
 
@@ -201,3 +201,13 @@ def del_dc(request):
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": str(e)})
     return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+@login_required
+def course_info(request):
+    request_json = json.loads(request.body)
+    try:
+        course = entity.models.Course.objects.get(id=request_json['course_id'])
+        return JsonResponse({**error_code.CLACK_SUCCESS, "course": course.to_dict()})
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": str(e)})
