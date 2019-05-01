@@ -75,6 +75,8 @@ def course_add_dc(request):
     try:
         course = entity.models.Course.objects.get(id=request_json['course_id'])
         DC = entity.models.DateAndClassroom(type=0)
+        if 'id' in request_json:
+            DC = entity.models.DateAndClassroom.objects.get(id=request_json['id'])
         DC.classroom_id = request_json['classroom_id']
         DC.course_id = request_json['course_id']
         DC.year = course.course_year
