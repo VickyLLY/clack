@@ -335,6 +335,7 @@
         })
       },
       choose_course: function (val) {
+        this.items=[];
         this.select_course = val;
         //console.log(this.coursetype_name)
         document.getElementById("change-block").style.display = "block";
@@ -714,6 +715,7 @@
           alert(res.body.error_message)
           if(res.body.error_code===0) {
             this.added.splice(index, 1);
+            this.copy_added.splice(index, 1);
             data = {};
             if (typeof (this.year) != "undefined")
               data['course_year'] = this.year;
