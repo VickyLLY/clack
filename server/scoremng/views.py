@@ -67,7 +67,7 @@ def student_check_scores(request, student_number):
     request_json = json.loads(request.body)
     year = request_json['year']
     semester = request_json['semester']
-    # print(student_number, year, semester)
+    # print(student_number, year, semester, type(year), type(semester))
 
     # 学号为student_number的学生的所有成绩
     score_list = []
@@ -78,13 +78,13 @@ def student_check_scores(request, student_number):
     except Exception:
         return JsonResponse({**error_code.CLACK_STUDENT_NOT_EXISTS})
 
-
+    print(student.id, student.student_name)
     # 由学生id过滤出该生所有的成绩记录
     try:
         items_in_score = scoremng.models.Score.objects.filter(student_id=student.id)
     except Exception:
         return JsonResponse({**error_code.CLACK_SCORE_NOT_EXISTS})
-    # print(len(items_in_score))
+    print(len(items_in_score))
 
     for item in items_in_score:
         # 由一条成绩记录找出记录中的course_id
@@ -96,9 +96,10 @@ def student_check_scores(request, student_number):
         except Exception:
             return JsonResponse({**error_code.CLACK_COURSE_NOT_EXISTS})
 
-        # print(year, type(year), course.course_year, type(course.course_year))
+        print(year, type(year), course.course_year, type(course.course_year))
+
         # 如果这门课程的年份和学期刚好对应学生查询时输入的课程和年份
-        if year == course.course_year and semester == course.course_semester:
+        if year == str(course.course_year) and semester == str(course.course_semester):
             course_info = {
                 'course_name': course.course_name,
                 'course_credit': course.course_credit,
