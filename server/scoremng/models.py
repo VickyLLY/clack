@@ -24,3 +24,7 @@ class SelectCourse(models.Model):
 class TeacherSchedule(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, null=False)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=False)
+    year = models.IntegerField(default=2018, null=False)
+    semester = models.IntegerField(default=2, null=False)
+
+
