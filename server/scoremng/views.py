@@ -18,56 +18,51 @@ from entity.models import Student, Course, Teacher, Banji
 # 然后后端由这个老师和这门课给前端传所有学生的信息，让这个老师去填写
 # 目前状态：未完成
 def teacher_upload(request, teacher_number):
-    # 如果直接进入到老师上传成绩的界面是get方法，此时提供给前端学年列表和学期列表
-    if request.method == "GET":
-        return JsonResponse({
-            **error_code.CLACK_SUCCESS,
-            'year_list': [2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010],
-            'semester_list': [1, 2, 3],
-        })
+
     # 老师选择学年，学期，学生号，课程名称，分数，提交到后端
-    elif request.method == "POST":
-        request_json = json.loads(request.body)
 
-        # 从json中获得学生的学号，课程的课号，课程分数
-        year = request_json['year']
-        semester = request_json['semester']
-        student_number = request_json['student_number']
-        course_name = request_json['course_name']
-        score = request_json['score']
-        print(teacher_number, year, semester, student_number, course_name, score)
+    request_json = json.loads(request.body)
 
-        # 由student_number找到student_id
-        try:
-            student = Student.objects.get(student_number=student_number)
-        except Exception:
-            return JsonResponse({**error_code.CLACK_STUDENT_NOT_EXISTS})
+    # 从json中获得学生的学号，课程的课号，课程分数
+    year = request_json['year']
+    semester = request_json['semester']
+    student_number = request_json['student_number']
+    course_name = request_json['course_name']
+    score = request_json['score']
+    print(teacher_number, year, semester, student_number, course_name, score)
 
-        # 由course_number找到course_id
-        try:
-            course = Course.objects.get(course_name=course_name)
-        except Exception:
-            return JsonResponse({**error_code.CLACK_COURSE_NOT_EXISTS})
+    # 由student_number找到student_id
+    try:
+        student = Student.objects.get(student_number=student_number)
+    except Exception:
+        return JsonResponse({**error_code.CLACK_STUDENT_NOT_EXISTS})
 
-        # 把新增的学生成绩添加到数据库中
-        score = scoremng.models.Score(student_id=student.id, course_id=course.id,
-                                      score=score)
-        try:
-            score.save()
-        except Exception:
-            return JsonResponse({**error_code.CLACK_CREATE_NEW_MODELS_FAILED})
-        return JsonResponse({**error_code.CLACK_SUCCESS})
+    # 由course_number找到course_id
+    try:
+        course = Course.objects.get(course_name=course_name)
+    except Exception:
+        return JsonResponse({**error_code.CLACK_COURSE_NOT_EXISTS})
+
+    # 把新增的学生成绩添加到数据库中
+    score = scoremng.models.Score(student_id=student.id, course_id=course.id,
+                                  score=score)
+    try:
+        score.save()
+    except Exception:
+        return JsonResponse({**error_code.CLACK_CREATE_NEW_MODELS_FAILED})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
 
 
 # 登录后，进入成绩查看界面,选择查看成绩
 # 学号为student_number的学生查看自己的成绩
 # 如果返回信息中不包含任课老师的信息，就不需要用其他组的表
 # 目前状态：已完成
-def student_check_scores(request, student_number):
+def student_check_scores(request):
     request_json = json.loads(request.body)
     year = request_json['year']
     semester = request_json['semester']
-    # print(student_number, year, semester, type(year), type(semester))
+    student_number = request_json['student_number']
+    print(student_number, semester, type(year), type(semester))
 
     # 学号为student_number的学生的所有成绩
     score_list = []
@@ -116,14 +111,16 @@ def student_check_scores(request, student_number):
 # 学生课程评价
 # 应该是老师填写完成绩后，才能填写课程评价，才能看成绩
 # 目前状态：已完成
-def courses_comment(request, student_number):
+def courses_comment(request):
     request_json = json.loads(request.body)
+    student_number = request_json['student_number']
     course_name = request_json['course_name']
     course_credit = request_json['course_credit']
     course_year = request_json['course_year']
     course_semester = request_json['course_semester']
     score = request_json['score']
     course_comment = request_json['course_comment']
+    print(student_number)
 
     try:
         student_id = Student.objects.get(student_number=student_number).id
@@ -159,7 +156,14 @@ def courses_comment(request, student_number):
 # 学生下载自己的成绩
 # 如果不需要返回任课教师的信息，就不需要用其他组的表
 # 目前状态：已完成
-def student_download_scores(request, student_number):
+def student_download_scores(request):
+    request_json = json.loads(request.body)
+    student_number = request_json['student_number']
+    year = request_json['year']
+    semester = request_json['semester']
+    print(student_number, year, semester)
+
+    # 下载成绩到excel表格中
     wb = xlwt.Workbook(encoding='utf-8')
     w = wb.add_sheet(u'学生成绩', cell_overwrite_ok=True)
     w.write(0, 0, u'课程名称')
@@ -169,11 +173,6 @@ def student_download_scores(request, student_number):
     w.write(0, 4, u'课程种类')
     w.write(0, 5, u'成绩')
     excel_row = 1
-
-    request_json = json.loads(request.body)
-    year = request_json['year']
-    semester = request_json['semester']
-    # print(student_number, year, semester)
 
     # 学号为student_number的学生的所有成绩
     score_list = []
@@ -233,6 +232,7 @@ def student_download_scores(request, student_number):
 
 # 老师选择特定的学年和学期，查看学生的成绩
 # 因为用到了排课组的排课表，所以还未完成
+# 目前状态：未完成
 def teacher_check_scores(request, teacher_number):
     """
     在排课表中查找这名老师带的全部课程的id,
