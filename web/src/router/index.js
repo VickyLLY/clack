@@ -15,6 +15,10 @@ import tea_sel_course from "@/components/select_course/tea_sel_course";
 import stu_sel_course from "@/components/select_course/stu_sel_course";
 import stu_timetable from "@/components/select_course/stu_timetable";
 import course_table from "@/components/schedule/course_table";
+//成绩管理
+import Stu_navigation from '@/components/scoremng/stu_scoremng/Stu_navigation'
+import Stu_score from '@/components/scoremng/stu_scoremng/stu_score'
+import Stu_evaluation from '@/components/scoremng/stu_scoremng/stu_evaluation'
 
 Vue.use(VueCookie)
 Vue.use(Router)
@@ -87,6 +91,24 @@ export default new Router({
       path: '/main/stu_sel_course/stu_timetable',
       name: 'stu_timetable',
       component: stu_timetable
+    },
+    //成绩管理
+    {
+      path:'/main/stu_navigation',
+      name:'Stu_navigation',
+      component:Stu_navigation,
+      children: [
+        {
+          path:'stu_score',
+          name:'stu_score',
+          component:Stu_score
+        },
+        {
+          path:'stu_evaluation',
+          name:'stu_evaluation',
+          component:Stu_evaluation
+        }
+      ]
     }
   ],
 

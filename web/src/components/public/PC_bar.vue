@@ -28,7 +28,7 @@
             </li>
             <li><a href="">后台管理子系统</a></li>
             <li><a href="">毕业设计管理子系统</a></li>
-            <li><a href="">成绩管理子系统</a></li>
+            <li><a href="javascript:void(0)" @click="scoremng">成绩管理子系统</a></li>
           </ul>
         </ul>
         <ul class="nav navbar-nav navbar-right">
@@ -102,7 +102,10 @@
       },
       check_course_table:function () {
         this.$router.push({name:'course_table'});
-      }
+      },
+      scoremng:function () {
+        this.$router.push('/main/stu_navigation')
+      },
     }
   }
 </script>
