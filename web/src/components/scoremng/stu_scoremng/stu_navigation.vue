@@ -7,8 +7,16 @@
       <div class="panel-body" style="height: 500px">
 
         <div style="margin: 0 auto;width:20%;height: 100%;float:left;">
+          <!--    管理员导航栏-->
+          <div v-if="user_type==='0'">
+            <ul class="nav nav-pills nav-stacked">
+              <li class="active"><a href="#">学生成绩管理</a></li>
+              <li><a ><router-link :to="{name:''}">提交学生成绩</router-link></a></li>
+              <li><a ><router-link :to="{name:''}">修改学生成绩</router-link></a></li>
+            </ul>
+          </div>
           <!--    教师导航栏-->
-          <div v-if="user_type==='1'">
+          <div v-else-if="user_type==='1'">
             <ul class="nav nav-pills nav-stacked">
               <li class="active"><a href="#">学生成绩管理</a></li>
               <li><a ><router-link :to="{name:''}">提交学生成绩</router-link></a></li>
@@ -16,13 +24,14 @@
             </ul>
           </div>
           <!--    学生导航栏-->
-          <div v-if="user_type==='2'">
+          <div v-else="user_type==='2'">
             <ul class="nav nav-pills nav-stacked">
               <li class="active"><a href="#">学生成绩管理</a></li>
               <li><a ><router-link :to="{name:'stu_score'}">学生查询成绩</router-link></a></li>
-              <li><a ><router-link :to="{name:'stu_complain'}">申报错误信息</router-link></a></li>
+              <li><a ><router-link :to="{name:'stu_evaluation'}">学生课程评价</router-link></a></li>
             </ul>
           </div>
+
         </div>
 
           <div class="content">

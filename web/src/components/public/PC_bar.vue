@@ -18,8 +18,7 @@
           <li><a href="">选课子系统</a></li>
           <li><a href="">后台管理子系统</a></li>
           <li><a href="">毕业设计管理子系统</a></li>
-<!--          <li><a ><router-link :to= "{name:'navigation'}">成绩管理子系统</router-link></a></li>-->
-          <li><a href="javascript:void(0)" @click="scoremng">成绩管理子系统<</a></li>
+          <li><a href="javascript:void(0)" @click="scoremng">成绩管理子系统</a></li>
         </ul>
       </ul>
         <ul class="nav navbar-nav navbar-right">

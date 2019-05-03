@@ -9,35 +9,36 @@
           <input  type="text" class="form-control"  placeholder="学期" v-model="semester" required="required">
         </div>
         <div class="year_semester">
-          <button class="btn btn-default" type="submit" @click="stu_find_score">查询</button>
-<!--          <router-link :to="{name:'stu_score'}">成绩管理子系统</router-link>-->
+          <button class="btn btn-default" type="submit" @click="stu_find_score">查询成绩</button>
         </div>
-<!--        <get_year_semester @listenToChild="year_semester" ></get_year_semester>-->
+        <div class="year_semester">
+          <button class="btn btn-link" type="submit" @click="stu_download_score">下载成绩</button>
+        </div>
       </div>
 
-
-
-<!--      <div>-->
-<!--        <div class="v_select" style="float:left;margin-left: 30px;">-->
-<!--          <v-select max-height="80px" placeholder="学年" :options="course_year" v-model="course_year"></v-select>-->
-<!--        </div>-->
-<!--        <div class="v_select" style="float:left;margin-left: 30px;">-->
-<!--          <v-select max-height="80px" placeholder="学期" :options="course_semester" v-model="course_semester"></v-select>-->
-<!--        </div>-->
-<!--        <div style="float:left;margin-left: 30px;">-->
-<!--          <button class="btn btn-default" type="submit" @click="stu_score">查询</button>-->
-<!--        </div>-->
-<!--      </div>-->
 
       <br><br><br>
 
       <div>
 
-<!--        <div v-for="(value,key) in message">-->
-<!--          {{value}}-->
-<!--        </div>-->
-<!--        {{score_list}}-->
-        {{message}}
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>课程名</th>
+                <th>课程学分</th>
+                <th>课程类型</th>
+                <th>分数</th>
+              </tr>
+            </thead>
+            <tbody v-for="(value,index) in list">
+              <tr>
+                <td>{{value.course_name}}</td>
+                <td>{{value.course_credit}}</td>
+                <td>{{value.course_type}}</td>
+                <td>{{value.score}}</td>
+              </tr>
+            </tbody>
+          </table>
 
       </div>
 
@@ -47,48 +48,56 @@
 </template>
 
 <script>
-  // import get_year_semester from '../../schedule/get_year_semester'
 
     export default {
       name: "stu_score",
       data() {
         return {
-          student_number:this.$cookie.get('user_student_number'),
-          // score_list: '',
-          message:null,
+          student_number:null,
+          list: null,
           year:'',
-          semester:''
+          semester:'',
         }
       },
-      // components:{
-      //   get_year_semester,
-      // },
       methods:{
 
           stu_find_score:function () {
+            if(this.year=="" || this.semester==""){
+              alert("请选择学年和学期")
+            }
+            else{
+              let data = {'year': this.year, 'semester': this.semester,'student_number':this.$cookie.get('user_student_number')};
+              /*接口请求*/
+              this.$http.post(this.Global_Api + '/scoremng/student_check_scores/',data).then((res) => {
+                if (res.body.error_code !== 0) {
+                  alert("error!  " + res.body.error_message)
+                } else {
+                  this.list = res.body.score_list;
+                  if(this.list.length === 0){
+                    alert("这个学期没有课程！");
+                  }
+                }
+              });
+            }
+          },
 
-            let data = {'year': this.year, 'semester': this.semester};
-            //this.message=data;
+        stu_download_score:function () {
+          if(this.year=="" || this.semester==""){
+            alert("请选择学年和学期");
+          }
+          else{
+            let data = {'year': this.year, 'semester': this.semester,'student_number':this.$cookie.get('user_student_number')};
             /*接口请求*/
-            this.$http.get(this.Global_Api + '/scoremng/student_scores/2015014069/',data).then((res) => {
+            this.$http.post(this.Global_Api + '/scoremng/student_download_scores/',data).then((res) => {
               if (res.body.error_code !== 0) {
-                alert("error!  " + res.body.error_message)
+                alert("下载失败!  " + res.body.error_message);
               } else {
-
-                this.message = res.body;
-                // this.score_list = res.body.score_list;
+                alert("下载成功！");
               }
             });
-
-            // this.$http.get(this.Global_Api + '/schedule/course_list').then((res) =>{
-            //   if (res.body.error_code !== 0) {
-            //     alert("error!" + res.body.error_message)
-            //   } else {
-            //     this.message = res.body;
-            //   }
-            // });
-
           }
+        },
+
       }
     }
 </script>

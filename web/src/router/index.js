@@ -7,7 +7,7 @@ import Main from '@/components/public/main' //PC端主页
 //成绩管理
 import Stu_navigation from '@/components/scoremng/stu_scoremng/Stu_navigation'
 import Stu_score from '@/components/scoremng/stu_scoremng/stu_score'
-import Stu_complain from '@/components/scoremng/stu_scoremng/stu_complain'
+import Stu_evaluation from '@/components/scoremng/stu_scoremng/stu_evaluation'
 
 import Add_course from '@/components/schedule/add_course'
 import Arrange_course from '@/components/schedule/arrange_course'
@@ -75,9 +75,9 @@ export default new Router({
               component:Stu_score
             },
             {
-              path:'stu_complain',
-              name:'stu_complain',
-              component:Stu_complain
+              path:'stu_evaluation',
+              name:'stu_evaluation',
+              component:Stu_evaluation
             }
           ]
     }
