@@ -232,91 +232,69 @@ def student_download_scores(request):
 
 # 老师选择特定的学年和学期，查看学生的成绩
 # 因为用到了排课组的排课表，所以还未完成
-# 目前状态：未完成
-def teacher_check_scores(request, teacher_number):
-    """
-    在排课表中查找这名老师带的全部课程的id,
-    在选课表中由课程id，查找到选这门课的学生的id
-    因为先阶段不知道排课表和选课表中的字段设置，所以先给前端返回假数据
-    """
+# 目前状态：已完成
+def teacher_check_scores(request):
     request_json = json.loads(request.body)
+    teacher_number = request_json['teacher_number']
     year = request_json['year']
     semester = request_json['semester']
     print(teacher_number, year, semester)  # 成功获得post的数据
+    # print(type(year), type(semester))
 
     try:
-        teacher = Teacher.objects.get(teacher_number=teacher_number)
+        teacher_id = Teacher.objects.get(teacher_number=teacher_number).id
     except Exception:
         return JsonResponse({**error_code.CLACK_TEACHER_NOT_EXISTS})
 
-    wb = xlwt.Workbook(encoding='utf-8')
-    w = wb.add_sheet(u'学生成绩', cell_overwrite_ok=True)
-    w.write(0, 0, u'学生学号')
-    w.write(0, 1, u'学生姓名')
-    w.write(0, 2, u'学生班级')
-    w.write(0, 3, u'课程名称')
-    w.write(0, 4, u'课程种类')
-    w.write(0, 5, u'课程学年')
-    w.write(0, 6, u'课程学期')
-    w.write(0, 7, u'课程学分')
-    w.write(0, 8, u'课程成绩')
-    excel_row = 1
-
     student_score_list = []
 
-    student_score_list1 = {
-        'student_number': '2015014069',
-        'student_name': '尹毓康',
-        'student_banji_name': '计科1602班',
-        'course_name': '编译原理',
-        'course_type': 0,
-        'course_year': 2018,
-        'course_semester': 1,
-        'course_credit': 3,
-        'course_score': 90,
-    }
+    # 在教室排课表中查看这名老师带的所有的课程
+    teacher_course_list = scoremng.models.TeacherSchedule.objects.filter(teacher_id=teacher_id)
+    for teacher_course in teacher_course_list:
+        # 这名老师带的一门课
+        course_id = teacher_course.course_id
+        # print(course_id)
 
-    student_score_list2 = {
-        'student_number': '2016014069',
-        'student_name': '蔡锐',
-        'student_banji_name': '计科1605班',
-        'course_name': '数据结构',
-        'course_type': 0,
-        'course_year': 2019,
-        'course_semester': 1,
-        'course_credit': 3,
-        'course_score': 100,
-    }
+        # 如果这门课在year, semester开设
+        course = Course.objects.get(id=course_id)
+        if year == str(course.course_year) and semester == str(course.course_semester):
+            # 找出所有选这门课的学生
+            student_course_list = scoremng.models.SelectCourse.objects.filter(course_id=course.id)
+            for student_course in student_course_list:
+                # 把这个学生的个人信息和成绩信息返回给前端
+                student_id = student_course.student_id
+                student = Student.objects.get(id=student_id)
+                banji = Banji.objects.get(id=student.student_banji_id)
+                # print(student_id, student.student_name, course_id, course.course_name)
 
-    student_score_list.append(student_score_list1)
-    student_score_list.append(student_score_list2)
-    print("---")
-
-    # 在后端判断，如果老师点击的按钮名是"check",就把学生的成绩单返回给后端
-    if "check" in request.POST:
-        print('前端点击了check')
-        return JsonResponse({**error_code.CLACK_SUCCESS, 'student_score_list': student_score_list})
-
-    # 如果老师点击的按钮名是"download"，就把学生的成绩单以excel的形式保存下来
-    if "download" in request.POST:
-        print('前端点击了download')
-        for student_score in student_score_list:
-            w.write(excel_row, 0, student_score['student_number'])
-            w.write(excel_row, 1, student_score['student_name'])
-            w.write(excel_row, 2, student_score['student_banji_name'])
-            w.write(excel_row, 3, student_score['course_name'])
-            w.write(excel_row, 4, student_score['course_type'])
-            w.write(excel_row, 5, student_score['course_year'])
-            w.write(excel_row, 6, student_score['course_semester'])
-            w.write(excel_row, 7, student_score['course_credit'])
-            w.write(excel_row, 8, student_score['course_score'])
-            excel_row += 1
-
-        exist_file = os.path.exists(teacher.teacher_name + '所带学生的成绩单.xls')
-        if exist_file:
-            os.remove(teacher.teacher_name + '所带学生的成绩单.xls')
-        wb.save(teacher.teacher_name + '所带学生的成绩单.xls')
-        return JsonResponse({**error_code.CLACK_SUCCESS})
+                # 需要处理如果老师还没有给出成绩
+                try:
+                    score = scoremng.models.Score.objects.get(student_id=student_id, course_id=course_id)
+                    student_score = {
+                        'student_number': student.student_number,
+                        'student_name': student.student_name,
+                        'student_banji_name': banji.banji_name,
+                        'course_name': course.course_name,
+                        'course_type': course.course_type,
+                        'course_year': course.course_year,
+                        'course_semester': course.course_semester,
+                        'course_credit': course.course_credit,
+                        'course_score': score.score,
+                    }
+                except Exception:
+                    student_score = {
+                        'student_number': student.student_number,
+                        'student_name': student.student_name,
+                        'student_banji_name': banji.banji_name,
+                        'course_name': course.course_name,
+                        'course_type': course.course_type,
+                        'course_year': course.course_year,
+                        'course_semester': course.course_semester,
+                        'course_credit': course.course_credit,
+                        'course_score': 0,
+                    }
+                student_score_list.append(student_score)
+    return JsonResponse({**error_code.CLACK_SUCCESS, 'student_score_list': student_score_list})
 
     # # 把成绩单里的学生成绩信息放入excel表中
     # for student_score in student_score_list:
