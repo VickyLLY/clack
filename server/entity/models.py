@@ -138,6 +138,26 @@ class Semester(models.Model):
     # 开学日期
     start_date = models.DateField()
 
+class DissertationTopic(models.Model):
+    dissertation_title = models.TextField(max_length=100)
+    dissertation_content = models.TextField(max_length=500)
+    dissertation_requirement = models.TextField(max_length=200)
+    dissertation_capacity = models.IntegerField(default=0)
+    dissertation_pub_time = models.DateTimeField(auto_now=True)
+    dissertation_approval = models.BooleanField(default=False)
+    dissertation_tnum = models.ForeignKey(Teacher,on_delete=models.CASCADE)
+
+    def to_dict(self):
+        return {
+            "dissertation_title": self.dissertation_title,
+            "dissertation_content": self.dissertation_content,
+            "dissertation_requirement": self.dissertation_requirement,
+            "dissertation_capacity": self.dissertation_capacity,
+            "dissertation_pub_time": self.dissertation_pub_time,
+            "dissertation_approval": self.dissertation_approval,
+            "dissertation_tnum": self.dissertation_tnum
+        }
+
 
 class DateAndClassroom(models.Model):
     # 时间地点的类型
