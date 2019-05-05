@@ -9,8 +9,6 @@ import $ from 'jquery'   //引入jQuery
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import '../node_modules/bootstrap/dist/js/bootstrap.min'
 import vSelect from 'vue-select'
-import './assets/css/bootstrap.min.css'
-import './assets/js/bootstrap.min'
 
 Vue.component('v-select', vSelect)
 Vue.use(Resource)
