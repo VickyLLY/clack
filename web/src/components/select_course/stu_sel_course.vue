@@ -32,8 +32,10 @@
          style="width:700px;height:700px;border:1px solid red;position:relative;top:100px;left:640px;">
       <div class="row">
         <div class="col-lg-1" style="background: red;height:700px;position: relative;">
+          <p class="glyphicon glyphicon-arrow-left" style="width: 30px;height:30px;position: absolute;top:50px;"></p>
           <p style="width: 20px;height: 100px;position:absolute;top:140px;line-height: 30px;">选课信息</p>
           <p style="width: 20px;height: 100px;position: absolute;top:350px;line-height: 30px">已选</p>
+          <p style="width:15px;height: 20px;position: absolute;top:420px;border-radius: 50%;background: white;text-align: center">{{count}}</p>
         </div>
         <div class="col-lg-11">
           <table class="table table-bordered text-center">
@@ -51,11 +53,19 @@
             </thead>
             <tr v-for="n in 13">
               <td :class=td[n]>{{n}}</td>
-              <td v-for="m in 7" class="init">
+              <td v-for="m in 7" :class=reColor>
               </td>
+            </tr>
+            <tr>
+              <td colspan="3"><span class="little_course" style="width: 25px;height: 15px;display: inline-block;vertical-align: center"></span><span>空余周数=总周数</span></td>
+              <td colspan="3"><span class="middle_course" style="width: 25px;height: 15px;display: inline-block;"></span><span>空余周数>=(总周数/2)</span></td>
+              <td colspan="3"><span class="large_course" style="width: 25px;height: 15px;display: inline-block"></span><span>空余周数<(总周数/2)</span></td>
             </tr>
           </table>
         </div>
+      </div>
+      <div class="row" style="overflow:scroll;">
+
       </div>
     </div>
   </div>
@@ -74,6 +84,7 @@
         date: '',
         week: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
         td:['one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen'],
+        count:0,
       }
     },
     methods: {
@@ -141,18 +152,28 @@
         that.updateTime(that);
         oDiv1.onmouseover = function () {
           that.startMove(oDiv1, 'left', 10, that);
+          $(".glyphicon-arrow-left").addClass("glyphicon-arrow-right").removeClass("glyphicon-arrow-left")
         };
         oDiv1.onmouseout = function () {
           that.startMove(oDiv1, 'left', 640, that);
+          $(".glyphicon-arrow-right").addClass("glyphicon-arrow-left").removeClass("glyphicon-arrow-right")
         };
 
       })
     },
     computed:{
       reColor:function () {
-        
+        if(this.count===0)
+          return 'init';
+        else if(this.count>0&&this.count<3)
+          return 'little_course';
+        else
+          return 'large_course';
       }
     },
+    watch:{
+
+    }
   }
 </script>
 
@@ -164,7 +185,6 @@
     position: absolute;
     left: 60%;
     top:10px;
-    text-shadow: 0 0 20px #2aabd2, 0 0 20px rgba(100, 100, 200, 0.5);
   }
   #clock .time {
     letter-spacing: 0.05em;
@@ -181,4 +201,14 @@
   .init{
     background: green;
   }
+  .little_course{
+    background: blue;
+  }
+  .middle_course{
+    background: yellow;
+  }
+  .large_course{
+    background: red;
+  }
+
 </style>
