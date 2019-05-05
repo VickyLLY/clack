@@ -1,5 +1,5 @@
 <template>
-  <div style="overflow: hidden" class="clearfix">
+  <div style="overflow: hidden;position:relative;">
     <nav class="navbar navbar-default navbar-fixed-top">
       <a class="navbar-brand"><strong>教务管理系统</strong></a>
       <ul class="nav navbar-nav">
@@ -28,8 +28,8 @@
     </nav>
     <br><br><br>
 
-    <div id="aside" class="container pull-right"
-         style="width:700px;height:700px;border:1px solid red;position:relative;top:100px;left:640px;">
+    <div id="aside" class="container pull-right "
+         style="width:700px;height:900px;border:1px solid red;position:absolute;top:100px;left:1480px;">
       <div class="row">
         <div class="col-lg-1" style="background: red;height:700px;position: relative;">
           <p class="glyphicon glyphicon-arrow-left" style="width: 30px;height:30px;position: absolute;top:50px;"></p>
@@ -321,11 +321,11 @@
         },1000);
         that.updateTime(that);
         oDiv1.onmouseover = function () {
-          that.startMove(oDiv1, 'left', 10, that);
+          that.startMove(oDiv1, 'left', 850, that);
           $(".glyphicon-arrow-left").addClass("glyphicon-arrow-right").removeClass("glyphicon-arrow-left")
         };
         oDiv1.onmouseout = function () {
-          that.startMove(oDiv1, 'left', 640, that);
+          that.startMove(oDiv1, 'left', 1480, that);
           $(".glyphicon-arrow-right").addClass("glyphicon-arrow-left").removeClass("glyphicon-arrow-right")
         };
 
@@ -350,7 +350,7 @@
 <style scoped>
   #clock {
     font-family: 'Microsoft YaHei','Lantinghei SC','Open Sans',Arial,'Hiragino Sans GB','STHeiti','WenQuanYi Micro Hei','SimSun',sans-serif;
-    color: #2b669a;
+    color: black;
     text-align: center;
     position: absolute;
     left: 60%;
