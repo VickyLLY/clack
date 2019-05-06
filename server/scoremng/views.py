@@ -33,7 +33,7 @@ def teacher_upload(request):
         course_list = Course.objects.filter(course_name=course_name, course_credit=course_credit,
                                             course_type=course_type,
                                             course_year=course_year, course_semester=course_semester)
-        print(len(course_list))
+        # print(len(course_list))
         course = course_list[0]
     except Exception:
         return JsonResponse({**error_code.CLACK_COURSE_NOT_EXISTS})
@@ -99,7 +99,7 @@ def teacher_upload(request):
                 student_id = student_course.student_id
                 student = Student.objects.get(id=student_id)
                 banji = Banji.objects.get(id=student.student_banji_id)
-                print(student_id, student.student_name, course_id, course.course_name)
+                # print(student_id, student.student_name, course_id, course.course_name)
 
                 # 需要处理如果老师还没有给出成绩，
                 try:  # 如果查询到了这条成绩记录，需要判断老师是否已经提交了这条成绩，如果没有提交，就给前端，否则不给
@@ -130,6 +130,7 @@ def teacher_upload(request):
                         'course_score': 0,
                     }
                     student_score_list.append(student_score)
+    print(len(student_score_list))
     return JsonResponse({**error_code.CLACK_SUCCESS, 'student_score_list': student_score_list})
 
 
