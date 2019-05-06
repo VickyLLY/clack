@@ -1,11 +1,13 @@
 <template>
-  <v-select max-height="80px"
-            :options="department_name"
-            placeholder="请选择学院"
-            v-model="choose_name"
-            :on-change="post"
-            required="required">
-  </v-select>
+  <div>
+    <v-select max-height="80px"
+              :options="department_name"
+              placeholder="请选择学院"
+              v-model="choose_name"
+              :on-change="post"
+              required="required">
+    </v-select>
+  </div>
 </template>
 
 <script>

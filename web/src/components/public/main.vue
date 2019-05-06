@@ -15,11 +15,17 @@
       PC_bar,
       News
     },
+    data(){
+      return{
+
+      }
+    },
     mounted() {
-      if(this.$cookie.get('username')==null)
+      if (this.$cookie.get('username') == null)
         this.$router.push('/')
-    }
+    },
   }
+
 </script>
 
 <style>
