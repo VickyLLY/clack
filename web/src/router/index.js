@@ -14,6 +14,7 @@ import man_sel_course from "@/components/select_course/man_sel_course";
 import tea_sel_course from "@/components/select_course/tea_sel_course";
 import stu_sel_course from "@/components/select_course/stu_sel_course";
 import stu_timetable from "@/components/select_course/stu_timetable";
+import course_table from "@/components/schedule/course_table";
 
 Vue.use(VueCookie)
 Vue.use(Router)
@@ -61,6 +62,11 @@ export default new Router({
       path: '/main/arrange_semester',
       name: 'Arrange_course',
       component: Arrange_course
+    },
+    {
+      path: '/main/stu_course_table',
+      name: 'course_table',
+      component: course_table
     },
     {
       path: '/main/stu_sel_course',
