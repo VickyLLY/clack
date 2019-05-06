@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'entity',
     'corsheaders',
     'scoremng',
+    'background'
 ]
 
 MIDDLEWARE = [
