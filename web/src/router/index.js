@@ -14,6 +14,8 @@ import man_sel_course from "@/components/select_course/man_sel_course";
 import tea_sel_course from "@/components/select_course/tea_sel_course";
 import stu_sel_course from "@/components/select_course/stu_sel_course";
 import stu_timetable from "@/components/select_course/stu_timetable";
+import course_table from "@/components/schedule/course_table";
+import man_view_msg from "../components/select_course/man_view_msg";
 
 Vue.use(VueCookie)
 Vue.use(Router)
@@ -63,6 +65,11 @@ export default new Router({
       component: Arrange_course
     },
     {
+      path: '/main/stu_course_table',
+      name: 'course_table',
+      component: course_table
+    },
+    {
       path: '/main/stu_sel_course',
       name: 'stu_sel_course',
       component: stu_sel_course
@@ -78,10 +85,15 @@ export default new Router({
       component: man_sel_course
     },
     {
+      path: '/main/man_sel_course/man_view_msg',
+      name: 'man_view_msg',
+      component: man_view_msg
+    },
+    {
       path: '/main/stu_sel_course/stu_timetable',
       name: 'stu_timetable',
       component: stu_timetable
     }
   ],
-
+  mode: 'history' // 去除地址栏中的/#
 })
