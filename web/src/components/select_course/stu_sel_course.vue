@@ -28,7 +28,7 @@
     </nav>
     <br><br><br>
 
-    <div id="aside" class="container pull-right "
+    <!--<div id="aside" class="container pull-right "
          style="width:700px;height:900px;border:1px solid red;position:absolute;top:100px;left:1480px;">
       <div class="row">
         <div class="col-lg-1" style="background: red;height:700px;position: relative;">
@@ -67,7 +67,7 @@
       <div class="row" style="overflow:scroll;">
 
       </div>
-    </div>
+    </div>-->
     <div class="panel panel-default" style="width: 95%;margin: 0 auto">
 
       <div class="panel-body">
@@ -90,7 +90,7 @@
             <font size="2">本学期已选<font color="red">{{z_b_sel_lp}}2</font>学分</font>
           </h1>
           <div v-for="c in z_b_course">
-            <div class="panel panel-default">
+            <div v-if="-1==stu_sel.indexOf(c.co_num)" class="panel panel-default">
               <div class="panel-heading" style="color: #204d74;background: #66afe9">
                 <h4 class="panel-title" >
                   <a data-toggle="collapse" data-parent="#accordion"  v-bind:href="'#'+c.co_num">
@@ -121,7 +121,44 @@
                     <td>{{co.co_term}}</td>
                     <td>{{co.co_capacity}}</td>
                     <td>{{co.co_margin}}</td>
-                    <td><button type="button" class="btn btn-primary">选课</button></td>
+                    <td v-if="co.co_margin > 0" ><button type="button" class="btn btn-primary" v-on:click="add_course(co.co_num,username)" >选课</button></td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div v-else>
+              <div class="panel-heading" style="color: #204d74;background:lightgreen">
+                <h4 class="panel-title" >
+                  <a data-toggle="collapse" data-parent="#accordion"  v-bind:href="'#'+c.co_num">
+                    ({{c.co_num}}){{c.co_name}}--{{c.co_point}}分
+                  </a>
+                </h4>
+              </div>
+              <div v-bind:id="c.co_num" class="panel-collapse collapse">
+                <table class="table table-striped">
+                  <thead>
+                  <tr>
+                    <th>课堂号</th>
+                    <th>上课教师</th>
+                    <th>上课时间</th>
+                    <th>地点</th>
+                    <th>学期</th>
+                    <th>总容量</th>
+                    <th>余量</th>
+                    <th>操作</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr v-for="co in z_b_course" >
+                    <td>{{co.co_num}}</td>
+                    <td>{{co.co_teacher}}</td>
+                    <td>{{co.co_time}}</td>
+                    <td>{{co.co_place}}</td>
+                    <td>{{co.co_term}}</td>
+                    <td>{{co.co_capacity}}</td>
+                    <td>{{co.co_margin}}</td>
+                    <td><button type="button" class="btn btn-primary" v-on:click="del_course(co.co_num,username)">退选</button></td>
                   </tr>
                   </tbody>
                 </table>
@@ -170,7 +207,7 @@
                     <td>{{co.co_term}}</td>
                     <td>{{co.co_capacity}}</td>
                     <td>{{co.co_margin}}</td>
-                    <td v-if="co.co_margin > 0" ><button type="button" class="btn btn-primary">选课</button></td>
+                    <td v-if="co.co_margin > 0" ><button type="button" class="btn btn-primary" v-on:click="add_course(co.co_num,username)" >选课</button></td>
                   </tr>
                   </tbody>
                 </table>
@@ -207,7 +244,7 @@
                     <td>{{co.co_term}}</td>
                     <td>{{co.co_capacity}}</td>
                     <td>{{co.co_margin}}</td>
-                    <td v-if="co.co_margin > 0" ><button type="button" class="btn btn-primary">选课</button></td>
+                    <td><button type="button" class="btn btn-primary" v-on:click="del_course(co.co_num,username)">退选</button></td>
                   </tr>
                   </tbody>
                 </table>
@@ -257,9 +294,18 @@
 
       }
     },
+    created: function () {
+      /*将可选课程分为必修与选修*/
+    },
     methods: {
       quit: function () {
         this.$cookie.delete('username');
+      },
+      add_course:function(course_num,stu_name){
+        alert(stu_name+" select  "+course_num)/*学生选课*/
+      },
+      del_course:function(course_num,stu_name){
+        alert(stu_name+" delete  "+course_num)/*删除所选课程*/
       },
       getStyle: function (obj, name) {
         if (obj.currentStyle) {
