@@ -12,6 +12,6 @@ urlpatterns = [
     path(r'new_banji', views.new_banji, name="new_banji"),
     path(r'banji_list', views.banji_list, name="banji_list"),
     path(r'student', views.student, name='student'),
-    path(r'teacher', views.teacher, name='teacher')
-
+    path(r'teacher', views.teacher, name='teacher'),
+    path(r'new_semester', views.new_semester, name='new_semester')
 ]
