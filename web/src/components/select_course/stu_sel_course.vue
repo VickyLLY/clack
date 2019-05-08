@@ -29,7 +29,7 @@
     <br><br><br>
 
     <div id="aside" class="container pull-right "
-         style="width:700px;height:900px;border:1px solid red;position:absolute;top:100px;left:1480px;">
+         style="width:700px;height:900px;border:1px solid red;position:absolute;top:100px;right:-630px;background: white;">
       <div class="row">
         <div class="col-lg-1" style="background: red;height:700px;position: relative;">
           <p class="glyphicon glyphicon-arrow-left" style="width: 30px;height:30px;position: absolute;top:50px;"></p>
@@ -321,11 +321,11 @@
         },1000);
         that.updateTime(that);
         oDiv1.onmouseover = function () {
-          that.startMove(oDiv1, 'left', 850, that);
+          that.startMove(oDiv1, 'right', 0, that);
           $(".glyphicon-arrow-left").addClass("glyphicon-arrow-right").removeClass("glyphicon-arrow-left")
         };
         oDiv1.onmouseout = function () {
-          that.startMove(oDiv1, 'left', 1480, that);
+          that.startMove(oDiv1, 'right', -630, that);
           $(".glyphicon-arrow-right").addClass("glyphicon-arrow-left").removeClass("glyphicon-arrow-right")
         };
 
