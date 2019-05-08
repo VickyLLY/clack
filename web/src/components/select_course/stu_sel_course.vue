@@ -28,7 +28,7 @@
     </nav>
     <br><br><br>
 
-    <!--<div id="aside" class="container pull-right "
+    <div id="aside" class="container pull-right "
          style="width:700px;height:900px;border:1px solid red;position:absolute;top:100px;left:1480px;">
       <div class="row">
         <div class="col-lg-1" style="background: red;height:700px;position: relative;">
@@ -67,7 +67,7 @@
       <div class="row" style="overflow:scroll;">
 
       </div>
-    </div>-->
+    </div>
     <div class="panel panel-default" style="width: 95%;margin: 0 auto">
 
       <div class="panel-body">
