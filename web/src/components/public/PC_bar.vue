@@ -3,7 +3,7 @@
     <nav class="navbar navbar-default navbar-fixed-top">
       <div class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
-          <a href="#/" class="navbar-brand"><strong>教务管理系统</strong></a>
+          <a href="/main" class="navbar-brand"><strong>教务管理系统</strong></a>
           <ul class="nav navbar-nav">
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">

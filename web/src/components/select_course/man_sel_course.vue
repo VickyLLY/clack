@@ -82,18 +82,27 @@
       <table class="table table-striped table-item ">
         <thead>
         <tr>
-          <th>course_name</th>
-          <th>course_id</th>
-          <th>teaching</th>
-          <th>classroom</th>
+          <th>课程名称</th>
+          <th>课程号</th>
+          <th>学分</th>
+          <th>任课老师</th>
+          <th>上课教室</th>
+          <th>起始周</th>
+          <th>结束周</th>
+          <th>学年</th>
         </tr>
         </thead>
         <tbody>
         <tr v-for="course in courses">
           <td>{{course.course_name}}</td>
           <td>{{course.course_id}}</td>
-          <td>{{course.teaching}}</td>
-          <td>{{course.classroom}}</td>
+          <td>{{course.course_credit}}</td>
+          <td>{{course.course_teacher}}</td>
+          <td>{{course.classroom_id}}</td>
+          <td>{{course.start_week}}</td>
+          <td>{{course.end_week}}</td>
+          <td>{{course.course_year}}</td>
+
         </tr>
         </tbody>
       </table>
@@ -121,7 +130,7 @@
         },
         courses:[],
         flag:-1,
-        info_collection:{"course_name":"","teaching":"","year":"","academy":"","semester":""},
+        info_collection:{"course_name":"","course_teacher":"","year":"","academy":"","semester":""},
         border_show:false,
         conditionText:false,
         infoText:false
@@ -145,13 +154,23 @@
         }
 
         this.courses=[
-          {"course_name":"a","course_id":"01","teaching":"t","classroom":"aa","year":"2010","academy":"01","semester":"1"},
-          {"course_name":"a","course_id":"01","teaching":"t","classroom":"aa","year":"2010","academy":"02","semester":"2"},
-          {"course_name":"a","course_id":"01","teaching":"t","classroom":"aa","year":"2012","academy":"02","semester":"2"},
-          {"course_name":"a","course_id":"01","teaching":"t","classroom":"aa","year":"2011","academy":"01","semester":"1"},
-          {"course_name":"a","course_id":"01","teaching":"t","classroom":"aa","year":"2011","academy":"03","semester":"1"},
-          {"course_name":"bb","course_id":"01","teaching":"t","classroom":"aa","year":"2011","academy":"01","semester":"1"},
-          {"course_name":"b","course_id":"01","teaching":"t","classroom":"aa","year":"2012","academy":"01","semester":"1"},
+          {"course_name":"a","course_id":"01","course_credit":"","course_type":"","course_teacher":"t","classroom_id":"aa",
+            "start_week":"","end_week":"","course_year":"2011","course_department_id":"01","course_semester":"1"},
+
+          {"course_name":"a","course_id":"01","course_credit":"","course_type":"","course_teacher":"t","classroom_id":"aa",
+            "start_week":"","end_week":"","course_year":"2010","course_department_id":"01","course_semester":"1"},
+
+          {"course_name":"a","course_id":"01","course_credit":"","course_type":"","course_teacher":"t","classroom_id":"aa",
+            "start_week":"","end_week":"","course_year":"2010","course_department_id":"01","course_semester":"1"},
+
+          {"course_name":"a","course_id":"01","course_credit":"","course_type":"","course_teacher":"t","classroom_id":"aa",
+            "start_week":"","end_week":"","course_year":"2010","course_department_id":"01","course_semester":"1"},
+
+          {"course_name":"a","course_id":"01","course_credit":"","course_type":"","course_teacher":"t","classroom_id":"aa",
+            "start_week":"","end_week":"","course_year":"2010","course_department_id":"01","course_semester":"1"},
+
+          {"course_name":"a","course_id":"01","course_credit":"","course_type":"","course_teacher":"t","classroom_id":"aa",
+            "start_week":"","end_week":"","course_year":"2010","course_department_id":"01","course_semester":"1"},
         ];
 
         if(this.info.year!="all"&&this.info.academy!="all"){
@@ -168,29 +187,29 @@
         }
 
         if(this.info.teacher!=""){
-          this.info_collection.teaching=this.info.teacher;
+          this.info_collection.course_teacher=this.info.teacher;
         }
         else {
-          this.info_collection.teaching="null";
+          this.info_collection.course_teacher="null";
         }
 
 
         //过滤年份
         this.courses = this.courses.filter((kecheng) => {
-          return kecheng.year==this.info_collection.year;
+          return kecheng.course_year==this.info_collection.year;
         });
 
 
         //过滤学院
         this.courses = this.courses.filter((kecheng) => {
-          return kecheng.academy==this.info_collection.academy;
+          return kecheng.course_department_id==this.info_collection.academy;
         });
 
 
 
         //过滤学期
         this.courses = this.courses.filter((kecheng) => {
-          return kecheng.semester==this.info_collection.semester;
+          return kecheng.course_semester==this.info_collection.semester;
         });
 
 
@@ -201,9 +220,9 @@
           });
         }
 
-        if(this.info_collection.teaching!="null"){
+        if(this.info_collection.course_teacher!="null"){
           this.courses=this.courses.filter((kecheng) => {
-            return kecheng.teaching.match((this.info_collection.teaching))
+            return kecheng.course_teacher.match((this.info_collection.course_teacher))
           })
         }
         if(this.courses.length==0)

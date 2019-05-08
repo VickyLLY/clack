@@ -38,8 +38,8 @@
                               </v-select>
         <span>教 室：</span><v-select class="select-pt"
                                 max-height="80px"
-                                v-model="classroom"
-                                :options="classrooms"
+                                v-model="classroom_id"
+                                :options="classroom_ids"
                                 :on-change="myf"
                                 required="required">
                           </v-select>
@@ -63,8 +63,8 @@
         day_of_week:null,
         start:null,
         end:null,
-        classrooms:[],
-        classroom:null,
+        classroom_ids:[],
+        classroom_id:null,
         list:[],
       }
     },
@@ -89,14 +89,14 @@
           semester:this.course.course_semester
         }
       };
-      this.$http.post(this.Global_Api + '/schedule/classroom_list', data).then((res) => {
+      this.$http.post(this.Global_Api + '/schedule/classroom_id_list', data).then((res) => {
         console.log(res.body.error_message)
-        for (let i = 0; i < res.body.classroom_list.length; i++) {
+        for (let i = 0; i < res.body.classroom_id_list.length; i++) {
           let dic={
-            label:res.body.classroom_list[i].classroom_name,
-            value:res.body.classroom_list[i].classroom_id,
+            label:res.body.classroom_id_list[i].classroom_id_name,
+            value:res.body.classroom_id_list[i].classroom_id_id,
           }
-          this.classrooms.push(dic);
+          this.classroom_ids.push(dic);
         }
       })
     },
@@ -128,22 +128,22 @@
           data['course_data'].start=this.start;
         if(this.end!==null)
           data['course_data'].end=this.end;
-        this.$http.post(this.Global_Api + '/schedule/classroom_list', data).then((res) => {
+        this.$http.post(this.Global_Api + '/schedule/classroom_id_list', data).then((res) => {
           if (res.body.error_code !== 0)
             alert(res.body.error_message)
           else {
             let arr = [];
-            for (let j = 0; j < res.body.classroom_list.length; j++) {
+            for (let j = 0; j < res.body.classroom_id_list.length; j++) {
               arr.push(
                 {
-                  label: res.body.classroom_list[j].classroom_name,
-                  value: res.body.classroom_list[j].classroom_id,
-                  capacity: res.body.classroom_list[j].classroom_capacity
+                  label: res.body.classroom_id_list[j].classroom_id_name,
+                  value: res.body.classroom_id_list[j].classroom_id_id,
+                  capacity: res.body.classroom_id_list[j].classroom_id_capacity
                 }
               );
             }
-            this.classrooms.push(arr);
-            //console.log(this.classrooms[i])
+            this.classroom_ids.push(arr);
+            //console.log(this.classroom_ids[i])
           }
         })
       },
@@ -155,7 +155,7 @@
           "user_name": this.$cookie.get('username'),
           "user_token": this.$cookie.get('user_token'),
           "course_id": this.course.course_id,
-          "classroom_id": this.classroom.value,
+          "classroom_id_id": this.classroom_id.value,
           "date": {
             "end": this.end,
             "start": this.start,

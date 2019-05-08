@@ -93,8 +93,8 @@
             </v-select>
               <span>教 室：</span><v-select class="select-pt"
                                           max-height="80px"
-                                          v-model=each.classroom
-                                          :options=classrooms[index]
+                                          v-model=each.classroom_id
+                                          :options=classroom_ids[index]
                                           @change="added_change(index)"
                                           required="required">
             </v-select>
@@ -169,8 +169,8 @@
         week:[1,2,3,4,5,6,7],
         weeknum:[1,2,3,4,5,6,7,8,9,10,11,12,13],
         jienum:[1,2,3,4,5,6,7,8,9,10,11,12,13],
-        classrooms:[],
-        copy_classrooms:[],
+        classroom_ids:[],
+        copy_classroom_ids:[],
         added: [],
         copy_added: [],
         change_index:null,
@@ -202,25 +202,25 @@
           if(res.body.error_code===0){
             let val=res.body.course
             this.added=[];
-            this.classrooms=[];
-            this.copy_classrooms=[];
-            for(let i = 0; i<val.date_and_classroom.length; i++)
+            this.classroom_ids=[];
+            this.copy_classroom_ids=[];
+            for(let i = 0; i<val.date_and_classroom_id.length; i++)
             {
               this.added.push(
                 {
-                  id:val.date_and_classroom[i].id,
-                  classroom:{
-                    label:val.date_and_classroom[i].classroom.classroom_name,
-                    value:val.date_and_classroom[i].classroom.classroom_id,
-                    classroom_capacity: val.date_and_classroom[i].classroom.classroom_capacity
+                  id:val.date_and_classroom_id[i].id,
+                  classroom_id:{
+                    label:val.date_and_classroom_id[i].classroom_id.classroom_id_name,
+                    value:val.date_and_classroom_id[i].classroom_id.classroom_id_id,
+                    classroom_id_capacity: val.date_and_classroom_id[i].classroom_id.classroom_id_capacity
                   },
-                  year:val.date_and_classroom[i].year,
-                  semester:val.date_and_classroom[i].semester,
-                  start_week:val.date_and_classroom[i].start_week,
-                  end_week:val.date_and_classroom[i].end_week,
-                  day_of_week:val.date_and_classroom[i].day_of_week,
-                  start:val.date_and_classroom[i].start,
-                  end:val.date_and_classroom[i].end,
+                  year:val.date_and_classroom_id[i].year,
+                  semester:val.date_and_classroom_id[i].semester,
+                  start_week:val.date_and_classroom_id[i].start_week,
+                  end_week:val.date_and_classroom_id[i].end_week,
+                  day_of_week:val.date_and_classroom_id[i].day_of_week,
+                  start:val.date_and_classroom_id[i].start,
+                  end:val.date_and_classroom_id[i].end,
                 }
               );
               let data={
@@ -228,33 +228,33 @@
                   min_capacity:val.course_capacity
                 },
                 course_data:{
-                  year:val.date_and_classroom[i].year,
-                  semester:val.date_and_classroom[i].semester,
-                  start_week:val.date_and_classroom[i].start_week,
-                  end_week:val.date_and_classroom[i].end_week,
-                  day_of_week:val.date_and_classroom[i].day_of_week,
-                  start:val.date_and_classroom[i].start,
-                  end:val.date_and_classroom[i].end,
-                  id:val.date_and_classroom[i].id,
+                  year:val.date_and_classroom_id[i].year,
+                  semester:val.date_and_classroom_id[i].semester,
+                  start_week:val.date_and_classroom_id[i].start_week,
+                  end_week:val.date_and_classroom_id[i].end_week,
+                  day_of_week:val.date_and_classroom_id[i].day_of_week,
+                  start:val.date_and_classroom_id[i].start,
+                  end:val.date_and_classroom_id[i].end,
+                  id:val.date_and_classroom_id[i].id,
                 }
               };
-              this.$http.post(this.Global_Api + '/schedule/classroom_list', data).then((res) => {
+              this.$http.post(this.Global_Api + '/schedule/classroom_id_list', data).then((res) => {
                 if(res.body.error_code!==0)
                   console.log(res.body.error_message)
                 else {
                   let arr=[];
-                  for(let j = 0; j<res.body.classroom_list.length;j++) {
+                  for(let j = 0; j<res.body.classroom_id_list.length;j++) {
                     arr.push(
                       {
-                        label: res.body.classroom_list[j].classroom_name,
-                        value: res.body.classroom_list[j].classroom_id,
-                        capacity: res.body.classroom_list[j].classroom_capacity
+                        label: res.body.classroom_id_list[j].classroom_id_name,
+                        value: res.body.classroom_id_list[j].classroom_id_id,
+                        capacity: res.body.classroom_id_list[j].classroom_id_capacity
                       }
                     );
                   }
-                  this.classrooms.push(arr);
-                  //console.log(this.classrooms[i])
-                  this.copy_classrooms.push(arr);
+                  this.classroom_ids.push(arr);
+                  //console.log(this.classroom_ids[i])
+                  this.copy_classroom_ids.push(arr);
                 }
               })
             }
@@ -363,25 +363,25 @@
         document.getElementById('cs_type').style.display = 'none';
         document.getElementById('cs_department').style.display = 'none';
         this.added=[];
-        this.classrooms=[];
-        this.copy_classrooms=[];
-        for(let i = 0; i<val.date_and_classroom.length; i++)
+        this.classroom_ids=[];
+        this.copy_classroom_ids=[];
+        for(let i = 0; i<val.date_and_classroom_id.length; i++)
         {
           this.added.push(
             {
-              id:val.date_and_classroom[i].id,
-              classroom:{
-                label:val.date_and_classroom[i].classroom.classroom_name,
-                value:val.date_and_classroom[i].classroom.classroom_id,
-                classroom_capacity: val.date_and_classroom[i].classroom.classroom_capacity
+              id:val.date_and_classroom_id[i].id,
+              classroom_id:{
+                label:val.date_and_classroom_id[i].classroom_id.classroom_id_name,
+                value:val.date_and_classroom_id[i].classroom_id.classroom_id_id,
+                classroom_id_capacity: val.date_and_classroom_id[i].classroom_id.classroom_id_capacity
               },
-              year:val.date_and_classroom[i].year,
-              semester:val.date_and_classroom[i].semester,
-              start_week:val.date_and_classroom[i].start_week,
-              end_week:val.date_and_classroom[i].end_week,
-              day_of_week:val.date_and_classroom[i].day_of_week,
-              start:val.date_and_classroom[i].start,
-              end:val.date_and_classroom[i].end,
+              year:val.date_and_classroom_id[i].year,
+              semester:val.date_and_classroom_id[i].semester,
+              start_week:val.date_and_classroom_id[i].start_week,
+              end_week:val.date_and_classroom_id[i].end_week,
+              day_of_week:val.date_and_classroom_id[i].day_of_week,
+              start:val.date_and_classroom_id[i].start,
+              end:val.date_and_classroom_id[i].end,
             }
           );
           let data={
@@ -389,33 +389,33 @@
               min_capacity:val.course_capacity
             },
             course_data:{
-              year:val.date_and_classroom[i].year,
-              semester:val.date_and_classroom[i].semester,
-              start_week:val.date_and_classroom[i].start_week,
-              end_week:val.date_and_classroom[i].end_week,
-              day_of_week:val.date_and_classroom[i].day_of_week,
-              start:val.date_and_classroom[i].start,
-              end:val.date_and_classroom[i].end,
-              id:val.date_and_classroom[i].id,
+              year:val.date_and_classroom_id[i].year,
+              semester:val.date_and_classroom_id[i].semester,
+              start_week:val.date_and_classroom_id[i].start_week,
+              end_week:val.date_and_classroom_id[i].end_week,
+              day_of_week:val.date_and_classroom_id[i].day_of_week,
+              start:val.date_and_classroom_id[i].start,
+              end:val.date_and_classroom_id[i].end,
+              id:val.date_and_classroom_id[i].id,
             }
           };
-          this.$http.post(this.Global_Api + '/schedule/classroom_list', data).then((res) => {
+          this.$http.post(this.Global_Api + '/schedule/classroom_id_list', data).then((res) => {
             if(res.body.error_code!==0)
               alert(res.body.error_message)
             else {
               let arr=[];
-              for(let j = 0; j<res.body.classroom_list.length;j++) {
+              for(let j = 0; j<res.body.classroom_id_list.length;j++) {
                 arr.push(
                     {
-                      label: res.body.classroom_list[j].classroom_name,
-                      value: res.body.classroom_list[j].classroom_id,
-                      capacity: res.body.classroom_list[j].classroom_capacity
+                      label: res.body.classroom_id_list[j].classroom_id_name,
+                      value: res.body.classroom_id_list[j].classroom_id_id,
+                      capacity: res.body.classroom_id_list[j].classroom_id_capacity
                     }
                 );
               }
-              this.classrooms.push(arr);
-              //console.log(this.classrooms[i])
-              this.copy_classrooms.push(arr);
+              this.classroom_ids.push(arr);
+              //console.log(this.classroom_ids[i])
+              this.copy_classroom_ids.push(arr);
             }
           })
         }
@@ -619,7 +619,7 @@
           this.added[index].day_of_week!==this.copy_added[index].day_of_week ||
           this.added[index].start!==this.copy_added[index].start ||
           this.added[index].end!==this.copy_added[index].end ||
-          this.added[index].classroom.value!==this.copy_added[index].classroom.value
+          this.added[index].classroom_id.value!==this.copy_added[index].classroom_id.value
         ) {
           // console.log(false)
           let data={
@@ -637,21 +637,21 @@
               id:this.added[index].id,
             }
           };
-          this.$http.post(this.Global_Api + '/schedule/classroom_list', data).then((res) => {
+          this.$http.post(this.Global_Api + '/schedule/classroom_id_list', data).then((res) => {
             if(res.body.error_code!==0)
               console.log(res.body.error_message)
             else {
               let arr=[];
-              for(let j = 0; j<res.body.classroom_list.length;j++) {
+              for(let j = 0; j<res.body.classroom_id_list.length;j++) {
                 arr.push(
                   {
-                    label: res.body.classroom_list[j].classroom_name,
-                    value: res.body.classroom_list[j].classroom_id,
-                    capacity: res.body.classroom_list[j].classroom_capacity
+                    label: res.body.classroom_id_list[j].classroom_id_name,
+                    value: res.body.classroom_id_list[j].classroom_id_id,
+                    capacity: res.body.classroom_id_list[j].classroom_id_capacity
                   }
                 );
               }
-              this.classrooms[index]=JSON.parse(JSON.stringify(arr));
+              this.classroom_ids[index]=JSON.parse(JSON.stringify(arr));
             }
           });
           document.getElementsByClassName("added")[index].style.display = "inline-block"
@@ -659,18 +659,18 @@
         else {
           // console.log(true);
           document.getElementsByClassName("added")[index].style.display = "none";
-          //console.log(this.classrooms[index])
-          if(typeof this.classrooms[index] !=="undefined")  //解决选择课程后初始化会抛错
-            this.classrooms[index]=JSON.parse(JSON.stringify(this.copy_classrooms[index]));
+          //console.log(this.classroom_ids[index])
+          if(typeof this.classroom_ids[index] !=="undefined")  //解决选择课程后初始化会抛错
+            this.classroom_ids[index]=JSON.parse(JSON.stringify(this.copy_classroom_ids[index]));
         }
       },
       confirm_change:function (index) {
-        //console.log(this.added[index].classroom.value)
+        //console.log(this.added[index].classroom_id.value)
         let data = {
           "user_name": this.$cookie.get('username'),
           "user_token": this.$cookie.get('user_token'),
           "course_id": this.select_course.course_id,
-          "classroom_id": this.added[index].classroom.value,
+          "classroom_id_id": this.added[index].classroom_id.value,
           "id": this.added[index].id,
           "date": {
             "end": this.added[index].end,
@@ -685,8 +685,8 @@
           if(res.body.error_code===0) {
             document.getElementsByClassName("added")[index].style.display = "none";
             this.copy_added[index]=JSON.parse(JSON.stringify(this.added[index]));
-            console.log(this.added[index].classroom);
-            console.log(this.copy_added[index].classroom);
+            console.log(this.added[index].classroom_id);
+            console.log(this.copy_added[index].classroom_id);
             data = {};
             if (typeof (this.year) != "undefined")
               data['course_year'] = this.year;

@@ -135,13 +135,13 @@
       };
       this.$http.post(this.Global_Api + '/schedule/student_course_list',data).then((res) => {
         for(var i in res.body.course_list){
-          if(res.body.course_list[i].date_and_classroom.length==0){
+          if(res.body.course_list[i].date_and_classroom_id.length==0){
             continue;
           }
           else{
-            for(let j=0;j<res.body.course_list[i].date_and_classroom.length;j++){
-                let a=res.body.course_list[i].date_and_classroom[j].day_of_week;
-                let c=res.body.course_list[i].date_and_classroom[j];
+            for(let j=0;j<res.body.course_list[i].date_and_classroom_id.length;j++){
+                let a=res.body.course_list[i].date_and_classroom_id[j].day_of_week;
+                let c=res.body.course_list[i].date_and_classroom_id[j];
                 let b=res.body.course_list[i];
                 if(a===1){
                   this.course1.push({
@@ -150,7 +150,7 @@
                     end:c.end,
                     start_week:c.start_week,
                     end_week:c.end_week,
-                    location:c.classroom.classroom_name,
+                    location:c.classroom_id.classroom_id_name,
                   });
                 }
                 else if(a===2){
@@ -160,7 +160,7 @@
                     end:c.end,
                     start_week:c.start_week,
                     end_week:c.end_week,
-                    location:c.classroom.classroom_name,
+                    location:c.classroom_id.classroom_id_name,
                   });
                 }
                 else if(a===3){
@@ -170,7 +170,7 @@
                     end:c.end,
                     start_week:c.start_week,
                     end_week:c.end_week,
-                    location:c.classroom.classroom_name,
+                    location:c.classroom_id.classroom_id_name,
                   });
                 }
                 else if(a===4){
@@ -180,7 +180,7 @@
                     end:c.end,
                     start_week:c.start_week,
                     end_week:c.end_week,
-                    location:c.classroom.classroom_name,
+                    location:c.classroom_id.classroom_id_name,
                   });
                 }
                 else if(a===5){
@@ -190,7 +190,7 @@
                     end:c.end,
                     start_week:c.start_week,
                     end_week:c.end_week,
-                    location:c.classroom.classroom_name,
+                    location:c.classroom_id.classroom_id_name,
                   });
                 }
                 else if(a===6){
@@ -200,7 +200,7 @@
                     end:c.end,
                     start_week:c.start_week,
                     end_week:c.end_week,
-                    location:c.classroom.classroom_name,
+                    location:c.classroom_id.classroom_id_name,
                   });
                 }
                 else if(a===7) {
@@ -210,7 +210,7 @@
                     end:c.end,
                     start_week: c.start_week,
                     end_week: c.end_week,
-                    location: c.classroom.classroom_name,
+                    location: c.classroom_id.classroom_id_name,
                   });
                 }
             }
