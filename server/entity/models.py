@@ -76,13 +76,15 @@ class Course(models.Model):
     # 课程学期
     course_semester = models.IntegerField(default=2)
     # 课程容量
-    course_capacity = models.IntegerField()
+    course_capacity = models.IntegerField(default=150)
     #任课老师
     course_teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, null=False)
     #选课权限
     course_access = models.TextField(default="无")
     # 开课学院
     course_department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    #课程余量
+    course_allowance=models.IntegerField(default=150)
 
     def to_dict(self):
         return {
@@ -98,7 +100,7 @@ class Course(models.Model):
             "course_capacity": self.course_capacity,
             "course_teacher":self.course_teacher,
             "course_access":self.course_access,
-            "course_department_id": self.course_department_id
+            "course_department_id": self.course_department_id,
         }
 
 
