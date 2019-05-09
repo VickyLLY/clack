@@ -24,5 +24,12 @@ urlpatterns = [
     path(r'edit_student', views.edit_student, name='edit_student'),
     path(r'edit_teacher', views.edit_teacher, name='edit_teacher'),
     path(r'edit_major', views.edit_major, name='edit_major'),
+    path(r'edit_banji', views.edit_banji, name='edit_banji'),
+    path(r'del_banji', views.del_banji, name='del_banji'),
+    path(r'notice_content', views.notice_content, name='notice_content'),
+    path(r'notice_list_student', views.notice_list_student, name='notice_list_student'),
+    path(r'notice_list_teacher', views.notice_list_teacher, name='notice_list_teacher'),
+    path(r'edit_department', views.edit_department, name='edit_department'),
+    path(r'del_department', views.del_department, name='del_department'),
 
 ]

@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from server import error_code
 import json
 import jsonschema
-from entity.models import Student, Classroom, Teacher, Major
+from entity.models import Student, Classroom, Teacher, Major, Banji, Department
 import background.models
 from server.decorators import admin_required, login_required, check_json, post_required
 from entity.views import major_list
@@ -26,7 +26,7 @@ def add_notice(request):
                                       notice_author=request_json['notice']['notice_author'],
                                       notice_date=request_json['notice']['notice_date'],
                                       notice_content=request_json['notice']['notice_content'],
-                                      notice_receiver=request_json['notice']['notice_content'],
+                                      notice_receiver=request_json['notice']['notice_receiver'],
                                       )
     try:
         notice.save()
@@ -34,13 +34,54 @@ def add_notice(request):
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": str(e)})
     return JsonResponse({**error_code.CLACK_SUCCESS})
 
-
 # 通知列表
 def notice_list(request):
-    # request_json = json.loads(request.body)
-    notices = background.models.Notice.objects.all()
-    result = [notice.to_dict() for notice in notices]
+    request_json = json.loads(request.body)
+    aim_id = request_json['notice_receiver']
+    try:
+        notices = background.models.Notice.objects.filter(notice_receiver=aim_id)
+        all_notice = background.models.Notice.objects.filter(notice_receiver=3)
+        result = [notice.to_dict() for notice in notices]
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": str(e)})
     return JsonResponse({**error_code.CLACK_SUCCESS, "notice_list": result})
+
+# 学生通知
+def notice_list_student(request):
+
+    try:
+        notices = background.models.Notice.objects.filter(notice_receiver__in=[2, 3])
+
+        result = [notice.to_dict() for notice in notices]
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": str(e)})
+    return JsonResponse({**error_code.CLACK_SUCCESS, "notice_list": result})
+
+# 教师通知
+def notice_list_teacher(request):
+    try:
+        # notices = background.models.Notice.objects.filter(notice_receiver=1)
+        notices = background.models.Notice.objects.filter(notice_receiver__in=[1, 3])
+        result = [notice.to_dict() for notice in notices]
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": str(e)})
+    return JsonResponse({**error_code.CLACK_SUCCESS, "notice_list": result})
+# 通知具体内容
+def notice_content(request):
+    request_json = json.loads(request.body)
+    aim_id = request_json['notice_id']
+    result = background.models.Notice.objects.filter(id=aim_id)
+    if result.exists() == False:
+        return JsonResponse({**error_code.CLACK_NOT_EXISTS})
+    try:
+        content = [{
+            'notice_title': notice.notice_title,
+            'notice_date': notice.notice_date,
+            'notice_concent': notice.notice_content
+        } for notice in result]
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": str(e)})
+    return JsonResponse({**error_code.CLACK_SUCCESS, "notice_concent": content})
 
 # 添加学生
 @admin_required
@@ -172,7 +213,7 @@ def del_major(request):
     request_json = json.loads(request.body)
     aim_id = request_json['major_id']
     try:
-        Major.objects.get(id=aim_id).delete()
+        Major.objects.get(major_name=aim_id).delete()
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": str(e)})
     return JsonResponse({**error_code.CLACK_SUCCESS})
@@ -180,10 +221,10 @@ def del_major(request):
 @admin_required
 def edit_major(request):
     request_json = json.loads(request.body)
-
+    aim_id = request_json['major_id']
     new_name = request_json['major_name']
     new_department_id = request_json['major_department_id']
-    aim_id = request_json['major_id']
+
     if Major.objects.filter(id=aim_id).exists() == False:
         return JsonResponse({**error_code.CLACK_NOT_EXISTS})
     try:
@@ -248,3 +289,66 @@ def edit_classroom(request):
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": str(e)})
     return JsonResponse({**error_code.CLACK_SUCCESS})
 
+# 修改班级
+@admin_required
+def edit_banji(request):
+    request_json = json.loads(request.body)
+
+    new_name = request_json['banji_name']
+    # new_department_id = request_json['banji_department_id']
+    new_major_id = request_json['banji_major_id']
+    aim_id = request_json['banji_id']
+
+    if Banji.objects.filter(id=aim_id).exists() == False:
+        return JsonResponse({**error_code.CLACK_NOT_EXISTS})
+    try:
+        Banji.objects.filter(id=aim_id).update(banji_name=new_name)
+        # Banji.objects.filter(id=aim_id).update(banji_major_department_id=new_department_id)
+        Banji.objects.filter(id=aim_id).update(banji_major_id=new_major_id)
+
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": str(e)})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+# 删除班级
+@admin_required
+def del_banji(request):
+    request_json = json.loads(request.body)
+    aim_id = request_json['banji_id']
+    try:
+        Banji.objects.get(id=aim_id).delete()
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": str(e)})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+# 添加学院
+@admin_required
+def edit_department(request):
+    request_json = json.loads(request.body)
+
+    new_name = request_json['department_name']
+    # new_department_id = request_json['banji_department_id']
+    # new_major_id = request_json['banji_major_id']
+    aim_id = request_json['department_id']
+
+    if Department.objects.filter(id=aim_id).exists() == False:
+        return JsonResponse({**error_code.CLACK_NOT_EXISTS})
+    try:
+        Department.objects.filter(id=aim_id).update(department_name=new_name)
+        # Banji.objects.filter(id=aim_id).update(banji_major_department_id=new_department_id)
+        # Banji.objects.filter(id=aim_id).update(banji_major_id=new_major_id)
+
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": str(e)})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
+# 删除学院
+@admin_required
+def del_department(request):
+    request_json = json.loads(request.body)
+    aim_id = request_json['department_id']
+    try:
+        Department.objects.get(id=aim_id).delete()
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": str(e)})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
