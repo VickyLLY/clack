@@ -18,17 +18,21 @@
         <!--数据展示列表-->
         <el-row>
           <el-col :span="24">
-            <el-table :data="classroom_list" tooltip-effect="dark" style="width:100%" :default-sort="{prop:'create_time',order:'descending'}" @selection-change="selectionButton">
+            <el-table :data="data_list" tooltip-effect="dark" style="width:100%" :default-sort="{prop:'create_time',order:'descending'}" @selection-change="selectionButton">
               <el-table-column type="selection" width="55">
               </el-table-column>
-              <el-table-column type="selection" width="55"></el-table-column>
-              <el-table-column prop="username" width="100" label="用户名"></el-table-column>
-              <el-table-column prop="password" width="100" label="密码"></el-table-column>
-              <el-table-column prop="stu_name" width="80" label="姓名" sortable></el-table-column>
-              <el-table-column prop="stu_number" label="学号"></el-table-column>
-              <el-table-column prop="stu_email" label="邮箱"></el-table-column>
-              <el-table-column prop="stu_start_year" label="入学年份" sortable></el-table-column>
-              <el-table-column prop="stu_end_year" label="毕业年份" sortable></el-table-column>
+              <el-table-column prop="student_name" label="学生姓名" sortable>
+              </el-table-column>
+              <el-table-column prop="student_number" label="学生学号" sortable>
+              </el-table-column>
+              <el-table-column prop="student_banji_id" label="学生班级" sortable>
+              </el-table-column>
+              <el-table-column prop="student_email" label="学生邮箱" sortable>
+              </el-table-column>
+              <el-table-column prop="student_start_year" label="入学年份" sortable>
+              </el-table-column>
+              <el-table-column prop="student_end_year" label="毕业年份" sortable>
+              </el-table-column>
               <el-table-column label="操作" width="250">
                 <template slot-scope="scope">
                   <el-button type="success" size="small" @click="set_data(scope.row)">
@@ -53,54 +57,30 @@
       </el-main>
     </el-container>
     <!--添加信息窗口-->
-    <el-dialog title="添加学生" :visible.sync="add_dialog" @close="reset_form('add_form')">
-      <el-form :model="add_form" :rules="addRules" ref="add_form" label-width="100px">
-        <el-form-item label="姓名" prop="student_name">
-          <el-input type="text" v-model="add_form.student_name" auto-complete="off">
+    <el-dialog title="添加教室信息" :visible.sync="add_dialog" @close="reset_form('add_form')">
+      <el-form :model="add_form" :rules="data_rules" ref="add_form" label-width="100px">
+        <el-form-item label="教室名称" prop="classroom_name">
+          <el-input type="text" v-model="add_form.classroom_name" auto-complete="off">
           </el-input>
         </el-form-item>
-        <el-form-item label="学号" prop="student_number">
-          <el-input type="text" v-model="add_form.student_number" auto-complete="off">
-          </el-input>
-        </el-form-item>
-        <el-form-item label="班级" prop="student_banji_id">
-          <el-input type="text" v-model="add_form.student_banji_id" auto-complete="off">
-          </el-input>
-        </el-form-item>
-        <el-form-item label="邮箱" prop="student_email">
-          <el-input type="email" v-model="add_form.student_email" auto-complete="off">
-          </el-input>
-        </el-form-item>
-        <el-form-item label="入学年份" prop="student_start_year">
-          <el-input type="text" v-model="add_form.student_start_year" auto-complete="off">
-          </el-input>
-        </el-form-item>
-        <el-form-item label="毕业年份" prop="student_end_year">
-          <el-input type="text" v-model="add_form.student_end_year" auto-complete="off">
+        <el-form-item label="教室容量" prop="classroom_capacity">
+          <el-input type="text" v-model="add_form.classroom_capacity" auto-complete="off">
           </el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitForm('add_form')">提交</el-button>
+          <el-button type="primary" @click="submit_form('add_form')">提交</el-button>
           <el-button @click="reset_form('add_form')">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
-    <el-dialog title="修改学生" :visible.sync="edit_dialog" @close="reset_form('edit_form')">
-      <el-form :model="edit_form" :rules="addRules" ref="edit_form" label-width="100px">
-        <el-form-item label="姓名" prop="stu_name">
-          <el-input type="text" v-model="edit_form.student_name"></el-input>
+    <!--修改信息窗口-->
+    <el-dialog title="修改用户" :visible.sync="edit_dialog" @close="reset_form('edit_form')">
+      <el-form :model="edit_form" :rules="data_rules" ref="edit_form" label-width="100px">
+        <el-form-item label="教室名称" prop="classroom_name">
+          <el-input type="text" v-model="edit_form.classroom_name"></el-input>
         </el-form-item>
-        <el-form-item label="学号" prop="stu_number">
-          <el-input type="text" v-model.number="edit_form.stu_number"></el-input>
-        </el-form-item>
-        <el-form-item label="邮箱" prop="stu_email">
-          <el-input type="email" v-model="edit_form.student_email"></el-input>
-        </el-form-item>
-        <el-form-item label="入学年份" prop="stu_start_year">
-          <el-input type="text" v-model="edit_form.stu_start_year"></el-input>
-        </el-form-item>
-        <el-form-item label="毕业年份" prop="stu_end_year">
-          <el-input type="text" v-model="edit_form.stu_end_year"></el-input>
+        <el-form-item label="教室容量" prop="classroom_capacity">
+          <el-input type="text" v-model="edit_form.classroom_capacity"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="updateUser">修改</el-button>
@@ -125,31 +105,24 @@
       return {
         user_name:this.$cookie.get('username'),
         user_token:this.$cookie.get('user_token'),
-        add_form: {
-          student_name: '',
-          student_number: '',
-          student_banji_id: '',
-          student_email: '',
-          student_start_year: '',
-          student_end_year: '',
+        add_form:{
+          classroom_name:'',
+          classroom_capacity:''
         },
-        //用于修改用户的对象
-        edit_form: {
-          student_name: '', //学生姓名
-          stu_number: '',//学生学号
-          student_email: '', //学生邮箱
-          stu_start_year: '', //学生入学年份
-          stu_end_year: '', //学生毕业年份
+        edit_form:{
+          "classroom_name":'',
+          "classroom_capacity":''
         },
         add_dialog:false,  // 添加的对话框
         edit_dialog:false,  // 编辑的对话框
-        classroom_list:[],
+        data_list:[],
         data_rules:{
-          student_name: [
-            { required: true, message: '请输入姓名', tigger: 'blur' }
+          classroom_name:[
+            {required:true,message:'请输入教室名称',tigger:'blur'},
+            {min:3,max:16,message:'请输入合法的教室名称',tigger:'blur'}
           ],
-          student_email: [
-            { type: 'email', required: true, message: '必须是合法邮箱格式', tigger: 'blur' }
+          classroom_capacity:[
+            {required:true,message:'请输入姓名',tigger:'blur'}
           ]
         },
         total:0,
@@ -164,16 +137,12 @@
             let data = {
               "user_name": this.user_name,
               "user_token": this.user_token,
-              "student": {
-                "student_name": this.add_form.student_name,
-                "student_number": this.add_form.student_number,
-                "student_banji_id": parseInt(this.add_form.student_banji_id),
-                "student_email": this.add_form.student_email,
-                "student_start_year": parseInt(this.add_form.student_start_year,),
-                "student_end_year": parseInt(this.add_form.student_end_year),
-              },
+              "classroom": {
+                "classroom_name": this.add_form.classroom_name,
+                "classroom_capacity": parseInt(this.add_form.classroom_capacity)
+              }
             };
-            this.$http.post(this.Global_Api + '/background/add_student',data).then(response=>{
+            this.$http.post(this.Global_Api + '/entity/new_classroom',data).then(response=>{
               let res = response.body;
               if(res.error_code === 0){
                 this.$message.success('添加成功');
@@ -210,7 +179,7 @@
         })
           .then(response=>{
             var res = response.data;
-            this.classroom_list = res.classroom_list;
+            this.data_list = res.data_list;
             this.total = res.count;
           }).catch(err=>{
           console.log(err);
