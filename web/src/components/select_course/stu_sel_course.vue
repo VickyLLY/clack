@@ -5,8 +5,8 @@
       <ul class="nav navbar-nav">
         <li><a href="">本科生选课</a></li>
         <li><a href="">研究生选课</a></li>
-        <li><a href="">查看课表</a></li>
-        <li><a href="">其他注意事项</a></li>
+        <li><a href="javascript:void(0)" @click="enter_timetable">查看课表</a></li>
+        <li><a href="javascript:void(0)" @click="enter_attention">其他注意事项</a></li>
       </ul>
       <div id="clock">
         <p class="date">{{ date }}</p>
@@ -298,6 +298,12 @@
       /*将可选课程分为必修与选修*/
     },
     methods: {
+      enter_timetable:function(){
+        this.$router.push('stu_sel_course/timetable');
+      },
+      enter_attention:function(){
+        this.$router.push('stu_sel_course/attention');
+      },
       quit: function () {
         this.$cookie.delete('username');
       },
