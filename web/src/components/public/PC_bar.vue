@@ -3,7 +3,7 @@
     <nav class="navbar navbar-default navbar-fixed-top">
       <div class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
-          <a href="#/" class="navbar-brand"><strong>教务管理系统</strong></a>
+          <a href="/main" class="navbar-brand"><strong>教务管理系统</strong></a>
           <ul class="nav navbar-nav">
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -40,7 +40,7 @@
             </a>
             <ul class="dropdown-menu">
               <li><a href="#">修改个人信息</a></li>
-              <li><a href="#/" @click="quit">注销</a></li>
+              <li><a href="/" @click="quit">注销</a></li>
             </ul>
           </li>
         </ul>
