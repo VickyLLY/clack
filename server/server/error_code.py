@@ -38,3 +38,15 @@ CLACK_STUDENT_NOT_EXISTS = {"error_code": 10, "error_message": "查询的学生�
 
 # student不存在
 CLACK_TEACHER_NOT_EXISTS = {"error_code": 11, "error_message": "查询的教师不存在"}
+
+# course不存在
+CLACK_COURSE_NOT_EXISTS = {"error_code": 12, "error_message": "查询的课程不存在"}
+
+# 学生的成绩score不存在
+CLACK_SCORE_NOT_EXISTS = {"error_code": 13, "error_message": "这名学生的成绩不存在"}
+
+# 老师没有教过这名学生
+CLACK_TEACH_NOT_EXISTS = {"error_code": 14, "error_message": "这名老师没有教过这名学生课"}
+
+# 班级不存在
+CLACK_BANJI_NOT_EXISTS = {"error_code": 15, "error_message": "查询的班级不存在"}
