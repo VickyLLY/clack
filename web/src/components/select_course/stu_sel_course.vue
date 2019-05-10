@@ -79,9 +79,9 @@
 
       <div class="panel-body">
         <div class="panel-heading">
-          <h2 style="text-align:center;"><strong>2018-2019第二学期选课</strong></h2>
+          <h2  style="text-align:center;"><strong>选课标题</strong></h2>
           <h3>
-            <font size="3"><strong>剩余<font color="red">{{day}}</font>天</strong></font>
+            <font size="3" ><strong>剩余<font color="red">{{day}}</font>天</strong></font>
             <font size="2">选课要求总学分最低<font color="red">{{min_lp}}</font></font>
             <font size="2">最高学分<font color="red">{{max_lp}}</font></font>
             <font size="2">已获得学分<font color="red">{{get_lp}}</font></font>
@@ -91,30 +91,17 @@
         <hr/>
         <div>
           <h1>
-<<<<<<< HEAD
-            <font size="3" color="red"><span class="glyphicon glyphicon-list-alt"></span> <strong>专业必修</strong></font>
-            <font size="2">要求修读<font color="red">{{z_b_must_lp}}2</font>学分,</font>
-            <font size="2">以获得<font color="red">{{z_b_get_lp}}2</font>学分,</font>
-            <font size="2">本学期已选<font color="red">{{z_b_sel_lp}}2</font>学分</font>
-=======
             <font size="3" color="red" ><span class="glyphicon glyphicon-list-alt"></span> <strong>专业必修</strong></font>
             <font size="2">要求修读<font color="red">2</font>学分,</font>
             <font size="2">以获得<font color="red">2</font>学分,</font>
             <font size="2">本学期已选<font color="red">2</font>学分</font>
->>>>>>> f7a205c0b6b2707a286841970e4664d0247841b6
           </h1>
           <div v-for="c in z_b_course">
             <div v-if="-1==stu_sel.indexOf(c.id)" class="panel panel-default">
               <div class="panel-heading" style="color: #204d74;background: #66afe9">
-<<<<<<< HEAD
-                <h4 class="panel-title">
-                  <a data-toggle="collapse" data-parent="#accordion" v-bind:href="'#'+c.co_num">
-                    ({{c.co_num}}){{c.co_name}}--{{c.co_point}}分
-=======
                 <h4 class="panel-title" >
                   <a data-toggle="collapse" data-parent="#accordion"  v-bind:href="'#'+c.course_id">
                     ({{c.id}}){{c.course_name}}--{{c.course_credit}}分
->>>>>>> f7a205c0b6b2707a286841970e4664d0247841b6
                   </a>
                 </h4>
               </div>
@@ -136,20 +123,6 @@
                   </tr>
                   </thead>
                   <tbody>
-<<<<<<< HEAD
-                  <tr v-for="co in z_b_course">
-                    <td>{{co.co_num}}</td>
-                    <td>{{co.co_teacher}}</td>
-                    <td>{{co.co_time}}</td>
-                    <td>{{co.co_place}}</td>
-                    <td>{{co.co_term}}</td>
-                    <td>{{co.co_capacity}}</td>
-                    <td>{{co.co_margin}}</td>
-                    <td v-if="co.co_margin > 0">
-                      <button type="button" class="btn btn-primary" v-on:click="add_course(co.co_num,username)">选课
-                      </button>
-                    </td>
-=======
                   <tr >
                     <td>{{c.id}}</td>
                     <td>{{c.course_name}}</td>
@@ -162,7 +135,6 @@
                     <td>{{c.start_week+"-"+c.end_week}}</td>
                     <td>{{"星期"+c.day_of_week+"  "+c.start+"-"+c.end}}</td>
                     <td v-if="c.course_allowance > 0" ><button type="button" class="btn btn-primary" v-on:click="add_course(c.id,username)" >选课</button></td>
->>>>>>> f7a205c0b6b2707a286841970e4664d0247841b6
                   </tr>
                   </tbody>
                 </table>
@@ -170,15 +142,9 @@
             </div>
             <div v-else>
               <div class="panel-heading" style="color: #204d74;background:lightgreen">
-<<<<<<< HEAD
-                <h4 class="panel-title">
-                  <a data-toggle="collapse" data-parent="#accordion" v-bind:href="'#'+c.co_num">
-                    ({{c.co_num}}){{c.co_name}}--{{c.co_point}}分
-=======
                 <h4 class="panel-title" >
                   <a data-toggle="collapse" data-parent="#accordion"  v-bind:href="'#'+c.course_id">
                     ({{c.id}}){{c.course_name}}--{{c.course_credit}}分
->>>>>>> f7a205c0b6b2707a286841970e4664d0247841b6
                   </a>
                 </h4>
               </div>
@@ -200,20 +166,6 @@
                   </tr>
                   </thead>
                   <tbody>
-<<<<<<< HEAD
-                  <tr v-for="co in z_b_course">
-                    <td>{{co.co_num}}</td>
-                    <td>{{co.co_teacher}}</td>
-                    <td>{{co.co_time}}</td>
-                    <td>{{co.co_place}}</td>
-                    <td>{{co.co_term}}</td>
-                    <td>{{co.co_capacity}}</td>
-                    <td>{{co.co_margin}}</td>
-                    <td>
-                      <button type="button" class="btn btn-primary" v-on:click="del_course(co.co_num,username)">退选
-                      </button>
-                    </td>
-=======
                   <tr>
                     <td>{{c.id}}</td>
                     <td>{{c.course_name}}</td>
@@ -226,7 +178,6 @@
                     <td>{{c.start_week+"-"+c.end_week}}</td>
                     <td>{{"星期"+c.day_of_week+"  "+c.start+"-"+c.end}}</td>
                     <td><button type="button" class="btn btn-primary" v-on:click="del_course(c.id,username)">退选</button></td>
->>>>>>> f7a205c0b6b2707a286841970e4664d0247841b6
                   </tr>
                   </tbody>
                 </table>
@@ -236,32 +187,19 @@
         </div>
         <div>
           <h1>
-<<<<<<< HEAD
-            <font size="3" color="red"><span class="glyphicon glyphicon-list-alt"></span> <strong>专业选修</strong></font>
-            <font size="2">要求修读<font color="red">{{z_b_must_lp}}2</font>学分,</font>
-            <font size="2">以获得<font color="red">{{z_b_get_lp}}2</font>学分,</font>
-            <font size="2">本学期已选<font color="red">{{z_b_sel_lp}}2</font>学分</font>
-=======
             <font size="3" color="red" ><span class="glyphicon glyphicon-list-alt"></span> <strong>专业选修</strong></font>
             <font size="2">要求修读<font color="red">2</font>学分,</font>
             <font size="2">以获得<font color="red">{{get_lp}}2</font>学分,</font>
             <font size="2">本学期已选<font color="red">{{sel_lp}}2</font>学分</font>
->>>>>>> f7a205c0b6b2707a286841970e4664d0247841b6
           </h1>
           <!--<ul>-->
 
           <div v-for="c in z_x_course">
             <div v-if="-1==stu_sel.indexOf(c.id)" class="panel panel-default">
               <div class="panel-heading" style="color: #204d74;background: #66afe9">
-<<<<<<< HEAD
-                <h4 class="panel-title">
-                  <a data-toggle="collapse" data-parent="#accordion" v-bind:href="'#'+c.co_num">
-                    ({{c.co_num}}){{c.co_name}}--{{c.co_point}}分
-=======
                 <h4 class="panel-title" >
                   <a data-toggle="collapse" data-parent="#accordion"  v-bind:href="'#'+c.course_id">
                     ({{c.course_id}}){{c.course_name}}--{{c.course_credit}}分
->>>>>>> f7a205c0b6b2707a286841970e4664d0247841b6
                   </a>
                 </h4>
               </div>
@@ -283,20 +221,6 @@
                   </tr>
                   </thead>
                   <tbody>
-<<<<<<< HEAD
-                  <tr v-for="co in z_x_course">
-                    <td>{{co.co_num}}</td>
-                    <td>{{co.co_teacher}}</td>
-                    <td>{{co.co_time}}</td>
-                    <td>{{co.co_place}}</td>
-                    <td>{{co.co_term}}</td>
-                    <td>{{co.co_capacity}}</td>
-                    <td>{{co.co_margin}}</td>
-                    <td v-if="co.co_margin > 0">
-                      <button type="button" class="btn btn-primary" v-on:click="add_course(co.co_num,username)">选课
-                      </button>
-                    </td>
-=======
                   <tr>
                     <td>{{c.id}}</td>
                     <td>{{c.course_name}}</td>
@@ -309,7 +233,6 @@
                     <td>{{c.start_week+"-"+c.end_week}}</td>
                     <td>{{"星期"+c.day_of_week+"  "+c.start+"-"+c.end}}</td>
                     <td v-if="c.course_allowance > 0" ><button type="button" class="btn btn-primary" v-on:click="add_course(c.id,username)" >选课</button></td>
->>>>>>> f7a205c0b6b2707a286841970e4664d0247841b6
                   </tr>
                   </tbody>
                 </table>
@@ -317,15 +240,9 @@
             </div>
             <div v-else>
               <div class="panel-heading" style="color: #204d74;background:lightgreen">
-<<<<<<< HEAD
-                <h4 class="panel-title">
-                  <a data-toggle="collapse" data-parent="#accordion" v-bind:href="'#'+c.co_num">
-                    ({{c.co_num}}){{c.co_name}}--{{c.co_point}}分
-=======
                 <h4 class="panel-title" >
                   <a data-toggle="collapse" data-parent="#accordion"  v-bind:href="'#'+c.course_id">
                     ({{c.id}}){{c.course_name}}--{{c.course_credit}}分
->>>>>>> f7a205c0b6b2707a286841970e4664d0247841b6
                   </a>
                 </h4>
               </div>
@@ -347,20 +264,6 @@
                   </tr>
                   </thead>
                   <tbody>
-<<<<<<< HEAD
-                  <tr v-for="co in z_x_course">
-                    <td>{{co.co_num}}</td>
-                    <td>{{co.co_teacher}}</td>
-                    <td>{{co.co_time}}</td>
-                    <td>{{co.co_place}}</td>
-                    <td>{{co.co_term}}</td>
-                    <td>{{co.co_capacity}}</td>
-                    <td>{{co.co_margin}}</td>
-                    <td>
-                      <button type="button" class="btn btn-primary" v-on:click="del_course(co.co_num,username)">退选
-                      </button>
-                    </td>
-=======
                   <tr>
                     <td>{{c.id}}</td>
                     <td>{{c.course_name}}</td>
@@ -373,7 +276,6 @@
                     <td>{{c.start_week+"-"+c.end_week}}</td>
                     <td>{{"星期"+c.day_of_week+"  "+c.start+"-"+c.end}}</td>
                     <td><button type="button" class="btn btn-primary" v-on:click="del_course(c.id,username)">退选</button></td>
->>>>>>> f7a205c0b6b2707a286841970e4664d0247841b6
                   </tr>
                   </tbody>
                 </table>
@@ -409,67 +311,6 @@
         time: '',
         date: '',
         week: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
-<<<<<<< HEAD
-        td: ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen'],
-        count: 0,
-        day: 0,
-        max_lp: 100,
-        min_lp: 100,
-        get_lp: 50,
-        sel_lp: 50,
-        stu_sel: ['201600123', '201600124'],
-        z_b_course: [{
-          'co_point': 3.0,
-          'co_num': '201600123',
-          'co_name': '计算机组成原理',
-          'co_teacher': '薛博元',
-          'co_time': '3,4,5',
-          'co_place': 'b103',
-          'co_term': '2',
-          'co_capacity': 50,
-          'co_sel': 10,
-          'co_margin': 0
-        },
-          {
-            'co_point': 3.0,
-            'co_num': '201600122',
-            'co_name': '计算机组成原理',
-            'co_teacher': '薛博元',
-            'co_time': '3,4,5',
-            'co_place': 'b103',
-            'co_term': '2',
-            'co_capacity': 50,
-            'co_sel': 10,
-            'co_margin': 20
-          }],
-        z_x_course: [{
-          'co_point': 3.0,
-          'co_num': '201600124',
-          'co_name': '计算机组成原理',
-          'co_teacher': '薛博元',
-          'co_time': '3,4,5',
-          'co_place': 'b103',
-          'co_term': '2',
-          'co_capacity': 50,
-          'co_sel': 10,
-          'co_margin': 0
-        },
-          {
-            'co_point': 3.0,
-            'co_num': '201600121',
-            'co_name': '计算机组成原理',
-            'co_teacher': '薛博元',
-            'co_time': '3,4,5',
-            'co_place': 'b103',
-            'co_term': '2',
-            'co_capacity': 50,
-            'co_sel': 10,
-            'co_margin': 20
-          }],
-
-      }
-    },
-=======
         td:['one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen'],
         count:0,
         day:0,
@@ -505,7 +346,6 @@
         //alert(res.body.course_list[0].course_name)
       })
     },
->>>>>>> f7a205c0b6b2707a286841970e4664d0247841b6
     methods: {
       enter_timetable: function () {
         this.$router.push('stu_sel_course/timetable');
@@ -516,13 +356,6 @@
       quit: function () {
         this.$cookie.delete('username');
       },
-<<<<<<< HEAD
-      add_course: function (course_num, stu_name) {
-        alert(stu_name + " select  " + course_num)/*学生选课*/
-      },
-      del_course: function (course_num, stu_name) {
-        alert(stu_name + " delete  " + course_num)/*删除所选课程*/
-=======
       add_course:function(id,stu_name){
         alert(stu_name+" select  "+id)/*学生选课*/
         let add_class={
@@ -582,7 +415,6 @@
       },
       del_course:function(id,stu_name){
         alert(stu_name+" delete  "+id)/*删除所选课程*/
->>>>>>> f7a205c0b6b2707a286841970e4664d0247841b6
       },
       getStyle: function (obj, name) {
         if (obj.currentStyle) {
@@ -672,9 +504,6 @@
           }
         }
       }
-    },
-    created: function () {
-
     },
     mounted: function () {
       var that = this;
