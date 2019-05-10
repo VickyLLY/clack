@@ -19,8 +19,10 @@
           <span style="font-size: 16.0px;"><span style="">&nbsp;&nbsp;&nbsp; 网上选课路径：<a href="http://localhost:8080/main/stu_sel_course">http://localhost:8080/main/stu_sel_course</a></span></span>
         </p>
         <p>
-    <span style="font-size: 16.0px;"><span style="">一、选课时间安排：<br />
-  &nbsp;&nbsp;&nbsp; 系统规定时间，具体请阅读首页通知<br />
+    <span style="font-size: 16.0px;"><span style="line-height: 16px;">一、选课时间安排：<br />
+
+      &nbsp;&nbsp;&nbsp; 系统规定时间，具体请阅读首页通知 <br/>
+
   二、选课内容安排：<br />
   &nbsp;&nbsp;&nbsp; 1、全校性选修<br />
   </span></span>
