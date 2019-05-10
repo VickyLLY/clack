@@ -90,9 +90,9 @@ class Course(models.Model):
             "course_capacity": self.course_capacity,
             # "course_department_id": self.course_department_id
             "course_department": self.course_department.to_dict(),
-            "date_and_classroom": [dc.to_dict() for dc in self.dateandclassroom_set.all()]
+            "date_and_classroom": [dc.to_dict() for dc in self.dateandclassroom_set.all()],
+            "teachers": [tc.teacher.to_dict() for tc in self.teacherforcoure_set.all()]
         }
-
 
 
 # 考试
@@ -142,8 +142,8 @@ class Teacher(models.Model):
 
 
 class TeacherForCoure(models.Model):
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, null=True, blank=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
 
 
 # 用户

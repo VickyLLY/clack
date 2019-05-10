@@ -5,6 +5,7 @@ import json
 import entity.models
 from server.decorators import admin_required, login_required
 import schedule.models
+from django.db import IntegrityError, transaction
 
 
 # Create your views here.
@@ -212,9 +213,38 @@ def course_info(request):
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": str(e)})
 
-@admin_required
+
+@login_required
 def teacher_list(request):
     request_json = json.loads(request.body)
     teachers = entity.models.Teacher.objects.all()
     result = [teacher.to_dict() for teacher in teachers]
-    return JsonResponse({**error_code.CLACK_SUCCESS,"teacher_list":result})
+    return JsonResponse({**error_code.CLACK_SUCCESS, "teacher_list": result})
+
+
+@admin_required
+def course_add_teacher(request):
+    request_json = json.loads(request.body)
+    course = entity.models.Course.objects.get(id=request_json['course_id'])
+    print(course.teacherforcoure_set.all())
+    try:
+        with transaction.atomic():
+
+            teacher = entity.models.Teacher.objects.get(teacher_number=request_json['teacher_number'])
+            course = entity.models.Course.objects.get(id=request_json['course_id'])
+            for tc in course.teacherforcoure_set.all():
+                tc.course = None
+                tc.teacher = None
+                tc.save()
+
+            for tc in teacher.teacherforcoure_set.all():
+                for dc in tc.course.dateandclassroom_set.all():
+                    for dcc in course.dateandclassroom_set.all():
+                        if dc.conflict(dcc):
+                            raise Exception("时间冲突")
+            tc = entity.models.TeacherForCoure(course_id=course.id, teacher_id=teacher.id);
+            tc.save()
+
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": str(e)})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
