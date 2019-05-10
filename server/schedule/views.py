@@ -211,3 +211,10 @@ def course_info(request):
         return JsonResponse({**error_code.CLACK_SUCCESS, "course": course.to_dict()})
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": str(e)})
+
+@admin_required
+def teacher_list(request):
+    request_json = json.loads(request.body)
+    teachers = entity.models.Teacher.objects.all()
+    result = [teacher.to_dict() for teacher in teachers]
+    return JsonResponse({**error_code.CLACK_SUCCESS,"teacher_list":result})

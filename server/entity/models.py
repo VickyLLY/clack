@@ -94,6 +94,7 @@ class Course(models.Model):
         }
 
 
+
 # 考试
 class Exam(models.Model):
     exam_name = models.TextField(default='')
@@ -136,8 +137,13 @@ class Teacher(models.Model):
             "teacher_name": self.teacher_name,
             "teacher_number": self.teacher_number,
             "teacher_email": self.teacher_email,
-            "teacher_department_id": self.teacher_department_id
+            "teacher_department": self.teacher_department.to_dict()
         }
+
+
+class TeacherForCoure(models.Model):
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
 
 # 用户
