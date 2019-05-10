@@ -29,7 +29,7 @@
     <br><br><br>
 
     <div id="aside" class="container pull-right "
-         style="width:700px;height:900px;border:1px solid red;position:absolute;top:100px;left:1480px;">
+         style="width:700px;height:900px;border:1px solid red;position:absolute;top:100px;right:-630px;background: white;">
       <div class="row">
         <div class="col-lg-1" style="background: red;height:700px;position: relative;">
           <p class="glyphicon glyphicon-arrow-left" style="width: 30px;height:30px;position: absolute;top:50px;"></p>
@@ -323,10 +323,10 @@
         student_number:this.username
       };
       this.$http.post(this.Global_Api + '/schedule/course_list',[]).then((res) =>{
-       for (let i=0;i<res.body.course_list.length;i++){
-           alert(res.body.course_list[i].course_name)
+        for (let i=0;i<res.body.course_list.length;i++){
+          alert(res.body.course_list[i].course_name)
           if(res.body.course_list[i].course_type==0)
-          this.z_b_course.push(res.body.course_list[i])
+            this.z_b_course.push(res.body.course_list[i])
           else{
             this.z_x_course.push(res.body.course_list[i])
           }
@@ -335,7 +335,7 @@
             this.stu_sel.push(res.body.course_list[i].id)
           }
         }
-       //alert(res.body.course_list[0].course_name)
+        //alert(res.body.course_list[0].course_name)
       })
     },
     methods: {
@@ -462,11 +462,11 @@
         },1000);
         that.updateTime(that);
         oDiv1.onmouseover = function () {
-          that.startMove(oDiv1, 'left', 850, that);
+          that.startMove(oDiv1, 'right', 0, that);
           $(".glyphicon-arrow-left").addClass("glyphicon-arrow-right").removeClass("glyphicon-arrow-left")
         };
         oDiv1.onmouseout = function () {
-          that.startMove(oDiv1, 'left', 1480, that);
+          that.startMove(oDiv1, 'right', -630, that);
           $(".glyphicon-arrow-right").addClass("glyphicon-arrow-left").removeClass("glyphicon-arrow-right")
         };
 
