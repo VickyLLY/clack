@@ -3,10 +3,9 @@
     <nav class="navbar navbar-default navbar-fixed-top">
       <a class="navbar-brand"><strong>教务管理系统</strong></a>
       <ul class="nav navbar-nav">
-        <li><a href="">本科生选课</a></li>
-        <li><a href="">研究生选课</a></li>
-        <li><a href="">查看课表</a></li>
-        <li><a href="">其他注意事项</a></li>
+        <li><a href="">自主选课</a></li>
+        <li><a href="javascript:void(0)" @click="enter_timetable">查看课表</a></li>
+        <li><a href="javascript:void(0)" @click="enter_attention">其他注意事项</a></li>
       </ul>
       <div id="clock">
         <p class="date">{{ date }}</p>
@@ -35,7 +34,9 @@
           <p class="glyphicon glyphicon-arrow-left" style="width: 30px;height:30px;position: absolute;top:50px;"></p>
           <p style="width: 20px;height: 100px;position:absolute;top:140px;line-height: 30px;">选课信息</p>
           <p style="width: 20px;height: 100px;position: absolute;top:350px;line-height: 30px">已选</p>
-          <p style="width:15px;height: 20px;position: absolute;top:420px;border-radius: 50%;background: white;text-align: center">{{count}}</p>
+          <p
+            style="width:15px;height: 20px;position: absolute;top:420px;border-radius: 50%;background: white;text-align: center">
+            {{count}}</p>
         </div>
         <div class="col-lg-11">
           <table class="table table-bordered text-center">
@@ -52,14 +53,20 @@
             </tr>
             </thead>
             <tr v-for="n in 13">
-              <td :class=td[n]>{{n}}</td>
-              <td v-for="m in 7" :class=reColor>
+              <td :class=td[n-1]>{{n}}</td>
+              <td v-for="m in 7" class="init">
               </td>
             </tr>
             <tr>
-              <td colspan="3"><span class="little_course" style="width: 25px;height: 15px;display: inline-block;vertical-align: center"></span><span>空余周数=总周数</span></td>
-              <td colspan="3"><span class="middle_course" style="width: 25px;height: 15px;display: inline-block;"></span><span>空余周数>=(总周数/2)</span></td>
-              <td colspan="3"><span class="large_course" style="width: 25px;height: 15px;display: inline-block"></span><span>空余周数<(总周数/2)</span></td>
+              <td colspan="3"><span class="little_course"
+                                    style="width: 25px;height: 15px;display: inline-block;vertical-align: center"></span><span>空余周数=总周数</span>
+              </td>
+              <td colspan="3"><span class="middle_course"
+                                    style="width: 25px;height: 15px;display: inline-block;"></span><span>空余周数>=(总周数/2)</span>
+              </td>
+              <td colspan="3"><span class="large_course"
+                                    style="width: 25px;height: 15px;display: inline-block"></span><span>空余周数<(总周数/2)</span>
+              </td>
             </tr>
           </table>
         </div>
@@ -294,6 +301,7 @@
 
 <script>
   import $ from 'jquery'
+
   export default {
     name: "stu_sel_course",
     data() {
@@ -339,6 +347,12 @@
       })
     },
     methods: {
+      enter_timetable: function () {
+        this.$router.push('stu_sel_course/timetable');
+      },
+      enter_attention: function () {
+        this.$router.push('stu_sel_course/attention');
+      },
       quit: function () {
         this.$cookie.delete('username');
       },
@@ -448,18 +462,62 @@
         }
         return (zero + num).slice(-digit);
       },
+      get_course: function () {
+        let data = {
+          "year": "2018",
+          "semester": "2",
+          "student_number": "1",
+        };
+        this.$http.post(this.Global_Api + '/selecourse/student_inquiry/2016014/', data).then((res) => {
+          alert(res.body.error_code);
+          alert(res.body.error_message);
+          for (let i = 0; i < res.body.course_list.length; i++) {
+            alert(i);
+            alert(res.body.course_list[i].course_type);
+            alert(res.body.course_list[i].course_name);
+          }
 
+
+        })
+      },
+      set_attribution: function () {
+        for (let i = 0; i < this.td.length; i++) {
+          let selector = this.td[i];
+          $("." + selector).nextAll().attr("class_count", 0);
+        }
+      },
+      reColor: function () {
+        for (let i = 0; i < this.td.length; i++) {
+          let selector = this.td[i];
+          for (let j of $("." + selector).nextAll()) {
+            // alert(parseInt(j.getAttribute("class_count"));
+            if (parseInt(j.getAttribute("class_count")) === 0) {
+              // alert(j.className);
+              j.className = 'init';
+            } else if (parseInt(j.getAttribute("class_count")) > 0 && parseInt(j.getAttribute("class_count")) < 5) {
+              j.className = 'little_course';
+            } else if (parseInt(j.getAttribute("class_count")) >= 5 && parseInt(j.getAttribute("class_count")) < 10) {
+              j.className = 'middle_course';
+            } else if (parseInt(j.getAttribute("class_count")) >= 10) {
+              j.className = 'large_course';
+            }
+          }
+        }
+      }
     },
     mounted: function () {
       var that = this;
       var oDiv1 = document.getElementById('aside');
+      // that.get_course();
+      this.set_attribution();
       this.$nextTick(() => {
-        if(that.timer){
+        that.reColor();
+        if (that.timer) {
           clearInterval(that.timer);
         }
-        that.timer=setInterval(()=>{
+        that.timer = setInterval(() => {
           that.updateTime(that);
-        },1000);
+        }, 1000);
         that.updateTime(that);
         oDiv1.onmouseover = function () {
           that.startMove(oDiv1, 'right', 0, that);
@@ -469,56 +527,50 @@
           that.startMove(oDiv1, 'right', -630, that);
           $(".glyphicon-arrow-right").addClass("glyphicon-arrow-left").removeClass("glyphicon-arrow-right")
         };
-
       })
     },
-    computed:{
-      reColor:function () {
-        if(this.count===0)
-          return 'init';
-        else if(this.count>0&&this.count<3)
-          return 'little_course';
-        else
-          return 'large_course';
-      }
-    },
-    watch:{
-
-    }
+    computed: {},
+    watch: {}
   }
 </script>
 
 <style scoped>
   #clock {
-    font-family: 'Microsoft YaHei','Lantinghei SC','Open Sans',Arial,'Hiragino Sans GB','STHeiti','WenQuanYi Micro Hei','SimSun',sans-serif;
+    font-family: 'Microsoft YaHei', 'Lantinghei SC', 'Open Sans', Arial, 'Hiragino Sans GB', 'STHeiti', 'WenQuanYi Micro Hei', 'SimSun', sans-serif;
     color: black;
     text-align: center;
     position: absolute;
     left: 60%;
-    top:10px;
+    top: 10px;
   }
+
   #clock .time {
     letter-spacing: 0.05em;
     font-size: 20px;
     padding: 5px;
     display: inline-block;
   }
+
   #clock .date {
 
     display: inline-block;
     letter-spacing: 0.1em;
     font-size: 20px;
   }
-  .init{
+
+  .init {
     background: green;
   }
-  .little_course{
+
+  .little_course {
     background: blue;
   }
-  .middle_course{
+
+  .middle_course {
     background: yellow;
   }
-  .large_course{
+
+  .large_course {
     background: red;
   }
 
