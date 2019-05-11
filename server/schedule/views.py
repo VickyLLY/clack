@@ -5,6 +5,7 @@ import json
 import entity.models
 from server.decorators import admin_required, login_required
 import schedule.models
+from django.db import IntegrityError, transaction
 
 
 # Create your views here.
@@ -21,7 +22,7 @@ def new_course(request):
     try:
         course.save()
     except Exception as e:
-        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": str(e)})
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": str(e)})
     return JsonResponse({**error_code.CLACK_SUCCESS})
 
 
@@ -211,3 +212,35 @@ def course_info(request):
         return JsonResponse({**error_code.CLACK_SUCCESS, "course": course.to_dict()})
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": str(e)})
+
+
+@login_required
+def teacher_list(request):
+    request_json = json.loads(request.body)
+    teachers = entity.models.Teacher.objects.all()
+    result = [teacher.to_dict() for teacher in teachers]
+    return JsonResponse({**error_code.CLACK_SUCCESS, "teacher_list": result})
+
+
+@admin_required
+def course_add_teacher(request):
+    request_json = json.loads(request.body)
+    try:
+        with transaction.atomic():
+            course = entity.models.Course.objects.get(id=request_json['course_id'])
+            if course.course_teacher:
+                course.course_teacher = None
+                course.save()
+            teacher = entity.models.Teacher.objects.get(teacher_number=request_json['teacher_number'])
+            for c in teacher.course_set.all():
+                for dc in c.dateandclassroom_set.all():
+                    for dcc in course.dateandclassroom_set.all():
+                        if dc.conflict(dcc):
+                            raise Exception("时间冲突")
+
+            course.course_teacher = teacher
+            course.save()
+
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": str(e)})
+    return JsonResponse({**error_code.CLACK_SUCCESS})
