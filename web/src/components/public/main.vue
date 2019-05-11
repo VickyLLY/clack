@@ -1,7 +1,7 @@
 <template>
   <div>
-    <PC_bar></PC_bar>
-    <News></News>
+  <PC_bar></PC_bar>
+  <News></News>
   </div>
 </template>
 
@@ -15,11 +15,17 @@
       PC_bar,
       News
     },
+    data(){
+      return{
+
+      }
+    },
     mounted() {
-      if(this.$cookie.get('username')==null)
+      if (this.$cookie.get('username') == null)
         this.$router.push('/')
-    }
+    },
   }
+
 </script>
 
 <style>

@@ -56,7 +56,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="nav navbar-nav ml-auto">
                 <li class="nav-item active">
-                  <a v-on:click="schedule" class="nav-link" href="#">修改用户信息</a>
+                  <a v-on:click="" class="nav-link" href="#">修改用户信息</a>
                 </li>
                 <li class="nav-item">
                   <a  href="#/" @click="quit" class="nav-link" >注销</a>
@@ -69,11 +69,6 @@
         <!--用来填写正文信息-->
         <slot></slot><!--标记组件位置-->
         <router-view/>
-        <!--用来填写正文信息-->
-        <div class="line"></div>
-        <!--用来填写正文信息-->
-        <div class="line"></div>
-        <!--用来填写正文信息-->
       </div>
     </div>
   </div>
@@ -88,7 +83,7 @@
         realname:this.$cookie.get('realname'),
       }
     },
-    mounted: function() {
+    created(){
       this.$nextTick(function () {
         $('#sidebarCollapse').on('click',
           function () {
@@ -98,9 +93,6 @@
       })
     },
     methods:{
-      qiehuan:function(){
-        this.switch_mob=!this.switch_mob;
-      },
       quit:function () {
         this.$cookie.delete('username');
 
@@ -155,24 +147,6 @@
     margin-bottom: 40px;
     box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
   }
-
-  .navbar-btn {
-    box-shadow: none;
-    outline: none !important;
-    border: none;
-  }
-
-  .line {
-    width: 100%;
-    height: 1px;
-    border-bottom: 1px dashed #ddd;
-    margin: 40px 0;
-  }
-
-  /* ---------------------------------------------------
-      SIDEBAR STYLE
-  ----------------------------------------------------- */
-
   .wrapper {
     display: flex;
     width: 100%;
@@ -241,10 +215,6 @@
     background: #6d7fcc;
   }
 
-  ul.CTAs {
-    padding: 20px;
-  }
-
   ul.CTAs a {
     text-align: center;
     font-size: 0.9em !important;
@@ -253,32 +223,12 @@
     margin-bottom: 5px;
   }
 
-  a.download {
-    background: #fff;
-    color: #7386D5;
-  }
-
-  a.article,
-  a.article:hover {
-    background: #6d7fcc !important;
-    color: #fff !important;
-  }
-
-  /* ---------------------------------------------------
-      CONTENT STYLE
-  ----------------------------------------------------- */
-
   #content {
     width: 100%;
     padding: 20px;
     min-height: 100vh;
     transition: all 0.3s;
   }
-
-  /* ---------------------------------------------------
-      MEDIAQUERIES
-  ----------------------------------------------------- */
-
   @media (max-width: 768px) {
     #sidebar {
       margin-left: -250px;
