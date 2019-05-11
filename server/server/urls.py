@@ -22,5 +22,6 @@ urlpatterns = [
     path('entity/', include('entity.urls')),
     path('scoremng/', include('scoremng.urls')),
     path('schedule/', include('schedule.urls')),
+    path('background/', include('background.urls')),
     path('selecourse/', include('selecourse.urls')),
 ]
