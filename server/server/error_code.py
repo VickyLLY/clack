@@ -40,4 +40,4 @@ CLACK_STUDENT_NOT_EXISTS = {"error_code": 10, "error_message": "查询的学生�
 CLACK_TEACHER_NOT_EXISTS = {"error_code": 11, "error_message": "查询的教师不存在"}
 
 #学生选题限选一个且已经选择课题
-CLACK_STUDENT_SELECT_DST_EXISTS = {"error_code": 16, "error_message": "已经选择课题"}
+CLACK_STUDENT_SELECT_DST_EXISTS = {"error_code": 24, "error_message": "已经选择课题"}
