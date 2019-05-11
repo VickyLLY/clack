@@ -47,25 +47,6 @@ export default new Router({
       path: '/main_mob',
       name: 'main_mob',
       component: main_mob,
-      meta: {
-        keepAlive: true// 需要被缓存
-      },
-      children:[
-        {
-          path:'schedule_mob',
-          component: schedule_mob,
-          meta: {
-            keepAlive: false // 需要被缓存
-          },
-        },
-        {
-          path:'news_mob',
-          component: news_mob,
-          meta: {
-            keepAlive: false // 需要被缓存
-          },
-        }
-      ]
     },
     {
       path: '/main',
