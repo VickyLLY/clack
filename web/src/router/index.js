@@ -21,6 +21,13 @@ import tea_sel_course from "@/components/select_course/tea_sel_course";
 import stu_sel_course from "@/components/select_course/stu_sel_course";
 import stu_timetable from "@/components/select_course/stu_timetable";
 import course_table from "@/components/schedule/course_table";
+//成绩管理
+import navigation from '@/components/scoremng/navigation'
+import Stu_score from '@/components/scoremng/stu_scoremng/stu_score'
+import Stu_evaluation from '@/components/scoremng/stu_scoremng/stu_evaluation'
+import Tea_upload from '@/components/scoremng/tea_scoremng/teacher_upload'
+import Tea_query from '@/components/scoremng/tea_scoremng/teacher_query'
+
 import man_view_msg from "@/components/select_course/man_view_msg";
 import attention from "@/components/select_course/attention";
 
@@ -131,6 +138,35 @@ export default new Router({
       path: '/main/stu_sel_course/stu_timetable',
       name: 'stu_timetable',
       component: stu_timetable
+    },
+    //成绩管理
+    {
+      path:'/main/navigation',
+      name:'navigation',
+      component:navigation,
+      children: [
+        {
+          path:'stu_score',
+          name:'stu_score',
+          component:Stu_score
+        },
+        {
+          path:'stu_evaluation',
+          name:'stu_evaluation',
+          component:Stu_evaluation
+        },
+        {
+          path:'tea_upload',
+          name:'Tea_upload',
+          component:Tea_upload
+        },
+        {
+          path:'tea_query',
+          name:'Tea_query',
+          component:Tea_query
+        }
+
+      ]
     },
     {
       path:'/main/stu_sel_course/attention',
