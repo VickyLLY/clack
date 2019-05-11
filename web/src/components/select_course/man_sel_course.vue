@@ -36,17 +36,17 @@
             <label>学院</label>
             <select  v-model="info.academy" class="select">
               <option value="all" selected="selected">全部</option>
-              <option value="01">化学工程学院</option>
-              <option value="02">材料科学与工程学院</option>
-              <option value="03">机电工程学院</option>
-              <option value="04">信息科学与技术学院</option>
-              <option value="05">经济管理学院</option>
-              <option value="06">理学院</option>
-              <option value="07">文法学院</option>
-              <option value="08">生命科学与技术学院</option>
-              <option value="09">马克思主义学院</option>
-              <option value="10">国际教育学院</option>
-              <option value="11">巴黎居里工程师学院</option>
+              <option value="化学工程学院">化学工程学院</option>
+              <option value="材料科学与工程学院">材料科学与工程学院</option>
+              <option value="机电工程学院">机电工程学院</option>
+              <option value="信息学院">信息学院</option>
+              <option value="经济管理学院">经济管理学院</option>
+              <option value="理学院">理学院</option>
+              <option value="文法学院">文法学院</option>
+              <option value="生命科学与技术学院">生命科学与技术学院</option>
+              <option value="马克思主义学院">马克思主义学院</option>
+              <option value="国际教育学院">国际教育学院</option>
+              <option value="巴黎居里工程师学院">巴黎居里工程师学院</option>
             </select>
           </div>
 
@@ -82,18 +82,27 @@
       <table class="table table-striped table-item ">
         <thead>
         <tr>
-          <th>course_name</th>
-          <th>course_id</th>
-          <th>teaching</th>
-          <th>classroom</th>
+          <th>课程名称</th>
+          <th>课程号</th>
+          <th>学分</th>
+          <th>任课老师</th>
+          <th>上课教室</th>
+          <th>起始周</th>
+          <th>结束周</th>
+          <th>学年</th>
         </tr>
         </thead>
         <tbody>
         <tr v-for="course in courses">
           <td>{{course.course_name}}</td>
           <td>{{course.course_id}}</td>
-          <td>{{course.teaching}}</td>
-          <td>{{course.classroom}}</td>
+          <td>{{course.course_credit}}</td>
+          <td>{{course.course_teacher}}</td>
+          <td>{{course.classroom_id}}</td>
+          <td>{{course.start_week}}</td>
+          <td>{{course.end_week}}</td>
+          <td>{{course.course_year}}</td>
+
         </tr>
         </tbody>
       </table>
@@ -103,11 +112,19 @@
         <p v-show="infoText">没有查询到相关信息！</p>
       </div>
     </div>
+    <router-link to="/main/man_sel_course/man_view_msg">
+      <button style="position: relative; bottom: 200px; left: 50px;" type="button" class="btn btn-primary" @click="sendCourseList" >查看报表</button>
+    </router-link>
+    <div>
+
+    </div>
+
   </div>
 </template>
 
 <script>
   import PC_bar from "../public/PC_bar";
+  import bus from "../../assets/manager_to_manager"
   export default {
     name: "man_sel_course",
     data () {
@@ -117,11 +134,13 @@
           academy:"all",
           semester:"1",
           course:"",
-          teacher:""
+          teacher:"",
         },
+        course_list:[],
         courses:[],
+        update_courseList:[],
         flag:-1,
-        info_collection:{"course_name":"","teaching":"","year":"","academy":"","semester":""},
+        info_collection:{"course_name":"","course_teacher":"","year":"","academy":"","semester":""},
         border_show:false,
         conditionText:false,
         infoText:false
@@ -143,16 +162,8 @@
           alert(("请指定academy！"));
           return ;
         }
-
-        this.courses=[
-          {"course_name":"a","course_id":"01","teaching":"t","classroom":"aa","year":"2010","academy":"01","semester":"1"},
-          {"course_name":"a","course_id":"01","teaching":"t","classroom":"aa","year":"2010","academy":"02","semester":"2"},
-          {"course_name":"a","course_id":"01","teaching":"t","classroom":"aa","year":"2012","academy":"02","semester":"2"},
-          {"course_name":"a","course_id":"01","teaching":"t","classroom":"aa","year":"2011","academy":"01","semester":"1"},
-          {"course_name":"a","course_id":"01","teaching":"t","classroom":"aa","year":"2011","academy":"03","semester":"1"},
-          {"course_name":"bb","course_id":"01","teaching":"t","classroom":"aa","year":"2011","academy":"01","semester":"1"},
-          {"course_name":"b","course_id":"01","teaching":"t","classroom":"aa","year":"2012","academy":"01","semester":"1"},
-        ];
+        // this.courses=this.course_list;
+        console.log(this.course_list);
 
         if(this.info.year!="all"&&this.info.academy!="all"){
           this.info_collection.year=this.info.year;
@@ -168,51 +179,85 @@
         }
 
         if(this.info.teacher!=""){
-          this.info_collection.teaching=this.info.teacher;
+          this.info_collection.course_teacher=this.info.teacher;
         }
         else {
-          this.info_collection.teaching="null";
+          this.info_collection.course_teacher="null";
         }
 
+        // console.log(this.info_collection.year);
+        console.log(this.info_collection.academy);
+        // console.log(this.info_collection.semester);
+        // console.log(this.info_collection.course_name);
+        // console.log(this.info_collection.course_teacher);
 
         //过滤年份
-        this.courses = this.courses.filter((kecheng) => {
-          return kecheng.year==this.info_collection.year;
+        this.course_list = this.course_list.filter((kecheng) => {
+          // console.log("过滤年份"+kecheng.course_year);
+          return kecheng.course_year==this.info_collection.year;
         });
 
+        console.log(this.course_list);
 
-        //过滤学院
-        this.courses = this.courses.filter((kecheng) => {
-          return kecheng.academy==this.info_collection.academy;
-        });
-
+        // //过滤学院
+        // this.course_list = this.course_list.filter((kecheng) => {
+        //   // console.log("过滤学院"+kecheng.course_department.department_name);
+        //   return kecheng.course_department.department_name == this.info_collection.academy;
+        // });
+        //
+        // console.log(this.course_list);
 
 
         //过滤学期
-        this.courses = this.courses.filter((kecheng) => {
-          return kecheng.semester==this.info_collection.semester;
+        this.course_list = this.course_list.filter((kecheng) => {
+          console.log(kecheng.course_department.department_name);
+          return kecheng.course_semester==this.info_collection.semester;
         });
 
 
+        console.log(this.course_list);
+
         //过滤课程
         if(this.info_collection.course_name!="null") {
-          this.courses = this.courses.filter((kecheng) => {
+          this.course_list = this.course_list.filter((kecheng) => {
+            // console.log("过滤课程"+kecheng.course_name);
             return kecheng.course_name.match(this.info_collection.course_name)
           });
         }
 
-        if(this.info_collection.teaching!="null"){
-          this.courses=this.courses.filter((kecheng) => {
-            return kecheng.teaching.match((this.info_collection.teaching))
+        if(this.info_collection.course_teacher!="null"){
+          this.course_list=this.course_list.filter((kecheng) => {
+            // console.log("过滤老师"+kecheng.course_name);
+            return kecheng.course_teacher.match((this.info_collection.course_teacher))
           })
         }
+        this.courses=this.course_list;
+        this.update_courseList=this.course_list;
+
         if(this.courses.length==0)
         {
           this.border_show=false;
           this.conditionText=true;
           this.infoText=true;
         }
+        this.$http.post(this.Global_Api + '/schedule/course_list',[])
+          .then((res)=>{
+              this.course_list=res.body.course_list;
+            }
+          );
+      },
+      sendCourseList:function () {
+        bus.$emit("sendCourseList",this.update_courseList)
       }
+    },
+    created()
+    {
+      this.$http.post(this.Global_Api + '/schedule/course_list',[])
+        .then((res)=>{
+            this.course_list=res.body.course_list;
+            console.log(this.course_list)
+          }
+        );
     },
 
     components:{
@@ -320,4 +365,6 @@
   }
 
 </style>
+
+
 
