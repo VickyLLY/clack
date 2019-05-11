@@ -22,7 +22,7 @@ import axios from 'axios'
 // 引入vuex
 import Vuex from 'vuex'
 // 引入element-ui
-import ElementUi from 'element-ui'
+import ElementUi from'element-ui'
 // 引入样式
 import 'element-ui/lib/theme-chalk/index.css'
 Vue.config.productionTip = false

@@ -22,12 +22,13 @@
               <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
-              <li><a href="javascript:void(0)" @click="background('edit_college')">编辑学院信息</a></li>
-              <li><a href="javascript:void(0)" @click="background('edit_major')">编辑专业信息</a></li>
-              <li><a href="javascript:void(0)" @click="background('edit_class')">编辑班级信息</a></li>
               <li><a href="javascript:void(0)" @click="background('edit_student')">编辑学生信息</a></li>
               <li><a href="javascript:void(0)" @click="background('edit_teacher')">编辑教师信息</a></li>
               <li><a href="javascript:void(0)" @click="background('edit_classroom')">编辑教室信息</a></li>
+              <li><a href="javascript:void(0)" @click="background('edit_major')">编辑专业信息</a></li>
+              <li><a href="javascript:void(0)" @click="background('edit_department')">编辑学院信息</a></li>
+              <li><a href="javascript:void(0)" @click="background('edit_class')">编辑班级信息</a></li>
+              <!--<li><a href="javascript:void(0)" @click="background('help')">帮助文档</a></li>-->
             </ul>
           </li>
           <li><a href="">毕业设计管理子系统</a></li>

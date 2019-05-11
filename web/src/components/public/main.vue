@@ -14,6 +14,9 @@
           <li><a @click="edit_teacher()">编辑教师信息</a></li>
           <li><a @click="edit_classroom()">编辑教室信息</a></li>
           <li><a @click="edit_major()">编辑专业信息</a></li>
+          <li><a @click="edit_department()">编辑学院信息</a></li>
+          <li><a @click="edit_class()">编辑班级信息</a></li>
+          <!--<li><a @click="help()">帮助文档</a></li>-->
         </ul>
       </li>
       <li><a href="">毕业设计管理子系统</a></li>
@@ -155,6 +158,33 @@
             //   alert('你没有管理员权限');
             // }
             this.$router.push('/main/edit_teacher');
+          },
+          edit_department:function () {
+            // if (this.user_type === '0') {
+            //   this.$router.push('/main/edit_classroom');
+            // }
+            // else {
+            //   alert('你没有管理员权限');
+            // }
+            this.$router.push('/main/edit_department');
+          },
+          edit_class:function () {
+            // if (this.user_type === '0') {
+            //   this.$router.push('/main/edit_classroom');
+            // }
+            // else {
+            //   alert('你没有管理员权限');
+            // }
+            this.$router.push('/main/edit_class');
+          },
+          help:function () {
+            // if (this.user_type === '0') {
+            //   this.$router.push('/main/edit_classroom');
+            // }
+            // else {
+            //   alert('你没有管理员权限');
+            // }
+            this.$router.push('/main/help.html');
           }
       }
     }

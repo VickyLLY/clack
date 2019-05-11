@@ -10,6 +10,8 @@ import news_mob from  '@/components/schedule/news_mob'
 import edit_classroom from '@/components/background/edit_classroom'
 import edit_major from '@/components/background/edit_major'
 import edit_student from '@/components/background/edit_student'
+import edit_department from '@/components/background/edit_department'
+import edit_class from '@/components/background/edit_class'
 import edit_teacher from '@/components/background/edit_teacher'
 
 
@@ -77,6 +79,16 @@ export default new Router({
       path: '/main/edit_student',
       name: 'edit_student',
       component: edit_student,
-    }
+    },
+    {
+      path: '/main/edit_class',
+      name: 'edit_class',
+      component: edit_class,
+    },
+    {
+      path: '/main/edit_department',
+      name: 'edit_department',
+      component: edit_department,
+    },
   ]
 })
