@@ -9,4 +9,5 @@ urlpatterns = [
     path(r'dst_list_approval', views.dst_list_approval, name='dst_list_approval'),
     path(r'teacher_dst_list', views.teacher_dst_list, name='teacher_dst_list'),
     path(r'stu_dst_list', views.stu_dst_list, name='stu_dst_list'),
+    path(r'stu_view_dst', views.stu_view_dst, name='stu_view_dst'),
 ]

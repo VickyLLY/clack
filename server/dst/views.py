@@ -147,3 +147,21 @@ def stu_dst_list(request):
         'dissertation_teacher': tt.teacher_name,
     } for dsta in dsts]
     return JsonResponse({**error_code.CLACK_SUCCESS, 'stu_dst_list': result_list})
+
+@login_required
+def stu_view_dst(request):
+    request_json = json.loads(request.body)
+    dstid=request_json['dissertation_id']
+    dsts = entity.models.DissertationTopic.objects.filter(id=dstid)
+    tname = list(entity.models.Teacher.objects.filter(id=dsts[0].dissertation_tnum_id))
+    tt = tname[0]
+    result_list = [{
+        'dissertation_id': dsta.id,
+        'dissertation_title': dsta.dissertation_title,
+        'dissertation_content': dsta.dissertation_content,
+        'dissertation_requirement': dsta.dissertation_requirement,
+        'dissertation_capacity': dsta.dissertation_capacity,
+        'dissertation_pub_time': dsta.dissertation_pub_time,
+        'dissertation_teacher': tt.teacher_name,
+    } for dsta in dsts]
+    return JsonResponse({**error_code.CLACK_SUCCESS, 'stu_dst_list': result_list})
