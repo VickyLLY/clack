@@ -21,15 +21,12 @@ import tea_sel_course from "@/components/select_course/tea_sel_course";
 import stu_sel_course from "@/components/select_course/stu_sel_course";
 import stu_timetable from "@/components/select_course/stu_timetable";
 import course_table from "@/components/schedule/course_table";
-<<<<<<< HEAD
 //成绩管理
 import Stu_navigation from '@/components/scoremng/stu_scoremng/Stu_navigation'
 import Stu_score from '@/components/scoremng/stu_scoremng/stu_score'
 import Stu_evaluation from '@/components/scoremng/stu_scoremng/stu_evaluation'
-=======
 import man_view_msg from "@/components/select_course/man_view_msg";
 import attention from "@/components/select_course/attention";
->>>>>>> web_master
 
 Vue.use(VueCookie)
 Vue.use(Router)
@@ -139,7 +136,6 @@ export default new Router({
       name: 'stu_timetable',
       component: stu_timetable
     },
-<<<<<<< HEAD
     //成绩管理
     {
       path:'/main/stu_navigation',
@@ -157,14 +153,12 @@ export default new Router({
           component:Stu_evaluation
         }
       ]
-    }
-=======
+    },
     {
       path:'/main/stu_sel_course/attention',
       name:'attention',
       component:attention
     },
->>>>>>> web_master
   ],
   mode: 'history' // 去除地址栏中的/#
 })
