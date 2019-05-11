@@ -34,9 +34,9 @@
 
         </div>
 
-          <div class="content">
-            <router-view></router-view>
-          </div>
+        <div class="content">
+          <router-view></router-view>
+        </div>
 
       </div>
     </div>
@@ -47,7 +47,7 @@
 </template>
 
 <script>
-  import PC_bar from '../../public/PC_bar'
+  import PC_bar from '../public/PC_bar'
   export default {
     name: "navigation",
     components:{

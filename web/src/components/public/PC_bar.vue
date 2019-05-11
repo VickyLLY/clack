@@ -104,7 +104,7 @@
         this.$router.push({name:'course_table'});
       },
       scoremng:function () {
-        this.$router.push('/main/stu_navigation')
+        this.$router.push('/main/navigation')
       },
     }
   }

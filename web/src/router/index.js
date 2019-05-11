@@ -16,7 +16,7 @@ import stu_sel_course from "@/components/select_course/stu_sel_course";
 import stu_timetable from "@/components/select_course/stu_timetable";
 import course_table from "@/components/schedule/course_table";
 //成绩管理
-import Stu_navigation from '@/components/scoremng/stu_scoremng/Stu_navigation'
+import navigation from '@/components/scoremng/navigation'
 import Stu_score from '@/components/scoremng/stu_scoremng/stu_score'
 import Stu_evaluation from '@/components/scoremng/stu_scoremng/stu_evaluation'
 
@@ -94,9 +94,9 @@ export default new Router({
     },
     //成绩管理
     {
-      path:'/main/stu_navigation',
-      name:'Stu_navigation',
-      component:Stu_navigation,
+      path:'/main/navigation',
+      name:'navigation',
+      component:navigation,
       children: [
         {
           path:'stu_score',
