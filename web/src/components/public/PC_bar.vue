@@ -162,7 +162,7 @@
         //   alert('你没有管理员权限');
         // }
         this.$router.push('/main/help.html');
-      }
+      },
       arrange_course: function () {
         this.$router.push('/main/arrange_semester')
       },

@@ -36,24 +36,11 @@
     left: 50%;
     margin-left: -145px;
   }
-  input {
-    display: block;
-    width: 250px;
-    height: 40px;
-    line-height: 40px;
-    margin: 0 auto;
-    margin-bottom: 10px;
-    outline: none;
-    border: 1px solid #888;
-    padding: 10px;
-    box-sizing: border-box;
-  }
 
-  p {
-    color: red;
-  }
 
-  button {
+
+
+  button.login {
     display: block;
     width: 288px;
     height: 40px;
