@@ -19,6 +19,9 @@ import course_table from "@/components/schedule/course_table";
 import navigation from '@/components/scoremng/navigation'
 import Stu_score from '@/components/scoremng/stu_scoremng/stu_score'
 import Stu_evaluation from '@/components/scoremng/stu_scoremng/stu_evaluation'
+import Tea_upload from '@/components/scoremng/tea_scoremng/teacher_upload'
+import Tea_query from '@/components/scoremng/tea_scoremng/teacher_query'
+
 
 Vue.use(VueCookie)
 Vue.use(Router)
@@ -107,7 +110,18 @@ export default new Router({
           path:'stu_evaluation',
           name:'stu_evaluation',
           component:Stu_evaluation
+        },
+        {
+          path:'tea_upload',
+          name:'Tea_upload',
+          component:Tea_upload
+        },
+        {
+          path:'tea_query',
+          name:'Tea_query',
+          component:Tea_query
         }
+
       ]
     }
   ],
