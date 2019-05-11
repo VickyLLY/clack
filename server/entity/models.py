@@ -59,6 +59,19 @@ class Banji(models.Model):
     banji_major = models.ForeignKey(Major, on_delete=models.CASCADE, null=False)
     # banji_department = models.ForeignKey(Department, on_delete=models.CASCADE, null=False)
 
+class Teacher(models.Model):
+    teacher_name = models.TextField(default="")
+    teacher_number = models.TextField(default="", unique=True)
+    teacher_email = models.EmailField(default="test@test.com")
+    teacher_department = models.ForeignKey(Department, on_delete=models.CASCADE, null=False)
+
+    def to_dict(self):
+        return {
+            "teacher_name": self.teacher_name,
+            "teacher_number": self.teacher_number,
+            "teacher_email": self.teacher_email,
+            "teacher_department_id": self.teacher_department_id
+        }
 
 # 课程
 class Course(models.Model):
@@ -67,14 +80,19 @@ class Course(models.Model):
     course_credit = models.IntegerField(default=1)
     # 课程类型
     course_type = models.IntegerField(default=0)
+
     # 课程所在学年开始年份
     course_year = models.IntegerField(default=2018)
     # 课程学期
     course_semester = models.IntegerField(default=2)
     # 课程容量
-    course_capacity = models.IntegerField()
+    course_capacity = models.IntegerField(default=150)
+    # 任课老师
+    course_teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, null=False)
     # 开课学院
     course_department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    # 课程余量
+    course_allowance = models.IntegerField(default=150)
 
     def __str__(self):
         return self.course_name + "," + str(self.course_year) + "," + str(self.course_semester)
@@ -92,7 +110,6 @@ class Course(models.Model):
             "course_department": self.course_department.to_dict(),
             "date_and_classroom": [dc.to_dict() for dc in self.dateandclassroom_set.all()]
         }
-
 
 # 考试
 class Exam(models.Model):
@@ -123,22 +140,12 @@ class Student(models.Model):
             "student_end_year": self.student_end_year
         }
 
-
-# 教师
-class Teacher(models.Model):
-    teacher_name = models.TextField(default="")
-    teacher_number = models.TextField(default="", unique=True)
-    teacher_email = models.EmailField(default="test@test.com")
-    teacher_department = models.ForeignKey(Department, on_delete=models.CASCADE, null=False)
-
-    def to_dict(self):
-        return {
-            "teacher_name": self.teacher_name,
-            "teacher_number": self.teacher_number,
-            "teacher_email": self.teacher_email,
-            "teacher_department_id": self.teacher_department_id
-        }
-
+#学生课程关系
+class Student_course(models.Model):
+    student=models.ForeignKey(Student, on_delete=models.CASCADE)
+    course=models.ForeignKey(Course, on_delete=models.CASCADE)
+    # 选课权限
+    course_access = models.TextField(default="无")
 
 # 用户
 class User(models.Model):
