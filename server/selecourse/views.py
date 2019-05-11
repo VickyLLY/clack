@@ -191,11 +191,11 @@ def sele_button(request):
 def dele_button(request):
     #通过点击按钮，将对应的学生号和课程号记录从选课表selection中删除
     request_json = json.loads(request.body)
-    course_name=request_json["course_name"]
+    course_id=request_json["course_id"]
     student_number=request_json["student_number"]
     #通过课程名找到对应的课程记录
     try:
-        course = Course.objects.get(course_name=course_name)
+        course = Course.objects.get(id=course_id)
     except Exception:
         return JsonResponse({**error_code.CLACK_COURSE_NOT_EXISTS})
     #通过学生名找到对应的学生记录
