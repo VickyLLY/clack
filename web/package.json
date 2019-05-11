@@ -15,11 +15,12 @@
   "dependencies": {
     "font-awesome": "^4.7.0",
     "popper.js": "^1.14.7",
+    "snapdragon": "^0.12.0",
     "vue": "^2.5.2",
     "vue-cookie": "^1.1.4",
     "vue-html-loader": "^1.2.4",
     "vue-router": "^3.0.1",
-    "vue-select": "latest"
+    "vue-select": "^2.6.4"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

@@ -1,20 +1,41 @@
 <template>
   <div>
     <div class="login-wrap">
-      <h3>登录</h3>
-      <input type="text" placeholder="请输入用户名" v-model="username">
-      <input type="password" placeholder="请输入密码" v-model="password">
-      <button v-on:click="login">登录</button>
+      <h3 style="margin: 20px">登录</h3>
+        <div class="input-group" >
+          <span class="input-group-addon glyphicon glyphicon-user demo"></span>
+          <input type="text" placeholder="请输入用户名" class="form-control" v-model="username">
+        </div>
+        <div class="input-group">
+          <span class="input-group-addon glyphicon glyphicon-lock demo"></span>
+          <input type="password" placeholder="请输入密码"class="form-control" v-model="password">
+        </div>
+
+      <button class="login" v-on:click="login">登录</button>
       <button class="btn btn-link" @click="register">没有账号？马上注册</button>
     </div>
   </div>
 </template>
 
-<style>
+<style scoped>
+  *{
+    outline: 0;
+    margin: 0 auto;
+  }
+  .glyphicon{
+    position: static;
+  }
   .login-wrap {
     text-align: center;
   }
-
+  .form-control{
+    width: 250px;
+  }
+  .input-group {
+    margin-bottom:5px;
+    left: 50%;
+    margin-left: -145px;
+  }
   input {
     display: block;
     width: 250px;
@@ -34,7 +55,7 @@
 
   button {
     display: block;
-    width: 250px;
+    width: 288px;
     height: 40px;
     line-height: 40px;
     margin: 0 auto;
@@ -43,15 +64,9 @@
     color: #fff;
     font-size: 16px;
     margin-bottom: 5px;
+    border-radius: 5px;
   }
 
-  span {
-    cursor: pointer;
-  }
-
-  span:hover {
-    color: #41b883;
-  }
 </style>
 
 <script>

@@ -15,6 +15,10 @@
       PC_bar,
       add_course_component
     },
+    mounted() {
+      if(this.$cookie.get('username')==null)
+        this.$router.push('/')
+    }
   }
 </script>
 
