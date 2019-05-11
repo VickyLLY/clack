@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'schedule',
     'corsheaders',
     'scoremng',
+    'dst',
     'background',
     'selecourse',
 ]

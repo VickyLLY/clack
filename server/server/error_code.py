@@ -36,6 +36,7 @@ CLACK_NO_PERMISSION = {"error_code": 9, "error_message": "没有调用这个接�
 # student不存在
 CLACK_STUDENT_NOT_EXISTS = {"error_code": 10, "error_message": "查询的学生不存在"}
 
+
 # 不存在
 CLACK_TEACHER_NOT_EXISTS = {"error_code": 11, "error_message": "查询的教师不存在"}
 
@@ -78,3 +79,12 @@ CLACK_DOWNLOAD_FAILED = {"error_code": 23, "error_message": "下载失败"}
 
 # 目标不存在
 CLACK_NOT_EXISTS = {"error_code":24 , "error_message": "此目标不存在"}
+
+# teacher不存在
+CLACK_TEACHER_NOT_EXISTS = {"error_code": 25, "error_message": "查询的教师不存在"}
+
+#学生选题限选一个且已经选择课题
+CLACK_STUDENT_SELECT_DST_EXISTS = {"error_code": 26, "error_message": "已经选择课题"}
+
+# 上传文件失败
+CLACK_DISSERTATION_UPLOAD_FILE_FAILED = {"error_code": 27, "error_message": "上传论文失败"}
