@@ -1,6 +1,7 @@
 # Create your views here.
 import json
 
+
 import selecourse.models
 from django.http import JsonResponse
 from entity.models import Student, Course,Teacher,Classroom,Department,DateAndClassroom
