@@ -89,8 +89,6 @@ class Course(models.Model):
     course_capacity = models.IntegerField(default=150)
     # 任课老师
     course_teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, null=False)
-    # 选课权限
-    course_access = models.TextField(default="无")
     # 开课学院
     course_department = models.ForeignKey(Department, on_delete=models.CASCADE)
     # 课程余量
