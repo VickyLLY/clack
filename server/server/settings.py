@@ -36,9 +36,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'entity',
+    'schedule',
     'corsheaders',
     'scoremng',
     'background'
+    'selecourse',
 ]
 
 MIDDLEWARE = [

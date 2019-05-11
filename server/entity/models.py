@@ -24,6 +24,12 @@ from django.utils.timezone import make_aware
 class Department(models.Model):
     department_name = models.TextField(default='', unique=True)
 
+    def to_dict(self):
+        return {
+            "department_id": self.id,
+            "department_name": self.department_name
+        }
+
 
 # 专业
 class Major(models.Model):
@@ -36,6 +42,16 @@ class Classroom(models.Model):
     classroom_name = models.TextField(default='', unique=True)
     classroom_capacity = models.IntegerField(default=30)
 
+    def __str__(self):
+        return "%s,%d" % (self.classroom_name, self.classroom_capacity)
+
+    def to_dict(self):
+        return {
+            'classroom_id': self.id,
+            'classroom_name': self.classroom_name,
+            'classroom_capacity': self.classroom_capacity
+        }
+
 
 # 班级
 class Banji(models.Model):
@@ -43,6 +59,19 @@ class Banji(models.Model):
     banji_major = models.ForeignKey(Major, on_delete=models.CASCADE, null=False)
     # banji_department = models.ForeignKey(Department, on_delete=models.CASCADE, null=False)
 
+class Teacher(models.Model):
+    teacher_name = models.TextField(default="")
+    teacher_number = models.TextField(default="", unique=True)
+    teacher_email = models.EmailField(default="test@test.com")
+    teacher_department = models.ForeignKey(Department, on_delete=models.CASCADE, null=False)
+
+    def to_dict(self):
+        return {
+            "teacher_name": self.teacher_name,
+            "teacher_number": self.teacher_number,
+            "teacher_email": self.teacher_email,
+            "teacher_department_id": self.teacher_department_id
+        }
 
 # 课程
 class Course(models.Model):
@@ -51,14 +80,22 @@ class Course(models.Model):
     course_credit = models.IntegerField(default=1)
     # 课程类型
     course_type = models.IntegerField(default=0)
+
     # 课程所在学年开始年份
     course_year = models.IntegerField(default=2018)
     # 课程学期
     course_semester = models.IntegerField(default=2)
     # 课程容量
-    course_capacity = models.IntegerField()
+    course_capacity = models.IntegerField(default=150)
+    # 任课老师
+    course_teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, null=False)
     # 开课学院
     course_department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    # 课程余量
+    course_allowance = models.IntegerField(default=150)
+
+    def __str__(self):
+        return self.course_name + "," + str(self.course_year) + "," + str(self.course_semester)
 
     def to_dict(self):
         return {
@@ -69,9 +106,10 @@ class Course(models.Model):
             "course_year": self.course_year,
             "course_semester": self.course_semester,
             "course_capacity": self.course_capacity,
-            "course_department_id": self.course_department_id
+            # "course_department_id": self.course_department_id
+            "course_department": self.course_department.to_dict(),
+            "date_and_classroom": [dc.to_dict() for dc in self.dateandclassroom_set.all()]
         }
-
 
 # 考试
 class Exam(models.Model):
@@ -102,22 +140,12 @@ class Student(models.Model):
             "student_end_year": self.student_end_year
         }
 
-
-# 教师
-class Teacher(models.Model):
-    teacher_name = models.TextField(default="")
-    teacher_number = models.TextField(default="", unique=True)
-    teacher_email = models.EmailField(default="test@test.com")
-    teacher_department = models.ForeignKey(Department, on_delete=models.CASCADE, null=False)
-
-    def to_dict(self):
-        return {
-            "teacher_name": self.teacher_name,
-            "teacher_number": self.teacher_number,
-            "teacher_email": self.teacher_email,
-            "teacher_department_id": self.teacher_department_id
-        }
-
+#学生课程关系
+class Student_course(models.Model):
+    student=models.ForeignKey(Student, on_delete=models.CASCADE)
+    course=models.ForeignKey(Course, on_delete=models.CASCADE)
+    # 选课权限
+    course_access = models.TextField(default="无")
 
 # 用户
 class User(models.Model):
@@ -138,13 +166,17 @@ class Semester(models.Model):
     # 开学日期
     start_date = models.DateField()
 
+    def __str__(self):
+        return str(self.year) + "," + str(self.semester) + "," + str(self.start_date)
+
 
 class DateAndClassroom(models.Model):
     # 时间地点的类型
     # type 0 代表课程的时间地点
     # type 1 代表考试的时间地点
+    # type -1 代表被删除
     type = models.IntegerField(default=0)
-    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE, null=False)
+    classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE, null=True, blank=True)
     # type 0 开始 -----------------------
     # 对应课程
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
@@ -168,8 +200,8 @@ class DateAndClassroom(models.Model):
     # 对应考试
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE, null=True, blank=True)
     # 开始日期时间
-    start_date_time = models.DateTimeField(blank=True)
-    end_date_time = models.DateTimeField(blank=True)
+    start_date_time = models.DateTimeField(blank=True, null=True)
+    end_date_time = models.DateTimeField(blank=True, null=True)
 
     # type 1 结束 -----------------------
 
@@ -193,6 +225,7 @@ class DateAndClassroom(models.Model):
         return result
 
     def conflict(self, date_and_classroom) -> bool:
+        # 如果时间有冲突将会返回True
         assert isinstance(date_and_classroom, DateAndClassroom)
         for i in self.to_date_time_list():
             for j in date_and_classroom.to_date_time_list():
@@ -201,19 +234,67 @@ class DateAndClassroom(models.Model):
         return False
 
     def save(self, *args, **kwargs):
-        if type == 0:
+        if self.type == -1:
+            # 被删除
+            super(DateAndClassroom, self).save(*args, **kwargs)
+            return
+        # TODO 判断节次不能大于13
+        Semester.objects.get(year=self.year, semester=self.semester)
+        if self.type == 0:
             if self.start_week > self.end_week:
                 raise Exception("开始周大于结束周")
             if self.start > self.end:
                 raise Exception("开始节次大于结束节次")
-        elif type == 1:
+            if self.start < 1 or self.end > 13:
+                raise Exception("开始结束应在1到13范围内")
+            if self.course.course_capacity > self.classroom.classroom_capacity:
+                raise Exception("教室容量小于课程容量")
+            if self.day_of_week < 1 or self.day_of_week > 7:
+                raise Exception("day_of_week wrong")
+        elif self.type == 1:
             self.start_date_time = make_aware(self.start_date_time)
             self.end_date_time = make_aware(self.end_date_time)
             if self.start_date_time > self.end_date_time:
                 raise Exception("开始时间大于结束时间")
+            if self.classroom.classroom_capacity < self.exam.exam_course.course_capacity:
+                pass
+                # TODO 一个课程多个考试教室
+                # raise Exception("教室容量小于考试对应课程容量")
         # 存储时判断同一教室是否存在时间冲突
         for DAC in DateAndClassroom.objects.filter(classroom_id=self.classroom_id):
-            if self.conflict(DAC):
+            if DAC.id != self.id and self.conflict(DAC):
                 raise Exception('当前时间教室内存在其它事件')
 
         super(DateAndClassroom, self).save(*args, **kwargs)
+
+    def check_is_valid(self):
+        for DAC in DateAndClassroom.objects.filter(classroom_id=self.classroom_id):
+            if self.conflict(DAC):
+                return False
+        return True
+
+    def get_free_classroom(self):
+        result = list()
+        for classroom in Classroom.objects.all():
+            flag = True
+            for DC in classroom.dateandclassroom_set.all():
+                if DC.id != self.id and self.conflict(DC):
+                    flag = False
+                    break
+            if flag:
+                result.append(classroom)
+        return result
+
+    def to_dict(self):
+        if self.type == 0:
+            return {
+                "id": self.id,
+                "classroom": self.classroom.to_dict(),
+                "year": self.year,
+                "semester": self.semester,
+                "start_week": self.start_week,
+                "end_week": self.end_week,
+                "day_of_week": self.day_of_week,
+                "start": self.start,
+                "end": self.end
+            }
