@@ -12,14 +12,14 @@
           <el-col :span="20" :offset="1">
             <div class="fr margin40">
               <el-button size="mini" type="primary" icon="el-icon-plus" @click="add_dialog = true">添加</el-button>
-              <el-button size="mini" type="danger" icon="el-icon-delete" @click="delete_multiple_data()">删除</el-button>
+              <el-button size="mini" type="danger" icon="el-icon-delete" @click="delete_multiple_data">删除</el-button>
             </div>
           </el-col>
         </el-row>
         <!--数据展示列表-->
         <el-row>
           <el-col :span="24">
-            <el-table :data="data_list" tooltip-effect="dark" style="width:100%" :default-sort="{prop:'create_time',order:'descending'}" @selection-change="get_multiple_selection()">
+            <el-table :data="data_list" tooltip-effect="dark" style="width:100%" :default-sort="{prop:'create_time',order:'descending'}" @selection-change="get_multiple_selection">
               <el-table-column type="selection" width="55">
               </el-table-column>
               <el-table-column prop="banji_id" label="班级ID" sortable>
@@ -74,7 +74,7 @@
           </el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="add_submit()">提交</el-button>
+          <el-button type="primary" @click="add_submit">提交</el-button>
           <el-button @click="reset_form('add_form')">取消</el-button>
         </el-form-item>
       </el-form>
@@ -89,7 +89,7 @@
           <el-input type="text" v-model="edit_form.banji_major_id"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="edit_submit()">修改</el-button>
+          <el-button type="primary" @click="edit_submit">修改</el-button>
           <el-button @click="reset_form('edit_form')">取消</el-button>
         </el-form-item>
       </el-form>
