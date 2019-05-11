@@ -1,8 +1,11 @@
 attrs==19.1.0
+comtypes==1.1.7
 Django==2.2
 django-cors-headers==2.5.2
 jsonschema==3.0.1
+PyMySQL==0.9.3
 pyrsistent==0.14.11
 pytz==2018.9
 six==1.12.0
 sqlparse==0.3.0
+xlwt==1.3.0
