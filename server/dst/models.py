@@ -12,16 +12,14 @@ class Determination(models.Model):
     dissertation = models.ForeignKey(DissertationTopic,on_delete=models.CASCADE)
 
 
+# 学生成绩及评语
 class Grade(models.Model):
-    student = models.ForeignKey(Student,on_delete=models.CASCADE)
-    dissertation_grade = models.IntegerField(default=0)
+    grade_dissertation = models.ForeignKey(DissertationTopic, on_delete=models.CASCADE,default="")
+    grade_student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    grade_grade = models.IntegerField(default=0)
+    grade_comment = models.TextField(default="")
 
-class File(models.Model):
-    student = models.ForeignKey(Student,on_delete=models.CASCADE)
-    dissertation_file = models.FileField()
+class DissertationFile(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    dissertation_file_path = models.FileField(upload_to=None)
 
-class Review(models.Model):
-    teacher = models.ForeignKey(Teacher,on_delete=models.CASCADE)
-    student = models.ForeignKey(Student,on_delete=models.CASCADE)
-    dissertation = models.ForeignKey(DissertationTopic,on_delete=models.CASCADE)
-    review_content = models.TextField()

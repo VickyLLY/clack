@@ -41,3 +41,6 @@ CLACK_TEACHER_NOT_EXISTS = {"error_code": 11, "error_message": "查询的教师�
 
 #学生选题限选一个且已经选择课题
 CLACK_STUDENT_SELECT_DST_EXISTS = {"error_code": 24, "error_message": "已经选择课题"}
+
+# 上传文件失败
+CLACK_DISSERTATION_UPLOAD_FILE_FAILED = {"error_code": 25, "error_message": "上传论文失败"}

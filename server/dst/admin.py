@@ -5,6 +5,5 @@ from dst import models
 
 admin.site.register(models.Application)
 admin.site.register(models.Determination)
-admin.site.register(models.File)
+admin.site.register(models.DissertationFile)
 admin.site.register(models.Grade)
-admin.site.register(models.Review)
