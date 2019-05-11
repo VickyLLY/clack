@@ -22,9 +22,13 @@
             <el-table :data="data_list" tooltip-effect="dark" style="width:100%" :default-sort="{prop:'create_time',order:'descending'}" @selection-change="get_multiple_selection()">
               <el-table-column type="selection" width="55">
               </el-table-column>
+              <el-table-column prop="banji_id" label="班级ID" sortable>
+              </el-table-column>
               <el-table-column prop="banji_name" label="班级名称" sortable>
               </el-table-column>
-              <el-table-column prop="banji_major_id" label="专业编号" sortable>
+              <el-table-column prop="banji_major_id" label="所属专业ID" sortable>
+              </el-table-column>
+              <el-table-column prop="banji_department_id" label="所属学院ID" sortable>
               </el-table-column>
               <el-table-column label="操作">
                 <template slot-scope="scope">
@@ -42,7 +46,16 @@
         <el-row>
           <el-col :span="24">
             <div class="block">
-              <el-pagination layout="prev,pager,next" :total="total" :page-size="5" @current-change="get_data">
+              <el-pagination
+                @size-change="change_page_size"
+                @current-change="change_page"
+                :current-page="current_page"
+                :page-sizes="[10, 30, 50]"
+                :page-size="page_size"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="total"
+                background
+                :pager-count="11">
               </el-pagination>
             </div>
           </el-col>
@@ -50,13 +63,13 @@
       </el-main>
     </el-container>
     <!--添加信息窗口-->
-    <el-dialog title="添加" :visible.sync="add_dialog" @close="reset_form('add_form')">
+    <el-dialog title="添加信息" :visible.sync="add_dialog" @close="reset_form('add_form')">
       <el-form :model="add_form" :rules="data_rules" ref="add_form" label-width="100px">
         <el-form-item label="班级名称" prop="banji_name">
           <el-input type="text" v-model="add_form.banji_name" auto-complete="off">
           </el-input>
         </el-form-item>
-        <el-form-item label="专业编号" prop="banji_major_id">
+        <el-form-item label="所属专业ID" prop="banji_major_id">
           <el-input type="text" v-model="add_form.banji_major_id" auto-complete="off">
           </el-input>
         </el-form-item>
@@ -72,7 +85,7 @@
         <el-form-item label="班级名称" prop="banji_name">
           <el-input type="text" v-model="edit_form.banji_name"></el-input>
         </el-form-item>
-        <el-form-item label="专业编号" prop="banji_major_id">
+        <el-form-item label="所属专业ID" prop="banji_major_id">
           <el-input type="text" v-model="edit_form.banji_major_id"></el-input>
         </el-form-item>
         <el-form-item>
@@ -87,7 +100,6 @@
 
 <script>
   import PC_bar from '../public/PC_bar';
-  import axios from 'axios';
 
   export default {
     name: 'edit_class',
@@ -99,33 +111,55 @@
       this.get_data();
     },
     data() {
+      // 检测是否为自然数
+      const is_natural_number = (rule, value, callback) => {
+        const reg_exp = new RegExp(/^((\+?|-?)0+|\+?0*[1-9][0-9]*)$/);
+        if (!reg_exp.test(value)) {
+          callback(new Error('请输入自然数'));
+        }
+        else {
+          callback();
+        }
+      };
       return {
+        // 用户数据
         user_name: this.$cookie.get('username'),
         user_token: this.$cookie.get('user_token'),
+        // 窗口显示标志
+        add_dialog: false,
+        edit_dialog: false,
+        // 添加窗口数据
         add_form: {
           banji_name: '',
           banji_major_id: ''
         },
+        // 编辑窗口数据
         edit_form: {
+          banji_id: '',
           banji_name: '',
-          banji_major_id: ''
+          banji_major_id: '',
+          banji_department_id: ''
         },
-        add_dialog: false,
-        edit_dialog: false,
-        data_list: [],
+        // 数据输入规则
         data_rules: {
-          // 待修改
           banji_name: [
-            { required: true, message: '请输入班级名称', tigger: 'blur' },
-            { min: 3, max: 15, message: '长度在3到15个字符', tigger: 'blur' }
+            { required: true, message: '请输入教室名称', tigger: 'blur' },
+            { min: 3, max: 15, message: '长度为3~15个字符', tigger: 'blur' }
           ],
           banji_major_id: [
-            { required: true, message: '请输入专业编号', tigger: 'blur' }
+            { required: true, message: '请输入教室容量', tigger: 'blur' },
+            { validator: is_natural_number, tigger: 'blur'}
           ]
         },
-        total: 0,
-        multiple_selection: []
-      }
+        // 数据显示列表
+        data_list: [],
+        // 多选列表
+        multiple_selection: [],
+        // 分页相关数据
+        current_page: 1,
+        page_size: 10,
+        total: 0
+      };
     },
     methods: {
       // 提交添加窗口数据
@@ -140,16 +174,21 @@
                 banji_major_id: parseInt(this.add_form.banji_major_id)
               }
             }).then(response => {
-              if(response.body.error_code === 0) {
-                this.$message.success('添加成功');
-                this.reset_form('add_form');
-                this.get_data();
+              switch (response.body.error_code) {
+                case 0:
+                  this.$message.success('添加成功！');
+                  this.reset_form('add_form');
+                  this.get_data();
+                  break;
+                case 7:
+                  this.$message.error('请勿重复添加！');
+                  break;
+                default:
+                  this.$message.error('错误' + response.body.error_code + '：'
+                    + response.body.error_message);
               }
-              else {
-                this.$message.error('错误：' + response.body.error_message);
-              }
-            }).catch(err => {
-              console.log(err);
+            }).catch(error => {
+              console.log(error);
             });
           }
         })
@@ -166,72 +205,82 @@
         this.$refs[form_name].resetFields();
       },
       // 获取主界面数据
-      get_data: function(page) {
-        // 待修改
-        axios.post(this.Global_Api + '/background/banji_list', {
-          params: {
-            page: page || 1,
-            pageSize: 5
+      get_data: function() {
+        this.$http.post(this.Global_Api + '/background/banji_list', {}).then(response => {
+          let start = (this.current_page - 1)*this.page_size;
+          let end  = start + this.page_size;
+          if(end > response.data.banji_list.length) {
+            end = response.data.banji_list.length;
           }
-        }).then(response => {
-          this.data_list = response.data.banji_list;
-          this.total = response.data.banji_list.count;
-        }).catch(err => {
-          console.log(err);
+          this.data_list = response.data.banji_list.slice(start, end);
+          this.total = response.data.banji_list.count();
+        }).catch(error => {
+          console.log(error);
         })
       },
       // 设置编辑窗口数据
       set_data: function(row) {
         this.edit_dialog = true;
+        this.edit_form.banji_id = row.banji_id;
         this.edit_form.banji_name = row.banji_name;
         this.edit_form.banji_major_id = row.banji_major_id;
       },
       // 提交编辑窗口数据
       edit_submit: function() {
-        // 待修改
         this.$refs['edit_form'].validate((valid) => {
           if(valid) {
-            this.$http.post(this.Global_Api + '/background/edit_classroom', {
+            this.$http.post(this.Global_Api + '/background/edit_banji', {
               user_name: this.user_name,
               user_token: this.user_token,
-              classroom: {
-                banji_name: this.edit_form.banji_name,
-                banji_major_id: parseInt(this.edit_form.banji_major_id)
-              }
+              banji_id: this.edit_form.banji_id,
+              banji_name: this.edit_form.banji_name,
+              banji_major_id: parseInt(this.edit_form.banji_major_id)
             }).then(response => {
-              if(response.body.error_code === 0) {
-                this.$message.success('添加成功');
-                this.reset_form('edit_form');
-                this.get_data();
+              // 待修改，都是未知错误（-1）
+              switch (response.body.error_code) {
+                case 0:
+                  this.$message.success('编辑成功！');
+                  this.reset_form('edit_form');
+                  this.get_data();
+                  break;
+                case 7:
+                  this.$message.error('编辑后与其他项冲突！');
+                  break;
+                default:
+                  this.$message.error('错误' + response.body.error_code + '：'
+                    + response.body.error_message);
               }
-              else {
-                this.$message.error('错误：' + response.body.error_message);
-              }
-            }).catch(err => {
-              console.log(err);
+            }).catch(error => {
+              console.log(error);
             });
           }
         })
       },
       // 删除单项数据
       delete_single_data: function(row) {
-        // 待修改
-        this.$confirm('此操作将永久删除该项，是否继续?', '警告', {
+        this.$confirm('删除后不可恢复，是否继续？', '警告', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$http.post('/background/del_classroom', row).then(response => {
+          this.$http.post(this.Global_Api + '/background/del_banji', {
+            user_name: this.user_name,
+            user_token: this.user_token,
+            banji_id: row.banji_id
+          }).then(response => {
             if(response.body.error_code === 0) {
-              this.$message.success('删除成功');
+              this.$message.success('删除成功！');
               this.get_data();
             }
             else {
-              this.$message.error('错误：' + response.body.error_message);
+              this.$message.error('错误' + response.body.error_code + '：'
+                + response.body.error_message);
             }
-          })
+          }).catch(error => {
+            console.log(error);
+          });
         }).catch(() => {
-          this.$message.info('操作已取消');
+          this.$message.info('操作已取消！');
         });
       },
       // 获取多选项
@@ -240,24 +289,47 @@
       },
       // 删除多项数据
       delete_multiple_data: function() {
-        // 待修改
-        this.$confirm('此操作将永久删除这些项，是否继续？', '警告', {
+        this.$confirm('删除后不可恢复，是否继续？', '警告', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$http.post('/background/del_classroom', this.multiple_selection).then(response => {
-            if(response.body.error_code === 0) {
-              this.$message.success('删除成功');
-              this.get_data();
-            }
-            else {
-              this.$message.error('错误：' + response.body.error_message);
-            }
-          })
+          let is_error = false;
+          for(let i = 0; i < this.multiple_selection.length; ++i) {
+            this.$http.post(this.Global_Api + '/background/del_banji', {
+              user_name: this.user_name,
+              user_token: this.user_token,
+              banji_id: this.multiple_selection[i].banji_id
+            }).then(response => {
+              if(response.body.error_code !== 0) {
+                is_error = true;
+              }
+              if(i === this.multiple_selection.length - 1) {
+                if(is_error) {
+                  this.$message.error('删除时出现错误！');
+                }
+                else {
+                  this.$message.success('删除成功！');
+                  this.get_data();
+                }
+              }
+            }).catch(error => {
+              console.log(error);
+            });
+          }
         }).catch(() => {
-          this.$message.info('操作已取消');
-        })
+          this.$message.info('操作已取消！');
+        });
+      },
+      // 改变页面大小
+      change_page_size(size) {
+        this.page_size = size;
+        this.get_data();
+      },
+      // 换页
+      change_page(page) {
+        this.current_page = page;
+        this.get_data();
       }
     }
   }
