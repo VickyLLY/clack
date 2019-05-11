@@ -76,16 +76,11 @@ class Teacher(models.Model):
 # 课程
 class Course(models.Model):
     course_name = models.TextField(default="")
-    # 课程开始时间
-    course_start = models.IntegerField(default=1)
-    # 课程结束时间
-    course_end = models.IntegerField(default=3)
     # 课程学分
     course_credit = models.IntegerField(default=1)
     # 课程类型
     course_type = models.IntegerField(default=0)
-    # 课程对应的教室
-    course_classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE, null=False)
+
     # 课程所在学年开始年份
     course_year = models.IntegerField(default=2018)
     # 课程学期
@@ -118,7 +113,6 @@ class Course(models.Model):
             "date_and_classroom": [dc.to_dict() for dc in self.dateandclassroom_set.all()]
         }
 
-
 # 考试
 class Exam(models.Model):
     exam_name = models.TextField(default='')
@@ -147,6 +141,13 @@ class Student(models.Model):
             "student_start_year": self.student_start_year,
             "student_end_year": self.student_end_year
         }
+
+#学生课程关系
+class Student_course(models.Model):
+    student=models.ForeignKey(Student, on_delete=models.CASCADE)
+    course=models.ForeignKey(Course, on_delete=models.CASCADE)
+    # 选课权限
+    course_access = models.TextField(default="无")
 
 # 用户
 class User(models.Model):

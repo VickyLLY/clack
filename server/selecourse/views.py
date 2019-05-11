@@ -4,7 +4,7 @@ import json
 
 import selecourse.models
 from django.http import JsonResponse
-from entity.models import Student, Course,Teacher,Classroom,Department,DateAndClassroom
+from entity.models import Student,Student_course, Course,Teacher,Classroom,Department,DateAndClassroom
 from selecourse.models import Selection
 import entity
 from server import error_code
@@ -22,7 +22,7 @@ def student_inquiry(request):
     #通过学生学号获得对应的学生记录
 
     try:
-        student=entity.models.Student.objects.get(student_number=student_number)
+        student=Student.objects.get(student_number=student_number)
     except Exception:
         return JsonResponse({**error_code.CLACK_STUDENT_NOT_EXISTS})
 
@@ -50,18 +50,21 @@ def student_inquiry(request):
 
     for course in courses:#遍历通过学年和学期过滤得到的所有课程记录
             dateAndclassroom = DateAndClassroom.objects.filter(course_id=course.id)
+            classroom=Classroom.objects.filter(id=dateAndclassroom.classroom_id)
+            temp=Student_course.objects.filter(student_id=student.id)
+            student_course=temp.objects.filter(course_id=course.id)
             if course in courses_selected: #表明该课程为已选
                 course.course_access="已选"
             course_info = {
                 "course_name": course.course_name,
                 "course_credit": course.course_credit,
                 "course_type": course.course_type,
-                "course_classroom": course.course_classroom,
+                "classroom_name": classroom.classroom_name,
                 "course_year": course.course_year,
                 "course_semester": course.course_semester,
                 "course_capacity": course.course_capacity,
                 "course_teacher": course.course_teacher,
-                "course_access": course.course_access,
+                "course_access": student_course.course_access,
                 "course_department": course.course_department,
                 "course_allowance":course.course_allowance,#课程余量
                 "start_week":dateAndclassroom.start_week,#开始周数
@@ -106,7 +109,8 @@ def teacher_inquiry(request):
     else:
         try:
             #如果课程存在，则获取该指定课程的上课教室
-            classroom = Classroom.objects.filter(id=course_list[0].course_classroom_id)
+            dateandroom=DateAndClassroom.objects.filter(course_id=course_list[0].id)
+            classroom=Classroom.objects.filter(id=dateandroom.classroom_id)
         except Exception:
             return JsonResponse({**error_code.CLACK_CLASSROOM_NOT_EXISTS})
 
@@ -122,7 +126,7 @@ def teacher_inquiry(request):
                 "student_name": student.student_name,
                 "student_number": student.student_number,
                  "course_name":course_list[0].course_name,
-                 "course_classroom":classroom.classroom_name,
+                 "classroom_name":classroom.classroom_name,
                  "course_credit":course_list[0].course_credit,
                  "course_allowance":course_list[0].course_allowance,#课程余量
                  "course_capacity":course_list[0].course_capacity,#课程容量
@@ -136,6 +140,7 @@ def add_course(course,student):
     # 存储到数据库中
     try:
         sele_cou.save()
+        return JsonResponse({**error_code.CLACK_SUCCESS})
     except Exception:
         return JsonResponse({**error_code.CLACK_SAVE_FAIL})
 
@@ -316,10 +321,11 @@ def course_inquiry(request):
         #通过课程记录获得对应的DateAndClassroom
         if year == str(course.course_year) and semester == str(course.course_semester):
                 dateAndclassroom = DateAndClassroom.objects.filter(course_id=course.id)
+                classroom=Classroom.objects.filter(id=dateAndclassroom.classroom_id)
                 course_info = {
                     "course_name": course.course_name,
                     "course_credit": course.course_credit,
-                    "course_classroom": course.course_classroom,
+                    "classroom_name": classroom.classroom_name,
                     "course_teacher": course.course_teacher,
                     "start_week": dateAndclassroom.start_week,  # 开始周数
                     "end_week": dateAndclassroom.end_week,  # 结束周数
