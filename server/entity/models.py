@@ -60,6 +60,21 @@ class Banji(models.Model):
     # banji_department = models.ForeignKey(Department, on_delete=models.CASCADE, null=False)
 
 
+class Teacher(models.Model):
+    teacher_name = models.TextField(default="")
+    teacher_number = models.TextField(default="", unique=True)
+    teacher_email = models.EmailField(default="test@test.com")
+    teacher_department = models.ForeignKey(Department, on_delete=models.CASCADE, null=False)
+
+    def to_dict(self):
+        return {
+            "teacher_name": self.teacher_name,
+            "teacher_number": self.teacher_number,
+            "teacher_email": self.teacher_email,
+            "teacher_department": self.teacher_department.to_dict()
+        }
+
+
 # 课程
 class Course(models.Model):
     course_name = models.TextField(default="")
@@ -67,19 +82,39 @@ class Course(models.Model):
     course_credit = models.IntegerField(default=1)
     # 课程类型
     course_type = models.IntegerField(default=0)
+
     # 课程所在学年开始年份
     course_year = models.IntegerField(default=2018)
     # 课程学期
     course_semester = models.IntegerField(default=2)
     # 课程容量
-    course_capacity = models.IntegerField()
+    course_capacity = models.IntegerField(default=150)
+    # 任课老师
+    course_teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, null=True, blank=True)
     # 开课学院
     course_department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    # 课程余量
+    course_allowance = models.IntegerField(default=150)
 
     def __str__(self):
         return self.course_name + "," + str(self.course_year) + "," + str(self.course_semester)
 
+    # 判断两个课程时间是否冲突,如果相同的课会返回不冲突False
+    def conflict(self, course1) -> bool:
+        assert isinstance(course1, Course)
+        if course1.id == self.id:
+            return False
+        for cdc in self.dateandclassroom_set.all():
+            for cdc1 in course1.dateandclassroom_set():
+                if cdc.conflict(cdc1):
+                    return True
+        return False
+
     def to_dict(self):
+        teachers = list()
+        if self.course_teacher:
+            teachers.append(self.course_teacher.to_dict())
+
         return {
             "course_id": self.id,
             "course_name": self.course_name,
@@ -90,7 +125,8 @@ class Course(models.Model):
             "course_capacity": self.course_capacity,
             # "course_department_id": self.course_department_id
             "course_department": self.course_department.to_dict(),
-            "date_and_classroom": [dc.to_dict() for dc in self.dateandclassroom_set.all()]
+            "date_and_classroom": [dc.to_dict() for dc in self.dateandclassroom_set.all()],
+            "teachers": teachers
         }
 
 
@@ -124,20 +160,12 @@ class Student(models.Model):
         }
 
 
-# 教师
-class Teacher(models.Model):
-    teacher_name = models.TextField(default="")
-    teacher_number = models.TextField(default="", unique=True)
-    teacher_email = models.EmailField(default="test@test.com")
-    teacher_department = models.ForeignKey(Department, on_delete=models.CASCADE, null=False)
-
-    def to_dict(self):
-        return {
-            "teacher_name": self.teacher_name,
-            "teacher_number": self.teacher_number,
-            "teacher_email": self.teacher_email,
-            "teacher_department_id": self.teacher_department_id
-        }
+# 学生课程关系
+class Student_course(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    # 选课权限
+    course_access = models.TextField(default="无")
 
 
 # 用户
@@ -161,6 +189,11 @@ class Semester(models.Model):
 
     def __str__(self):
         return str(self.year) + "," + str(self.semester) + "," + str(self.start_date)
+
+    def save(self, *args, **kwargs):
+        if self.start_date.isoweekday() != 1:
+            raise Exception("开学日期需要是周一")
+        super(Semester, self).save(*args, **kwargs)
 
 
 class DateAndClassroom(models.Model):
@@ -291,3 +324,25 @@ class DateAndClassroom(models.Model):
                 "start": self.start,
                 "end": self.end
             }
+
+
+# 毕业设计课题
+class DissertationTopic(models.Model):
+    dissertation_title = models.TextField(max_length=100)
+    dissertation_content = models.TextField(max_length=500)
+    dissertation_requirement = models.TextField(max_length=200)
+    dissertation_capacity = models.IntegerField(default=0)
+    dissertation_pub_time = models.DateTimeField(auto_now=True)
+    dissertation_approval = models.BooleanField(default=False)
+    dissertation_tnum = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+
+    def to_dict(self):
+        return {
+            "dissertation_title": self.dissertation_title,
+            "dissertation_content": self.dissertation_content,
+            "dissertation_requirement": self.dissertation_requirement,
+            "dissertation_capacity": self.dissertation_capacity,
+            "dissertation_pub_time": self.dissertation_pub_time,
+            "dissertation_approval": self.dissertation_approval,
+            "dissertation_tnum": self.dissertation_tnum
+        }

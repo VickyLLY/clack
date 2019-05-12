@@ -36,8 +36,10 @@ CLACK_NO_PERMISSION = {"error_code": 9, "error_message": "没有调用这个接�
 # student不存在
 CLACK_STUDENT_NOT_EXISTS = {"error_code": 10, "error_message": "查询的学生不存在"}
 
-# student不存在
+
+# 不存在
 CLACK_TEACHER_NOT_EXISTS = {"error_code": 11, "error_message": "查询的教师不存在"}
+
 
 # course不存在
 CLACK_COURSE_NOT_EXISTS = {"error_code": 12, "error_message": "查询的课程不存在"}
@@ -50,3 +52,39 @@ CLACK_TEACH_NOT_EXISTS = {"error_code": 14, "error_message": "这名老师没有
 
 # 班级不存在
 CLACK_BANJI_NOT_EXISTS = {"error_code": 15, "error_message": "查询的班级不存在"}
+
+#选课记录不存在
+CLACK_SELECTION_NOT_EXISTS = {"error_code": 16, "error_message": "查询的选课记录不存在"}
+
+#教室不存在
+CLACK_CLASSROOM_NOT_EXISTS = {"error_code": 17, "error_message": "查询的教室不存在"}
+
+#学院不存在
+CLACK_DEPARTMENT_NOT_EXISTS = {"error_code": 18, "error_message": "查询的学院不存在"}
+
+#保存失败
+CLACK_SAVE_FAIL = {"error_code": 19, "error_message": "保存失败"}
+
+#删除失败
+CLACK_DELETE_FAIL = {"error_code": 20, "error_message": "删除失败"}
+
+#选课失败
+CLACK_SELECTION_FAIL = {"error_code": 21, "error_message": "选课失败"}
+
+#DateAndClassroom查询失败
+CLACK_DATEANDCLASSROOM_NOT_EXISTS = {"error_code": 22, "error_message": "查询日期和班级失败"}
+
+#下载失败
+CLACK_DOWNLOAD_FAILED = {"error_code": 23, "error_message": "下载失败"}
+
+# 目标不存在
+CLACK_NOT_EXISTS = {"error_code":24 , "error_message": "此目标不存在"}
+
+# teacher不存在
+CLACK_TEACHER_NOT_EXISTS = {"error_code": 25, "error_message": "查询的教师不存在"}
+
+#学生选题限选一个且已经选择课题
+CLACK_STUDENT_SELECT_DST_EXISTS = {"error_code": 26, "error_message": "已经选择课题"}
+
+# 上传文件失败
+CLACK_DISSERTATION_UPLOAD_FILE_FAILED = {"error_code": 27, "error_message": "上传论文失败"}

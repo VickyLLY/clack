@@ -16,5 +16,7 @@ urlpatterns = [
     path(r'mock_xuanke', views.mock_xuanke, name='mock_xuanke'),
     path(r'student_course_list', views.student_course_list, name='student_course_list'),
     path(r'del_dc', views.del_dc, name='del_dc'),
-    path(r'course_info', views.course_info, name='course_info')
+    path(r'course_info', views.course_info, name='course_info'),
+    path(r'teacher_list', views.teacher_list, name='teacher_list'),
+    path(r'course_add_teacher', views.course_add_teacher, name='course_add_teacher')
 ]
