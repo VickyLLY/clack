@@ -22,6 +22,8 @@ import tea_sel_course from "@/components/select_course/tea_sel_course";
 import stu_sel_course from "@/components/select_course/stu_sel_course";
 import stu_timetable from "@/components/select_course/stu_timetable";
 import course_table from "@/components/schedule/course_table";
+import teacher_course_table from "@/components/schedule/teacher_course_table";
+
 //成绩管理
 import Stu_navigation from '@/components/scoremng/stu_scoremng/Stu_navigation'
 import navigation from '@/components/scoremng/navigation'
@@ -118,6 +120,11 @@ export default new Router({
       path: '/main/stu_course_table',
       name: 'course_table',
       component: course_table
+    },
+    {
+      path: '/main/tea_course_table',
+      name: 'tea_course_table',
+      component: teacher_course_table
     },
     {
       path: '/main/stu_sel_course',

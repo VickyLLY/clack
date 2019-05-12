@@ -138,6 +138,7 @@
         "semester": 2
       };
       this.$http.post(this.Global_Api + '/schedule/teacher_course_list',data).then((res) => {
+        alert(1)
         for(var i in res.body.course_list){
           if(res.body.course_list[i].date_and_classroom.length==0){
             continue;
@@ -347,7 +348,8 @@
       return{
         user_teacher_number:this.$cookie.get('user_teacher_number'),
         realname:this.$cookie.get('realname'),
-        user_student_number:this.$cookie.get('user_student_number'),
+        user_name:this.$cookie.get('username'),
+        user_token:this.$cookie.get('user_token'),
         course1:[],
         course2:[],
         course3:[],
