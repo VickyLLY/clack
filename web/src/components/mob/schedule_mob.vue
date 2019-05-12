@@ -21,7 +21,7 @@
                 <span class="glyphicon glyphicon-calendar">{{"周数："+x.start_week+"-"+x.end_week}}</span>
                 <br>
                 <span class="glyphicon glyphicon-map-marker">{{"上课地点："+x.location}}</span><br>
-                <span class="glyphicon glyphicon-tower">{{"教师："}}</span>
+                <span class="glyphicon glyphicon-tower">{{"教师："+x.teacher}}</span>
               </div>
             </td>
         </tr>
@@ -37,7 +37,7 @@
               <span class="glyphicon glyphicon-calendar">{{"周数："+x.start_week+"-"+x.end_week}}</span>
               <br>
               <span class="glyphicon glyphicon-map-marker">{{"上课地点："+x.location}}</span><br>
-              <span class="glyphicon glyphicon-tower">{{"教师："}}</span>
+              <span class="glyphicon glyphicon-tower">{{"教师："+x.teacher}}</span>
             </div>
           </td>
         </tr>
@@ -53,7 +53,7 @@
               <span class="glyphicon glyphicon-calendar">{{"周数："+x.start_week+"-"+x.end_week}}</span>
               <br>
               <span class="glyphicon glyphicon-map-marker">{{"上课地点："+x.location}}</span><br>
-              <span class="glyphicon glyphicon-tower">{{"教师："}}</span>
+              <span class="glyphicon glyphicon-tower">{{"教师："+x.teacher}}</span>
             </div>
           </td>
         </tr>
@@ -69,7 +69,7 @@
               <span class="glyphicon glyphicon-calendar">{{"周数："+x.start_week+"-"+x.end_week}}</span>
               <br>
               <span class="glyphicon glyphicon-map-marker">{{"上课地点："+x.location}}</span><br>
-              <span class="glyphicon glyphicon-tower">{{"教师："}}</span>
+              <span class="glyphicon glyphicon-tower">{{"教师："+x.teacher}}</span>
             </div>
           </td>
         </tr>
@@ -85,7 +85,7 @@
               <span class="glyphicon glyphicon-calendar">{{"周数："+x.start_week+"-"+x.end_week}}</span>
               <br>
               <span class="glyphicon glyphicon-map-marker">{{"上课地点："+x.location}}</span><br>
-              <span class="glyphicon glyphicon-tower">{{"教师："}}</span>
+              <span class="glyphicon glyphicon-tower">{{"教师："+x.teacher}}</span>
             </div>
           </td>
         </tr>
@@ -101,7 +101,7 @@
               <span class="glyphicon glyphicon-calendar">{{"周数："+x.start_week+"-"+x.end_week}}</span>
               <br>
               <span class="glyphicon glyphicon-map-marker">{{"上课地点："+x.location}}</span><br>
-              <span class="glyphicon glyphicon-tower">{{"教师："}}</span>
+              <span class="glyphicon glyphicon-tower">{{"教师："+x.teacher}}</span>
             </div>
           </td>
         </tr>
@@ -117,7 +117,7 @@
               <span class="glyphicon glyphicon-calendar">{{"周数："+x.start_week+"-"+x.end_week}}</span>
               <br>
               <span class="glyphicon glyphicon-map-marker">{{"上课地点："+x.location}}</span><br>
-              <span class="glyphicon glyphicon-tower">{{"教师："}}</span>
+              <span class="glyphicon glyphicon-tower">{{"教师："+x.teacher}}</span>
             </div>
           </td>
         </tr>
@@ -144,74 +144,172 @@
                 let c=res.body.course_list[i].date_and_classroom[j];
                 let b=res.body.course_list[i];
                 if(a===1){
-                  this.course1.push({
-                    course_name:b.course_name,
-                    start:c.start,
-                    end:c.end,
-                    start_week:c.start_week,
-                    end_week:c.end_week,
-                    location:c.classroom.classroom_name,
-                  });
+                  if(b.teachers.length===0){
+                    this.course1.push({
+                      course_name:b.course_name,
+                      start:c.start,
+                      end:c.end,
+                      start_week:c.start_week,
+                      end_week:c.end_week,
+                      location:c.classroom.classroom_name,
+                      teacher:'',
+                    });
+                  }
+                  else{
+                    this.course1.push({
+                      course_name:b.course_name,
+                      start:c.start,
+                      end:c.end,
+                      start_week:c.start_week,
+                      end_week:c.end_week,
+                      location:c.classroom.classroom_name,
+                      teacher:b.teachers[0].teacher_name,
+                    });
+                  }
                 }
                 else if(a===2){
-                  this.course2.push({
-                    course_name:b.course_name,
-                    start:c.start,
-                    end:c.end,
-                    start_week:c.start_week,
-                    end_week:c.end_week,
-                    location:c.classroom.classroom_name,
-                  });
+                  if(b.teachers.length===0){
+                    this.course2.push({
+                      course_name:b.course_name,
+                      start:c.start,
+                      end:c.end,
+                      start_week:c.start_week,
+                      end_week:c.end_week,
+                      location:c.classroom.classroom_name,
+                      teacher:'',
+                    });
+                  }
+                  else{
+                    this.course2.push({
+                      course_name:b.course_name,
+                      start:c.start,
+                      end:c.end,
+                      start_week:c.start_week,
+                      end_week:c.end_week,
+                      location:c.classroom.classroom_name,
+                      teacher:b.teachers[0].teacher_name,
+                    });
+                  }
                 }
                 else if(a===3){
-                  this.course3.push({
-                    course_name:b.course_name,
-                    start:c.start,
-                    end:c.end,
-                    start_week:c.start_week,
-                    end_week:c.end_week,
-                    location:c.classroom.classroom_name,
-                  });
+                  if(b.teachers.length===0){
+                    this.course3.push({
+                      course_name:b.course_name,
+                      start:c.start,
+                      end:c.end,
+                      start_week:c.start_week,
+                      end_week:c.end_week,
+                      location:c.classroom.classroom_name,
+                      teacher:'',
+                    });
+                  }
+                  else{
+                    this.course3.push({
+                      course_name:b.course_name,
+                      start:c.start,
+                      end:c.end,
+                      start_week:c.start_week,
+                      end_week:c.end_week,
+                      location:c.classroom.classroom_name,
+                      teacher:b.teachers[0].teacher_name,
+                    });
+                  }
                 }
                 else if(a===4){
-                  this.course4.push({
-                    course_name:b.course_name,
-                    start:c.start,
-                    end:c.end,
-                    start_week:c.start_week,
-                    end_week:c.end_week,
-                    location:c.classroom.classroom_name,
-                  });
+                  if(b.teachers.length===0){
+                    this.course4.push({
+                      course_name:b.course_name,
+                      start:c.start,
+                      end:c.end,
+                      start_week:c.start_week,
+                      end_week:c.end_week,
+                      location:c.classroom.classroom_name,
+                      teacher:'',
+                    });
+                  }
+                  else{
+                    this.course4.push({
+                      course_name:b.course_name,
+                      start:c.start,
+                      end:c.end,
+                      start_week:c.start_week,
+                      end_week:c.end_week,
+                      location:c.classroom.classroom_name,
+                      teacher:b.teachers[0].teacher_name,
+                    });
+                  }
                 }
                 else if(a===5){
-                  this.course5.push({
-                    course_name:b.course_name,
-                    start:c.start,
-                    end:c.end,
-                    start_week:c.start_week,
-                    end_week:c.end_week,
-                    location:c.classroom.classroom_name,
-                  });
+                  if(b.teachers.length===0){
+                    this.course5.push({
+                      course_name:b.course_name,
+                      start:c.start,
+                      end:c.end,
+                      start_week:c.start_week,
+                      end_week:c.end_week,
+                      location:c.classroom.classroom_name,
+                      teacher:'',
+                    });
+                  }
+                  else{
+                    this.course5.push({
+                      course_name:b.course_name,
+                      start:c.start,
+                      end:c.end,
+                      start_week:c.start_week,
+                      end_week:c.end_week,
+                      location:c.classroom.classroom_name,
+                      teacher:b.teachers[0].teacher_name,
+                    });
+                  }
                 }
                 else if(a===6){
-                  this.course6.push({
-                    course_name:b.course_name,
-                    start:c.start,
-                    end:c.end,
-                    start_week:c.start_week,
-                    end_week:c.end_week,
-                    location:c.classroom.classroom_name,
-                  });
+                  if(b.teachers.length===0){
+                    this.course6.push({
+                      course_name:b.course_name,
+                      start:c.start,
+                      end:c.end,
+                      start_week:c.start_week,
+                      end_week:c.end_week,
+                      location:c.classroom.classroom_name,
+                      teacher:'',
+                    });
+                  }
+                  else{
+                    this.course6.push({
+                      course_name:b.course_name,
+                      start:c.start,
+                      end:c.end,
+                      start_week:c.start_week,
+                      end_week:c.end_week,
+                      location:c.classroom.classroom_name,
+                      teacher:b.teachers[0].teacher_name,
+                    });
+                  }
                 }
                 else if(a===7) {
-                  this.course7.push({
-                    course_name: b.course_name,
-                    start:c.start,
-                    end:c.end,
-                    start_week: c.start_week,
-                    end_week: c.end_week,
-                    location: c.classroom.classroom_name,
-                  });
+                  if(b.teachers.length===0){
+                    this.course7.push({
+                      course_name:b.course_name,
+                      start:c.start,
+                      end:c.end,
+                      start_week:c.start_week,
+                      end_week:c.end_week,
+                      location:c.classroom.classroom_name,
+                      teacher:'',
+                    });
+                  }
+                  else{
+                    this.course7.push({
+                      course_name:b.course_name,
+                      start:c.start,
+                      end:c.end,
+                      start_week:c.start_week,
+                      end_week:c.end_week,
+                      location:c.classroom.classroom_name,
+                      teacher:b.teachers[0].teacher_name,
+                    });
+                  }
                 }
             }
           }

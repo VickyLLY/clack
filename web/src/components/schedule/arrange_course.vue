@@ -60,7 +60,7 @@
         <h3 id="title2" style="margin-left: 20px; margin-top:10px;display: none">上课时间教室</h3>
         <div id="change-block2">
           <div v-for=" (each,index) in added">
-            <div class="hello">
+            <div class="hello" style="margin-top: 25px; border-bottom: 1px solid #ddd;">
               <span>开始周数：</span><v-select class="select-pt"
                                           max-height="80px"
                                           v-model=each.start_week
@@ -74,13 +74,6 @@
                                           :options="weeknum"
                                           @change="added_change(index)"
                                           required="required">
-            </v-select>
-              <span style="white-space: pre-wrap">星 期：</span><v-select class="select-pt"
-                                                                       max-height="80px"
-                                                                       v-model=each.day_of_week
-                                                                       :options="week"
-                                                                       @change="added_change(index)"
-                                                                       required="required">
             </v-select>
               <br>
               <span>开始节数：</span><v-select class="select-pt"
@@ -97,14 +90,22 @@
                                           @change="added_change(index)"
                                           required="required">
             </v-select>
-              <span>教 室：</span><v-select class="select-pt"
+              <br>
+              <span style="white-space: pre-wrap">   星  期  ：</span><v-select class="select-pt"
+                                                                       max-height="80px"
+                                                                       v-model=each.day_of_week
+                                                                       :options="week"
+                                                                       @change="added_change(index)"
+                                                                       required="required">
+            </v-select>
+              <span style="white-space: pre-wrap">   教 室   ：</span><v-select class="select-pt"
                                           max-height="80px"
                                           v-model=each.classroom
                                           :options=classrooms[index]
                                           @change="added_change(index)"
                                           required="required">
             </v-select>
-              <button @click="delete_added(index)" class="btn5 btn-danger">删除</button>
+              <button @click="delete_added(index)" class="btn5 btn-danger" style="margin-left: 0;margin-right: 0">删除</button>
               <button class="btn btn-info added" style="color: white" @click="confirm_change(index)">√</button>
 
             </div>
@@ -935,7 +936,7 @@
 
   .btn-info {
     display: none;
-    margin-left: 50px;
+    margin-left: 20px;
     height: 30px;
     vertical-align: 0px;
     animation: donghua 2s;

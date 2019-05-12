@@ -14,13 +14,6 @@
                                     :on-change="myf"
                                     required="required">
                         </v-select>
-        <span style="white-space: pre-wrap">星 期：</span><v-select class="select-pt"
-                                                                       max-height="80px"
-                                                                       v-model="day_of_week"
-                                                                       :options="week"
-                                                                        :on-change="myf"
-                                                                       required="required">
-                                                                </v-select>
     <br>
         <span>开始节数：</span><v-select class="select-pt"
                                     max-height="80px"
@@ -36,15 +29,23 @@
                                     :on-change="myf"
                                     required="required">
                               </v-select>
-        <span>教 室：</span><v-select class="select-pt"
+    <br>
+    <span style="white-space: pre-wrap">   星  期   ：</span><v-select class="select-pt"
+                                                             max-height="80px"
+                                                             v-model="day_of_week"
+                                                             :options="week"
+                                                             :on-change="myf"
+                                                             required="required">
+  </v-select>
+        <span style="white-space: pre-wrap">  教 室   ：</span><v-select class="select-pt"
                                 max-height="80px"
                                 v-model="classroom"
                                 :options="classrooms"
                                 :on-change="myf"
                                 required="required">
                           </v-select>
-        <button @click="dele" class="btn5 btn-danger">删除</button>
-        <button class="btn btn-info ddd" style="color: white" @click="confirm_add">√</button>
+        <button @click="dele" class="btn5 btn-danger" style="margin-left: 0;margin-right: 0">删除</button>
+        <button class="btn btn-info ddd" style="color: white;margin-left: 20px;" @click="confirm_add">√</button>
   </div>
 </template>
 
