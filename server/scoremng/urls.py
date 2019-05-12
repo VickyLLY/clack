@@ -8,5 +8,6 @@ urlpatterns = [
     path('student_download_scores/', views.student_download_scores, name='student_download_scores'),
     path('teacher_check_scores/', views.teacher_check_scores, name='teacher_check_scores'),
     path('teacher_download_scores/', views.teacher_download_scores, name='teacher_download_scores'),
+    path('teacher_check_uncommitted_score/', views.teacher_check_uncommitted_score, name='teacher_check_uncommitted_score'),
     path('admin_check/<str:admin_number>/', views.admin_check, name='admin_check'),
 ]

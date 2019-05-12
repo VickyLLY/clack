@@ -9,6 +9,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from server.decorators import check_json
 from entity.models import Student, Course, Teacher, Banji
+from selecourse.models import Selection
 
 
 # 老师上传成绩
@@ -90,7 +91,7 @@ def teacher_upload(request):
         # 如果这门课在year, semester开设
         course = Course.objects.get(id=course_id)
         # print(course_year, course.course_year, type(course_year), type(course.course_year))
-        if (course_year == course.course_year and course_semester == course.course_semester)\
+        if (course_year == course.course_year and course_semester == course.course_semester) \
                 or (course_year == str(course.course_year) and course_semester == str(course_semester)):
             # 找出所有选这门课的学生
             student_course_list = scoremng.models.SelectCourse.objects.filter(course_id=course.id)
@@ -512,3 +513,78 @@ def admin_check(request, admin_number):
             print(student.id)
 
         return HttpResponse("hello world.")
+
+
+# 老师查看他带的某门课还没有提交成绩的学生
+# 更改数据库后状态：以完成
+def teacher_check_uncommitted_score(request):
+    request_json = json.loads(request.body)
+    teacher_number = request_json['teacher_number']
+    year = request_json['year']
+    semester = request_json['semester']
+    print(teacher_number, year, semester)  # 成功获得post的数据
+    # print(type(year), type(semester))
+
+
+    try:
+        teacher = Teacher.objects.get(teacher_number=teacher_number)
+    except Exception:
+        return JsonResponse({**error_code.CLACK_TEACHER_NOT_EXISTS})
+
+    # 存储老师没有提交成绩的学生
+    uncommitted_student_score_list = []
+
+    # 在教室排课表中查看这名老师带的所有的课程
+    teacher_course_list = Course.objects.filter(course_year=int(year),
+                                                course_semester=int(semester),
+                                                course_teacher=teacher.id)
+
+    # 对于这名老师在year学年semester学期带的每一门课
+    for teacher_course in teacher_course_list:
+        course_id = teacher_course.id
+        # print(teacher_course.id)
+        try:
+            course = Course.objects.get(id=course_id)
+        except Exception:
+            return JsonResponse({**error_code.CLACK_COURSE_NOT_EXISTS})
+
+        # 选这门课的学生的列表
+        student_course_list = Selection.objects.filter(selection_course_id=course_id)
+
+        for student_course in student_course_list:
+            # print(student_course.selection_student_id)
+            student_id = student_course.selection_student_id
+            # print(student_id)
+            # 由学生的名字找到学生的这条记录
+            try:
+                student = Student.objects.get(id=student_id)
+            except Exception:
+                return JsonResponse({**error_code.CLACK_STUDENT_NOT_EXISTS})
+
+            # 由学生的记录找到学生的班级
+            banji_id = student.student_banji_id
+            try:
+                banji = Banji.objects.get(id=banji_id)
+            except Exception:
+                return JsonResponse({**error_code.CLACK_BANJI_NOT_EXISTS})
+
+            # 尝试用学生的id和课程的id在统计成绩的表格中寻找这条记录，如果没有找到, 说明老师没有提交，需要返回前端
+            try:
+                score = scoremng.models.Score.objects.get(student_id=student_id,
+                                                          course_id=course_id)
+            except Exception:
+                # 如果进入到except中说明老师没有提交这名学生的记录
+                # print(student.id) # 打印出老师没有提交成绩的学生的id
+                student_score = {
+                                'student_number': student.student_number,
+                                'student_name': student.student_name,
+                                'student_banji_name': banji.banji_name,
+                                'course_name': course.course_name,
+                                'course_type': course.course_type,
+                                'course_year': course.course_year,
+                                'course_semester': course.course_semester,
+                                'course_credit': course.course_credit,
+                                'course_score': 0,
+                            }
+                uncommitted_student_score_list.append(student_score)
+    return JsonResponse({**error_code.CLACK_SUCCESS, 'uncommitted_student_score_list': uncommitted_student_score_list})
