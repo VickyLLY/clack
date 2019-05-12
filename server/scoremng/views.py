@@ -312,72 +312,6 @@ def student_download_scores(request):
     return JsonResponse({**error_code.CLACK_SUCCESS, 'score_list': score_list})
 
 
-# 老师选择特定的学年和学期，查看学生的成绩
-# 目前状态：已完成
-def teacher_check_scores(request):
-    request_json = json.loads(request.body)
-    teacher_number = request_json['teacher_number']
-    year = request_json['year']
-    semester = request_json['semester']
-    print(teacher_number, year, semester)  # 成功获得post的数据
-    # print(type(year), type(semester))
-
-    try:
-        teacher_id = Teacher.objects.get(teacher_number=teacher_number).id
-    except Exception:
-        return JsonResponse({**error_code.CLACK_TEACHER_NOT_EXISTS})
-
-    student_score_list = []
-
-    # 在教室排课表中查看这名老师带的所有的课程
-    teacher_course_list = scoremng.models.TeacherSchedule.objects.filter(teacher_id=teacher_id)
-    for teacher_course in teacher_course_list:
-        # 这名老师带的一门课
-        course_id = teacher_course.course_id
-        # print(course_id)
-
-        # 如果这门课在year, semester开设
-        course = Course.objects.get(id=course_id)
-        if year == str(course.course_year) and semester == str(course.course_semester):
-            # 找出所有选这门课的学生
-            student_course_list = scoremng.models.SelectCourse.objects.filter(course_id=course.id)
-            for student_course in student_course_list:
-                # 把这个学生的个人信息和成绩信息返回给前端
-                student_id = student_course.student_id
-                student = Student.objects.get(id=student_id)
-                banji = Banji.objects.get(id=student.student_banji_id)
-                # print(student_id, student.student_name, course_id, course.course_name)
-
-                # 需要处理如果老师还没有给出成绩，也要显示给老师这名学生的成绩，默认为0
-                try:
-                    score = scoremng.models.Score.objects.get(student_id=student_id, course_id=course_id)
-                    student_score = {
-                        'student_number': student.student_number,
-                        'student_name': student.student_name,
-                        'student_banji_name': banji.banji_name,
-                        'course_name': course.course_name,
-                        'course_type': course.course_type,
-                        'course_year': course.course_year,
-                        'course_semester': course.course_semester,
-                        'course_credit': course.course_credit,
-                        'course_score': score.score,
-                    }
-                except Exception:
-                    student_score = {
-                        'student_number': student.student_number,
-                        'student_name': student.student_name,
-                        'student_banji_name': banji.banji_name,
-                        'course_name': course.course_name,
-                        'course_type': course.course_type,
-                        'course_year': course.course_year,
-                        'course_semester': course.course_semester,
-                        'course_credit': course.course_credit,
-                        'course_score': 0,
-                    }
-                student_score_list.append(student_score)
-    return JsonResponse({**error_code.CLACK_SUCCESS, 'student_score_list': student_score_list})
-
-
 # 老师下载学生成绩到excel表格中
 # 目前状态：已实现
 def teacher_download_scores(request):
@@ -534,7 +468,7 @@ def teacher_check_uncommitted_score(request):
     # 存储老师没有提交成绩的学生
     uncommitted_student_score_list = []
 
-    # 在教室排课表中查看这名老师带的所有的课程
+    # 在课表中查看这名老师带的所有的课程
     teacher_course_list = Course.objects.filter(course_year=int(year),
                                                 course_semester=int(semester),
                                                 course_teacher=teacher.id)
@@ -588,3 +522,93 @@ def teacher_check_uncommitted_score(request):
                             }
                 uncommitted_student_score_list.append(student_score)
     return JsonResponse({**error_code.CLACK_SUCCESS, 'uncommitted_student_score_list': uncommitted_student_score_list})
+
+
+# 老师选择特定的学年和学期，查看学生的成绩
+# 目前状态：已完成
+# 修改数据库后：已完成
+def teacher_check_scores(request):
+    request_json = json.loads(request.body)
+    teacher_number = request_json['teacher_number']
+    year = request_json['year']
+    semester = request_json['semester']
+    print(teacher_number, year, semester)  # 成功获得post的数据
+    # print(type(year), type(semester))
+
+    try:
+        teacher = Teacher.objects.get(teacher_number=teacher_number)
+    except Exception:
+        return JsonResponse({**error_code.CLACK_TEACHER_NOT_EXISTS})
+
+    # 这名老师教的所有学生的列表
+    student_score_list = []
+
+    # 在课表中查看这名老师带的所有的课程
+    teacher_course_list = Course.objects.filter(course_year=int(year),
+                                                course_semester=int(semester),
+                                                course_teacher=teacher.id)
+
+    # 对于这名老师在year学年semester学期带的每一门课
+    for teacher_course in teacher_course_list:
+        course_id = teacher_course.id
+        # print(teacher_course.id)
+        try:
+            course = Course.objects.get(id=course_id)
+        except Exception:
+            return JsonResponse({**error_code.CLACK_COURSE_NOT_EXISTS})
+
+        # 选这门课的学生的列表
+        student_course_list = Selection.objects.filter(selection_course_id=course_id)
+
+        for student_course in student_course_list:
+            # print(student_course.selection_student_id)
+            student_id = student_course.selection_student_id
+            # print(student_id)
+            # 由学生的名字找到学生的这条记录
+            try:
+                student = Student.objects.get(id=student_id)
+            except Exception:
+                return JsonResponse({**error_code.CLACK_STUDENT_NOT_EXISTS})
+
+            # 由学生的记录找到学生的班级
+            banji_id = student.student_banji_id
+            try:
+                banji = Banji.objects.get(id=banji_id)
+            except Exception:
+                return JsonResponse({**error_code.CLACK_BANJI_NOT_EXISTS})
+
+            # 尝试用学生的id和课程的id在统计成绩的表格中寻找这条记录，如果没有找到, 说明老师没有提交，需要返回前端
+            try:
+                # 如果进入到try语句中表明老师已经提交过这个学生的成绩
+                score = scoremng.models.Score.objects.get(student_id=student_id,
+                                                          course_id=course_id)
+                print('提交过的学生的id', student.id)
+                student_score = {
+                    'student_number': student.student_number,
+                    'student_name': student.student_name,
+                    'student_banji_name': banji.banji_name,
+                    'course_name': course.course_name,
+                    'course_type': course.course_type,
+                    'course_year': course.course_year,
+                    'course_semester': course.course_semester,
+                    'course_credit': course.course_credit,
+                    'course_score': score.score,
+                }
+                student_score_list.append(student_score)
+            except Exception:
+                # 如果进入到except中说明老师没有提交这名学生的记录
+                # print(student.id) # 打印出老师没有提交成绩的学生的id
+                print('没有提交过的学生的id', student.id)
+                student_score = {
+                    'student_number': student.student_number,
+                    'student_name': student.student_name,
+                    'student_banji_name': banji.banji_name,
+                    'course_name': course.course_name,
+                    'course_type': course.course_type,
+                    'course_year': course.course_year,
+                    'course_semester': course.course_semester,
+                    'course_credit': course.course_credit,
+                    'course_score': 0,
+                }
+                student_score_list.append(student_score)
+    return JsonResponse({**error_code.CLACK_SUCCESS, 'student_score_list': student_score_list})
