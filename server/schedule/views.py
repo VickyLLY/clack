@@ -244,3 +244,15 @@ def course_add_teacher(request):
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": str(e)})
     return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+@login_required
+def teacher_course_list(request):
+    request_json = json.loads(request.body)
+    try:
+        teacher = entity.models.Teacher.objects.get(teacher_number=request_json['teacher_number'])
+        courses = teacher.course_set.filter(course_semester=request_json['semester'], course_year=request_json['year'])
+        result = [course.to_dict() for course in courses]
+        return JsonResponse({**error_code.CLACK_SUCCESS, "course_list": result})
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": str(e)})
