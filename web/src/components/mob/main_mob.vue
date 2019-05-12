@@ -42,7 +42,13 @@
 
 <script>
     import bar_mob from './bar_mob'
+
     export default {
+      data(){
+        return{
+          user_type: this.$cookie.get('user_type'),
+        }
+      },
       components: {
         bar_mob
       }

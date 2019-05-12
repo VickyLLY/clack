@@ -16,6 +16,7 @@ import test from '@/components/mob/test'
 import bar_mob from '@/components/mob/bar_mob'
 import main_mob from "@/components/mob/main_mob";
 import schedule_mob from "@/components/mob/schedule_mob";
+import schedule_mob_tea from "@/components/mob/schedule_mob_tea";
 import man_sel_course from "@/components/select_course/man_sel_course";
 import tea_sel_course from "@/components/select_course/tea_sel_course";
 import stu_sel_course from "@/components/select_course/stu_sel_course";
@@ -93,6 +94,10 @@ export default new Router({
     {
       path: '/schedule_mob',
       component: schedule_mob,
+    },
+    {
+      path: '/schedule_mob_tea',
+      component: schedule_mob_tea,
     },
     {
       path: '/main',
