@@ -69,6 +69,18 @@
     <!--添加信息窗口-->
     <el-dialog title="添加" :visible.sync="add_dialog" @close="reset_form('add_form')">
       <el-form :model="add_form" :rules="data_rules" ref="add_form" label-width="100px">
+        <el-form-item label="学生用户名" prop="student_user_name">
+          <el-input type="text" v-model="add_form.student_user_name" auto-complete="off">
+          </el-input>
+        </el-form-item>
+        <el-form-item label="学生密码" prop="student_user_password">
+          <el-input type="password" v-model="add_form.student_user_password" auto-complete="off">
+          </el-input>
+        </el-form-item>
+        <el-form-item label="确认密码" prop="student_user_password_again">
+          <el-input type="password" v-model="add_form.student_user_password_again" auto-complete="off">
+          </el-input>
+        </el-form-item>
         <el-form-item label="学生学号" prop="student_number">
           <el-input type="text" v-model="add_form.student_number" auto-complete="off">
           </el-input>
@@ -144,6 +156,9 @@
         user_name: this.$cookie.get('username'),
         user_token: this.$cookie.get('user_token'),
         add_form: {
+          student_user_name: '',
+          student_user_password: '',
+          student_user_password_again: '',
           student_name: '',
           student_number: '',
           student_banji_id: '',
@@ -163,26 +178,49 @@
         add_dialog: false,
         edit_dialog: false,
         data_rules: {
+          student_user_name: [
+            { required: true, message: '请输入学生用户名', tigger: 'blur' }
+          ],
+          student_user_password: [
+            { required: true, message: '请输入学生密码', tigger: 'blur' }
+          ],
+          student_user_password_again:[
+            { required: true, message: '请再次输入学生密码', tigger: 'blur' },
+            {
+              validator: (rule, value, callback) => {
+                if(value === '') {
+                  callback(new Error('请再次输入学生密码'));
+                }
+                else if(value !== this.add_form.student_user_password) {
+                  callback(new Error('两次输入密码必须一致'));
+                }
+                else {
+                  callback();
+                }
+              },
+              trigger: 'blur'
+            }
+          ],
+          student_number:[
+            { required: true, message: '请输入学生学号', tigger: 'blur'},
+            { min: 9, max: 12, message: '长度为9~12个字符', tigger: 'blur'}
+          ],
           student_name: [
             { required: true, message: '请输入姓名', tigger: 'blur' }
+          ],
+          student_banji_id:[
+            { required: true, message: '请输入所属班级ID', tigger: 'blur' }
           ],
           student_email: [
             { type: 'email', required: true, message: '必须是合法邮箱格式', tigger: 'blur' }
           ],
-          student_number:[
-            {required:true,message:'请输入学生学号',tigger:'blur'},
-            {min:9,max:12,message:'请输入合法的学生学号',tigger:'blur'}
-          ],
-          student_banji_id:[
-            {required:true,message:'请输入所属班级ID',tigger:'blur'}
-          ],
           student_start_year: [
-            {required:true,message:'请输入年份',tigger:'blur'},
-            {min:4,max:4,message:'请输入合法的年份',tigger:'blur'}
+            { required: true, message: '请输入年份', tigger: 'blur' },
+            { min: 4, max: 4, message: '请输入合法的年份', tigger: 'blur'}
           ],
           student_end_year: [
-            {required:true,message:'请输入年份',tigger:'blur'},
-            {min:4,max:4,message:'请输入合法的年份',tigger:'blur'}
+            { required: true, message: '请输入年份', tigger: 'blur' },
+            { min: 4, max: 4, message: '请输入合法的年份', tigger: 'blur' }
           ]
         },
         // 数据显示列表
@@ -198,18 +236,21 @@
     methods: {
       // 提交添加窗口数据
       add_submit: function() {
+        console.info(this.add_form.student_user_name);
         this.$refs['add_form'].validate((valid) => {
           if(valid) {
-            this.$http.post(this.Global_Api + '/background/add_student', {
-              user_name: this.user_name,
-              user_token: this.user_token,
+            this.$http.post(this.Global_Api + '/user/signup_student', {
+              user: {
+                user_name: this.add_form.student_user_name,
+                user_password: this.add_form.student_user_password
+              },
               student: {
                 student_name: this.add_form.student_name,
                 student_number: this.add_form.student_number,
-                student_banji_id: parseInt(this.add_form.student_banji_id),
                 student_email: this.add_form.student_email,
                 student_start_year: parseInt(this.add_form.student_start_year),
-                student_end_year: parseInt(this.add_form.student_end_year)
+                student_end_year: parseInt(this.add_form.student_end_year),
+                student_banji_id: parseInt(this.add_form.student_banji_id)
               }
             }).then(response => {
               if(response.body.error_code === 0) {

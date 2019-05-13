@@ -22,13 +22,15 @@
             <el-table :data="data_list" tooltip-effect="dark" style="width:100%" :default-sort="{prop:'create_time',order:'descending'}" @selection-change="get_multiple_selection">
               <el-table-column type="selection" width="55">
               </el-table-column>
-              <el-table-column prop="teacher_number" label="教师编号" sortable>
+              <el-table-column prop="teacher_number" label="教师工号" sortable>
               </el-table-column>
               <el-table-column prop="teacher_name" label="教师姓名" sortable>
               </el-table-column>
               <el-table-column prop="teacher_email" label="教师邮箱" sortable>
               </el-table-column>
-              <el-table-column prop="teacher_department_id" label="所属学院ID" sortable>
+              <el-table-column prop="teacher_department.department_id" label="所属学院ID" sortable>
+              </el-table-column>
+              <el-table-column prop="teacher_department.department_name" label="所属学院名称" sortable>
               </el-table-column>
               <el-table-column label="操作" width="250">
                 <template slot-scope="scope">
@@ -65,7 +67,19 @@
     <!--添加信息窗口-->
     <el-dialog title="添加" :visible.sync="add_dialog" @close="reset_form('add_form')">
       <el-form :model="add_form" :rules="data_rules" ref="add_form" label-width="100px">
-        <el-form-item label="教师编号" prop="teacher_number">
+        <el-form-item label="教师用户名" prop="teacher_user_name">
+          <el-input type="text" v-model="add_form.teacher_user_name" auto-complete="off">
+          </el-input>
+        </el-form-item>
+        <el-form-item label="教师密码" prop="teacher_user_password">
+          <el-input type="password" v-model="add_form.teacher_user_password" auto-complete="off">
+          </el-input>
+        </el-form-item>
+        <el-form-item label="确认密码" prop="teacher_user_password_again">
+          <el-input type="password" v-model="add_form.teacher_user_password_again" auto-complete="off">
+          </el-input>
+        </el-form-item>
+        <el-form-item label="教师工号" prop="teacher_number">
           <el-input type="text" v-model="add_form.teacher_number" auto-complete="off">
           </el-input>
         </el-form-item>
@@ -125,6 +139,9 @@
         user_name: this.$cookie.get('username'),
         user_token: this.$cookie.get('user_token'),
         add_form: {
+          teacher_user_name: '',
+          teacher_user_password: '',
+          teacher_user_password_again: '',
           teacher_name: '',
           teacher_number: '',
           teacher_email: '',
@@ -139,17 +156,40 @@
         add_dialog: false,
         edit_dialog: false,
         data_rules: {
+          teacher_user_name: [
+            { required: true, message: '请输入教师用户名', tigger: 'blur' }
+          ],
+          teacher_user_password: [
+            { required: true, message: '请输入教师密码', tigger: 'blur' }
+          ],
+          teacher_user_password_again:[
+            { required: true, message: '请再次输入教师密码', tigger: 'blur' },
+            {
+              validator: (rule, value, callback) => {
+                if(value === '') {
+                  callback(new Error('请再次输入教师密码'));
+                }
+                else if(value !== this.add_form.teacher_user_password) {
+                  callback(new Error('两次输入密码必须一致'));
+                }
+                else {
+                  callback();
+                }
+              },
+              trigger: 'blur'
+            }
+          ],
           teacher_name: [
             { required: true, message: '请输入姓名', tigger: 'blur' }
           ],
           teacher_email: [
             { type: 'email', required: true, message: '必须是合法邮箱格式', tigger: 'blur' }
           ],
-          teacher_number:[
-            {required:true,message:'请输入教师工号',tigger:'blur'},
+          teacher_number: [
+            { required: true, message: '请输入教师工号', tigger: 'blur' },
           ],
           teacher_department_id:[
-            {required:true,message:'请输入所属学院ID',tigger:'blur'}
+            { required: true, message: '请输入所属学院ID', tigger: 'blur'}
           ]
         },
         // 数据显示列表
@@ -167,9 +207,11 @@
       add_submit: function() {
         this.$refs['add_form'].validate((valid) => {
           if(valid) {
-            this.$http.post(this.Global_Api + '/background/add_teacher', {
-              user_name: this.user_name,
-              user_token: this.user_token,
+            this.$http.post(this.Global_Api + '/user/signup_teacher', {
+              user: {
+                user_name: this.add_form.teacher_user_name,
+                user_password: this.add_form.teacher_user_password
+              },
               teacher: {
                 teacher_name: this.add_form.teacher_name,
                 teacher_number: this.add_form.teacher_number,
@@ -223,7 +265,7 @@
         this.edit_form.teacher_name = row.teacher_name;
         this.edit_form.teacher_number = row.teacher_number;
         this.edit_form.teacher_email = row.teacher_email;
-        this.edit_form.teacher_department_id = row.teacher_department_id;
+        this.edit_form.teacher_department_id = row.teacher_department.department_id;
       },
       // 提交编辑窗口数据
       edit_submit: function() {
