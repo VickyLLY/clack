@@ -14,7 +14,8 @@
                 <!--0 admin ,1 teacher, 2 student-->
                 <li><a href="javascript:void(0)" v-if="user_type===0" @click="add_course">添加课程</a></li>
                 <li><a href="javascript:void(0)" v-if="user_type===0" @click="arrange_course">安排课程</a></li>
-                <li><a href="javascript:void(0)" v-if="user_type===2" @click="check_course_table">查看课表</a></li>
+                <li><a href="javascript:void(0)" v-if="user_type===2" @click="stu_check_course_table">查看课表(学生)</a></li>
+                <li><a href="javascript:void(0)" v-if="user_type===1" @click="tea_check_course_table">查看课表(教师)</a></li>
               </ul>
             </li>
             <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -188,8 +189,11 @@
           alert("系统出现未知错误");
         }
       },
-      check_course_table:function () {
+      stu_check_course_table:function () {
         this.$router.push({name:'course_table'});
+      },
+      tea_check_course_table:function(){
+        this.$router.push({name:'tea_course_table'})
       },
       scoremng:function () {
         this.$router.push('/main/navigation')
