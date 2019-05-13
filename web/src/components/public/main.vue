@@ -1,7 +1,7 @@
 <template>
   <div>
-    <PC_bar></PC_bar>
-    <News></News>
+  <PC_bar></PC_bar>
+  <News></News>
   </div>
 </template>
 

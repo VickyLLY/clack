@@ -50,11 +50,17 @@
             <button id="cs_department" type="button" class="btn btn-info " style="display:none;!important; color: white" @click="confirm_department">√
             </button>
           </div>
+          <div class="change-content">
+            <span>任课教师：</span>
+            <v-select max-height="80px" :options="teacher_list" style="width: 250px; display: inline-block" v-model="change_teacher" @change="teacher_change"></v-select>
+            <button id="cs_teacher" type="button" class="btn btn-info " style="display:none;!important; color: white" @click="confirm_teacher">√
+            </button>
+          </div>
         </div>
         <h3 id="title2" style="margin-left: 20px; margin-top:10px;display: none">上课时间教室</h3>
         <div id="change-block2">
           <div v-for=" (each,index) in added">
-            <div class="hello">
+            <div class="hello" style="margin-top: 25px; border-bottom: 1px solid #ddd;">
               <span>开始周数：</span><v-select class="select-pt"
                                           max-height="80px"
                                           v-model=each.start_week
@@ -68,13 +74,6 @@
                                           :options="weeknum"
                                           @change="added_change(index)"
                                           required="required">
-            </v-select>
-              <span style="white-space: pre-wrap">星 期：</span><v-select class="select-pt"
-                                                                       max-height="80px"
-                                                                       v-model=each.day_of_week
-                                                                       :options="week"
-                                                                       @change="added_change(index)"
-                                                                       required="required">
             </v-select>
               <br>
               <span>开始节数：</span><v-select class="select-pt"
@@ -91,14 +90,22 @@
                                           @change="added_change(index)"
                                           required="required">
             </v-select>
-              <span>教 室：</span><v-select class="select-pt"
+              <br>
+              <span style="white-space: pre-wrap">   星  期  ：</span><v-select class="select-pt"
+                                                                       max-height="80px"
+                                                                       v-model=each.day_of_week
+                                                                       :options="week"
+                                                                       @change="added_change(index)"
+                                                                       required="required">
+            </v-select>
+              <span style="white-space: pre-wrap">   教 室   ：</span><v-select class="select-pt"
                                           max-height="80px"
                                           v-model=each.classroom
                                           :options=classrooms[index]
                                           @change="added_change(index)"
                                           required="required">
             </v-select>
-              <button @click="delete_added(index)" class="btn5 btn-danger">删除</button>
+              <button @click="delete_added(index)" class="btn5 btn-danger" style="margin-left: 0;margin-right: 0">删除</button>
               <button class="btn btn-info added" style="color: white" @click="confirm_change(index)">√</button>
 
             </div>
@@ -117,6 +124,9 @@
                   @myfun="change"
             >
             </test>
+        </div>
+        <h3 id="title3" style=" margin-left: 20px; margin-top:40px;display: none">考试时间地点</h3>
+        <div id="change-block3">
         </div>
       </div>
     </div>
@@ -156,10 +166,12 @@
             value: 1
           }
         ],
+        teacher_list:[],
         department_list:[],
         select_course: null,//当前所选课程
         change_type: null,
         change_department: null,
+        change_teacher: null,
         list: '',
         course: [],
         items: [],//课程时间地点具体请问ppg
@@ -183,7 +195,19 @@
         this.list = res.body.course_list
         for (let i = 0; i < this.list.length; i++)
           this.course.push(this.list[i])
-        //alert(this.course.length)
+      });
+      let data={
+        "user_name": this.$cookie.get('username'),
+        "user_token": this.$cookie.get('user_token')
+      };
+      this.$http.post(this.Global_Api + '/schedule/teacher_list', data).then((res) => {
+        for(let i=0;i<res.body.teacher_list.length;i++){
+          let each={
+            label:res.body.teacher_list[i].teacher_name,
+            value:res.body.teacher_list[i].teacher_number
+          };
+          this.teacher_list.push(each);
+        }
       })
     },
     methods: {
@@ -337,11 +361,22 @@
       choose_course: function (val) {
         this.items=[];
         this.select_course = val;
-        //console.log(this.coursetype_name)
+        if(this.select_course.teachers.length!==0){
+          let teacher={
+            label:this.select_course.teachers[0].teacher_name,
+            value:this.select_course.teachers[0].teacher_number
+          }
+          this.change_teacher = teacher;
+        }
+        else{
+          this.change_teacher = null;
+        }
         document.getElementById("change-block").style.display = "block";
         document.getElementById("title").style.display = "block";
         document.getElementById("title2").style.display = "block";
+        document.getElementById("title3").style.display = "block";
         document.getElementById("change-block2").style.display = "block";
+        document.getElementById("change-block3").style.display = "block";
         document.getElementById("cs_name").value = val.course_name;
         document.getElementById("cs_credit").value = val.course_credit;
         this.change_type = this.coursetype_name[this.select_course.course_type];
@@ -358,10 +393,12 @@
             if(dic.value===this.select_course.course_department.department_id)
               this.change_department=dic;
           }
-
         });
+
         document.getElementById('cs_type').style.display = 'none';
         document.getElementById('cs_department').style.display = 'none';
+        document.getElementById('cs_teacher').style.display = 'none';
+
         this.added=[];
         this.classrooms=[];
         this.copy_classrooms=[];
@@ -449,16 +486,34 @@
       },
       type_change: function () {
         //alert(this.change_type.value);
-        if (this.change_type.value !== this.select_course.course_type)
-          document.getElementById('cs_type').style.display = 'inline-block'
-        else
-          document.getElementById('cs_type').style.display = 'none'
+        if(this.change_type !=null) {
+          if (this.change_type.value !== this.select_course.course_type)
+            document.getElementById('cs_type').style.display = 'inline-block'
+          else
+            document.getElementById('cs_type').style.display = 'none'
+        }
       },
       department_change:function(){
-        if (this.change_department.value !== this.select_course.course_department.department_id)
-          document.getElementById('cs_department').style.display = 'inline-block'
-        else
-          document.getElementById('cs_department').style.display = 'none'
+        if(this.change_department!=null) {
+          if (this.change_department.value !== this.select_course.course_department.department_id)
+            document.getElementById('cs_department').style.display = 'inline-block'
+          else
+            document.getElementById('cs_department').style.display = 'none'
+        }
+      },
+      teacher_change:function(){
+        if( this.select_course.teachers.length === 0 ){
+          if(this.change_teacher!==null)
+            document.getElementById('cs_teacher').style.display = 'inline-block'
+          else
+            document.getElementById('cs_teacher').style.display = 'none'
+        }
+        else if(this.change_teacher!=null){
+          if (this.change_teacher.value !== this.select_course.teachers[0].teacher_number)
+            document.getElementById('cs_teacher').style.display = 'inline-block'
+          else
+            document.getElementById('cs_teacher').style.display = 'none'
+        }
       },
       confirm_name: function () {
         let data = {
@@ -607,6 +662,36 @@
               for (let i = 0; i < this.list.length; i++)
                 this.course.push(this.list[i])
               document.getElementById('cs_department').style.display = 'none';
+              this.select_course = this.course[this.select_course.course_id-1];
+            })
+          }
+        })
+      },
+      confirm_teacher:function(){
+        let data = {
+          "user_name": this.$cookie.get('username'),
+          "user_token": this.$cookie.get('user_token'),
+          "course_id": this.select_course.course_id,
+          "teacher_number": this.change_teacher.value
+        };
+        this.$http.post(this.Global_Api + '/schedule/course_add_teacher', data).then((res) => {
+          alert(res.body.error_message);
+          if(res.body.error_code===0) {
+            data = {};
+            if (typeof (this.year) != "undefined")
+              data['course_year'] = this.year;
+            if (typeof (this.semester) != "undefined")
+              data['course_semester'] = this.semester;
+            if (typeof (this.department_id) != "undefined")
+              data['course_department_id'] = this.department_id;
+            if (typeof (this.coursetype) != "undefined")
+              data['course_type'] = this.coursetype;
+            this.course = [];
+            this.$http.post(this.Global_Api + '/schedule/course_list', data).then((res) => {
+              this.list = res.body.course_list
+              for (let i = 0; i < this.list.length; i++)
+                this.course.push(this.list[i])
+              document.getElementById('cs_teacher').style.display = 'none';
               this.select_course = this.course[this.select_course.course_id-1];
             })
           }
@@ -815,7 +900,7 @@
     margin-top: 31px;
   }
 
-  #change-block, #change-block2 {
+  #change-block, #change-block2, #change-block3{
     border: 3px solid #f5f5f5;
     width: 90%;
     height: 75%;
@@ -835,6 +920,9 @@
   #change-block2 span {
     font-weight: bold;
   }
+  #change-block3 span {
+    font-weight: bold;
+  }
 
   li {
     cursor: pointer;
@@ -848,7 +936,7 @@
 
   .btn-info {
     display: none;
-    margin-left: 50px;
+    margin-left: 20px;
     height: 30px;
     vertical-align: 0px;
     animation: donghua 2s;
@@ -858,7 +946,7 @@
     width: 50px;
   }
 
-  #title, #title2 {
+  #title, #title2 ,#title3{
     animation: donghua 2s;
   }
 
@@ -880,7 +968,7 @@
     margin-bottom: 50px;
   }
 
-  #title, #title2 {
+  #title, #title2,#title3 {
     border-left: 2px solid rgb(35, 149, 241);
     padding-left: 10px;
   }
