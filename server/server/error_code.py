@@ -87,3 +87,6 @@ CLACK_SET_YEAR_SEMESTER_FAIL={"error_code": 26, "error_message": "设置学年�
 #查询学年学期失败
 CLACK_INQUIRY_YEAR_SEMESTER_FAIL={"error_code": 27, "error_message": "查询学年学期失败"}
 
+#获取报表失败
+CLACK_REPORT_FAIL={"error_code": 28, "error_message": "获取报表失败"}
+
