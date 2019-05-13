@@ -4,7 +4,7 @@ import json
 
 import selecourse.models
 from django.http import JsonResponse
-from entity.models import Student,Student_course, Course,Teacher,Classroom,Department,DateAndClassroom
+from entity.models import Student, Course,Teacher,Classroom,Department,DateAndClassroom
 from selecourse.models import Selection
 import entity
 from server import error_code
@@ -35,9 +35,12 @@ def student_inquiry(request):
     for course in courses:#遍历通过学年和学期过滤得到的所有课程记录
         dateAndclassroom = DateAndClassroom.objects.get(course_id=course.id)
         classroom=Classroom.objects.get(id=dateAndclassroom.classroom_id)
-        student_course=Student_course.objects.get(student_id=student.id,course_id=course.id)
+        # student_course=Student_course.objects.get(student_id=student.id,course_id=course.id)
         teacher=Teacher.objects.get(id=course.course_teacher_id)
         department=Department.objects.get(id=course.course_department_id)
+        flag=True
+        if Selection.objects.filter(selection_student_id=student.id,selection_course_id=course.id).exists():
+            flag=False
         course_info = {
                 "course_name": course.course_name,
                 "course_credit": course.course_credit,
@@ -48,7 +51,7 @@ def student_inquiry(request):
                 "course_allowance":course.course_allowance,#课程余量
                 "course_capacity": course.course_capacity,#课程容量
                 "course_teacher": teacher.teacher_name,
-                "course_access": student_course.course_access,
+                "course_access": flag,
                 "course_department": department.department_name,
                 "start_week":dateAndclassroom.start_week,#开始周数
                 "end_week":dateAndclassroom.end_week,#结束周数
@@ -135,9 +138,6 @@ def sele_button(request):
     #通过student.id过滤得到该学生所有的选课记录，即所有已选的课程
     seles=Selection.objects.filter(selection_student_id=student.id)
     if seles.count()==0:
-        student_course = Student_course.objects.get(course_id=course.id, student_id=student.id)
-        student_course.course_access = "已选"
-        student_course.save()
         course.course_allowance =course.course_allowance-1  # 课程余量减去1
         try:
             course.save()
@@ -168,9 +168,6 @@ def sele_button(request):
                 break
         if flag and course.course_allowance>0:
             #如果无冲突且课程余量不为0，则执行加入课程操作
-            student_course=Student_course.objects.get(course_id=course.id,student_id=student.id)
-            student_course.course_access="已选"
-            student_course.save()
             course.course_allowance = course.course_allowance - 1  # 课程余量减去1
             try:
                 course.save()
@@ -210,10 +207,6 @@ def dele_button(request):
         sele.delete()  # 删除这条选课记录
     except Exception:
         return JsonResponse({**error_code.CLACK_DELETE_FAIL})
-
-    stu_cou=Student_course.objects.get(course_id=course.id, student_id=student.id)
-    stu_cou.course_access="有"
-    stu_cou.save()
 
     course.course_allowance=course.course_allowance+1#课程余量加1
     try:
