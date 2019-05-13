@@ -88,3 +88,9 @@ CLACK_STUDENT_SELECT_DST_EXISTS = {"error_code": 26, "error_message": "已经选
 
 # 上传文件失败
 CLACK_DISSERTATION_UPLOAD_FILE_FAILED = {"error_code": 27, "error_message": "上传论文失败"}
+
+#学生查询课表失败
+CLACK_TIMETABLE_FAIL={"error_code": 28, "error_message": "查询课表失败"}
+
+#课程余量修改失败
+CLACK_ALLOWANCE_UPDATE_FAILED={"error_code": 29, "error_message": "课程余量修改失败"}

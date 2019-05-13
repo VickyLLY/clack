@@ -160,14 +160,6 @@ class Student(models.Model):
         }
 
 
-# 学生课程关系
-class Student_course(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    # 选课权限
-    course_access = models.TextField(default="无")
-
-
 # 用户
 class User(models.Model):
     user_name = models.TextField(default='', unique=True)
