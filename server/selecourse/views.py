@@ -35,13 +35,13 @@ def student_inquiry(request):
     for course in courses:#遍历通过学年和学期过滤得到的所有课程记录
         dateAndclassroom = DateAndClassroom.objects.get(course_id=course.id)
         classroom=Classroom.objects.get(id=dateAndclassroom.classroom_id)
-        # student_course=Student_course.objects.get(student_id=student.id,course_id=course.id)
         teacher=Teacher.objects.get(id=course.course_teacher_id)
         department=Department.objects.get(id=course.course_department_id)
         flag=True
         if Selection.objects.filter(selection_student_id=student.id,selection_course_id=course.id).exists():
             flag=False
         course_info = {
+                "course_id":course.id,
                 "course_name": course.course_name,
                 "course_credit": course.course_credit,
                 "course_type": course.course_type,
@@ -315,7 +315,6 @@ def course_inquiry(request):
             course=Course.objects.get(id=sele.selection_course_id)
         except Exception:
             return JsonResponse({**error_code.CLACK_COURSE_NOT_EXISTS})
-        # print(course.id)
         #通过课程记录获得对应的DateAndClassroom
         if year == course.course_year and semester == course.course_semester:
                 dateAndclassroom = DateAndClassroom.objects.get(course_id=course.id)
