@@ -12,20 +12,4 @@ class Score(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=False)
     score = models.IntegerField(default=0, null=False)
     comment = models.TextField(default='', null=True)
-    # 老师是否提交成绩的标志，默认没有提交
-    teacher_upload = models.BooleanField(default=False, null=False)
-
-
-# 临时建立的选课表，最终要用选课组的
-class SelectCourse(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, null=False)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=False)
-
-
-# 临时建立的教师排课表,最终要用排课组的
-class TeacherSchedule(models.Model):
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, null=False)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=False)
-
-
 
