@@ -120,7 +120,7 @@ def stu_dst_list(request):
         entity.models.User.objects.filter(user_name=request_json['user_name']))
     user = query_result[0]
     snum = user.user_student_id
-    dd=dst.models.Application.objects.filter(student_id=snum)
+    dd=dst.models.Determination.objects.filter(student_id=snum)
     tnum=dd[0].dissertation_id
     dsts = entity.models.DissertationTopic.objects.filter(id=tnum)
     tname = list(entity.models.Teacher.objects.filter(id=dsts[0].dissertation_tnum_id))
@@ -226,48 +226,57 @@ def dst_approval(request):
 @login_required
 def view_selected(request):
     request_json = json.loads(request.body)
-    tid = entity.models.Teacher.objects.get(teacher_number=request_json["teacher_number"])
-    result = entity.models.DissertationTopic.objects.filter(dissertation_tnum=tid)
-    view_list = []
-    for i in range(len(result)):
-        d_id = result[i].id
-        res = dst.models.Application.objects.filter(dissertation_id=d_id)
-        temp = {
-            'title': result[i].dissertation_title,
-            'fixed_capacity': result[i].dissertation_capacity,
-            'now_capacity': result[i].len(res)
-        }
-        view_list.append(temp)
-    return JsonResponse({'view_list': view_list})
+    query_result = list(
+        entity.models.User.objects.filter(user_name=request_json['user_name']))
+    user = query_result[0]
+    tnum = user.user_teacher_id
+    dsts = entity.models.DissertationTopic.objects.filter(dissertation_tnum_id=tnum)
+    result_list = []
+    for dsd in dsts:
+        tname = list(dst.models.Application.objects.filter(id=dsd.dissertation_tnum_id))
+        result_list_te = [{
+            'title': dsd.dissertation_title,
+            'fixed_capacity': dsd.dissertation_capacity,
+            'now_capacity': len(tname),
+        }]
+        result_list = result_list + result_list_te
+
+    return JsonResponse({**error_code.CLACK_SUCCESS, 'view_list': result_list})
+
 
 # 教师查看所有选择该课题的学生
 @login_required
 def view_student(request):
     request_json = json.loads(request.body)
-    result = dst.models.Application.objects.filter(dissertation_num=request_json["dissertation_id"])
-    stu_list = []
-    for i in range(len(result)):
-        stu_number = result[i].stu_number
-        m = entity.models.Student.objects.filter(student_number=stu_number)
+    dsts = dst.models.Application.objects.filter(dissertation_id=request_json['dissertation_id'])
+    result_list = []
+    for dsd in dsts:
+        stu_number = dsd.student_id
+        m = entity.models.Student.objects.filter(id=stu_number)
         name = m[0].student_name
         banji = m[0].student_banji.id
-        major_num = entity.models.Banji.objects.filter(id=banji)[0].id
-        major = entity.models.Banji.objects.filter(id=major_num)[0].banji_major.major_name
-        temp = {
+        major_n = entity.models.Banji.objects.filter(id=banji)
+        major_num = major_n[0].id
+        mmm = entity.models.Banji.objects.filter(id=major_num)
+        major = mmm[0].banji_major.major_name
+        result_list_te = [{
             'student_number': stu_number,
             'student_name': name,
-            'major_name': major
-        }
-        stu_list.append(temp)
-    return JsonResponse({'stu_list': stu_list})
+            'major_name': major,
+        }]
+        result_list = result_list + result_list_te
+    return JsonResponse({'stu_list': result_list})
 
 # 教师上传学生论文的成绩和评语
 @login_required
 def upload_score(request):
     request_json = json.loads(request.body)
+    snum = request_json['student_number']
+    stu = entity.models.Student.objects.filter(student_number=snum)
+    sid=stu[0].id
     sc = dst.models.Grade(
-        grade_dissertation=request_json['dissertation_id'],
-        grade_student=request_json['student_number'],
+        grade_dissertation_id=request_json['dissertation_id'],
+        grade_student_id=sid,
         grade_grade=request_json['score'],
         grade_comment=request_json['comment']
     )
@@ -401,3 +410,18 @@ def upload_file(request):
             return JsonResponse({**error_code.CLACK_SUCCESS})
     else:
         return JsonResponse({**error_code.CLACK_POST_REQUIRED})
+
+@login_required
+def stu_view_grade(request):
+    request_json = json.loads(request.body)
+    query_result = list(
+        entity.models.User.objects.filter(user_name=request_json['user_name']))
+    user = query_result[0]
+    snum=user.user_student_id
+    result = dst.models.Grade.objects.filter(grade_student=snum)
+    res=result[0]
+    result_list = [{
+        'grade': res.grade_grade,
+        'comment': res.grade_comment,
+    }]
+    return JsonResponse({**error_code.CLACK_SUCCESS,'stu_view_grade': result_list})

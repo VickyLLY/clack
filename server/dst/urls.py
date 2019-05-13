@@ -22,5 +22,6 @@ urlpatterns = [
     path(r'select_dst_dst_title', views.select_dst_dst_title, name="select_dst_dst_title"),
     path(r'upload_file', views.upload_file, name="upload_file"),
     path(r'dst_approval', views.dst_approval, name="dst_approval"),
+    path(r'stu_view_grade', views.stu_view_grade, name="stu_view_grade"),
 
 ]
