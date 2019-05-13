@@ -81,29 +81,33 @@
 
       <div class="panel-body">
         <div class="panel-heading">
-          <h2  style="text-align:center;"><strong>选课标题</strong></h2>
-          <h3>
-            <font size="3" ><strong>剩余<font color="red">{{day}}</font>天</strong></font>
+          <h2  style="text-align:center;"><strong>2019学年第1学期选课</strong></h2>
+          <h3 style="text-align:right;">
+            <!--<font size="3" ><strong>剩余<font color="red">{{day}}</font>天</strong></font>
             <font size="2">选课要求总学分最低<font color="red">{{min_lp}}</font></font>
             <font size="2">最高学分<font color="red">{{max_lp}}</font></font>
             <font size="2">已获得学分<font color="red">{{get_lp}}</font></font>
-            <font size="2">本学期已选<font color="red">{{sel_lp}}</font></font>
+            <font size="2">本学期已选<font color="red">{{sel_lp}}</font></font>-->
+            <font size="3" style="color: #204d74;background: #66afe9">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</font>
+            <font size="3" ><strong>待选</strong></font>
+            <font size="3" style="color: #204d74;background: lightgreen">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</font>
+            <font size="3" ><strong>已选</strong></font>
           </h3>
         </div><!--选课标题-->
         <hr/>
         <div>
           <h1>
             <font size="3" color="red" ><span class="glyphicon glyphicon-list-alt"></span> <strong>专业必修</strong></font>
-            <font size="2">要求修读<font color="red">2</font>学分,</font>
+            <!--<font size="2">要求修读<font color="red">2</font>学分,</font>
             <font size="2">以获得<font color="red">2</font>学分,</font>
-            <font size="2">本学期已选<font color="red">2</font>学分</font>
+            <font size="2">本学期已选<font color="red">2</font>学分</font>-->
           </h1>
           <div v-for="c in z_b_course">
-            <div v-if="-1==stu_sel.indexOf(c.id)" class="panel panel-default">
+            <div v-if="-1==stu_sel.indexOf(c.course_id)" class="panel panel-default">
               <div class="panel-heading" style="color: #204d74;background: #66afe9">
                 <h4 class="panel-title" >
                   <a data-toggle="collapse" data-parent="#accordion"  v-bind:href="'#'+c.course_id">
-                    ({{c.id}}){{c.course_name}}--{{c.course_credit}}分
+                    ({{c.course_id}}){{c.course_name}}--{{c.course_credit}}分
                   </a>
                 </h4>
               </div>
@@ -126,17 +130,17 @@
                   </thead>
                   <tbody>
                   <tr >
-                    <td>{{c.id}}</td>
+                    <td>{{c.course_id}}</td>
                     <td>{{c.course_name}}</td>
                     <td>{{c.course_credit}}</td>
                     <td>{{c.course_type}}</td>
                     <td>{{c.course_capacity}}</td>
                     <td>{{c.course_allowance}}</td>
                     <td>{{c.course_teacher}}</td>
-                    <td>{{c.course_departmen}}</td>
+                    <td>{{c.course_department}}</td>
                     <td>{{c.start_week+"-"+c.end_week}}</td>
                     <td>{{"星期"+c.day_of_week+"  "+c.start+"-"+c.end}}</td>
-                    <td v-if="c.course_allowance > 0" ><button type="button" class="btn btn-primary" v-on:click="add_course(c.id,username)" >选课</button></td>
+                    <td v-if="c.course_allowance > 0" ><button type="button" class="btn btn-primary" v-on:click="add_course(c.course_id,username)" >选课</button></td>
                   </tr>
                   </tbody>
                 </table>
@@ -146,7 +150,7 @@
               <div class="panel-heading" style="color: #204d74;background:lightgreen">
                 <h4 class="panel-title" >
                   <a data-toggle="collapse" data-parent="#accordion"  v-bind:href="'#'+c.course_id">
-                    ({{c.id}}){{c.course_name}}--{{c.course_credit}}分
+                    ({{c.course_id}}){{c.course_name}}--{{c.course_credit}}分
                   </a>
                 </h4>
               </div>
@@ -169,17 +173,17 @@
                   </thead>
                   <tbody>
                   <tr>
-                    <td>{{c.id}}</td>
+                    <td>{{c.course_id}}</td>
                     <td>{{c.course_name}}</td>
                     <td>{{c.course_credit}}</td>
                     <td>{{c.course_type}}</td>
                     <td>{{c.course_capacity}}</td>
                     <td>{{c.course_allowance}}</td>
                     <td>{{c.course_teacher}}</td>
-                    <td>{{c.course_departmen}}</td>
+                    <td>{{c.course_department}}</td>
                     <td>{{c.start_week+"-"+c.end_week}}</td>
                     <td>{{"星期"+c.day_of_week+"  "+c.start+"-"+c.end}}</td>
-                    <td><button type="button" class="btn btn-primary" v-on:click="del_course(c.id,username)">退选</button></td>
+                    <td><button type="button" class="btn btn-primary" v-on:click="del_course(c.course_id,username)">退选</button></td>
                   </tr>
                   </tbody>
                 </table>
@@ -190,14 +194,14 @@
         <div>
           <h1>
             <font size="3" color="red" ><span class="glyphicon glyphicon-list-alt"></span> <strong>专业选修</strong></font>
-            <font size="2">要求修读<font color="red">2</font>学分,</font>
+            <!--<font size="2">要求修读<font color="red">2</font>学分,</font>
             <font size="2">以获得<font color="red">{{get_lp}}2</font>学分,</font>
-            <font size="2">本学期已选<font color="red">{{sel_lp}}2</font>学分</font>
+            <font size="2">本学期已选<font color="red">{{sel_lp}}2</font>学分</font>-->
           </h1>
           <!--<ul>-->
 
           <div v-for="c in z_x_course">
-            <div v-if="-1==stu_sel.indexOf(c.id)" class="panel panel-default">
+            <div v-if="-1==stu_sel.indexOf(c.course_id)" class="panel panel-default">
               <div class="panel-heading" style="color: #204d74;background: #66afe9">
                 <h4 class="panel-title" >
                   <a data-toggle="collapse" data-parent="#accordion"  v-bind:href="'#'+c.course_id">
@@ -224,17 +228,17 @@
                   </thead>
                   <tbody>
                   <tr>
-                    <td>{{c.id}}</td>
+                    <td>{{c.course_id}}</td>
                     <td>{{c.course_name}}</td>
                     <td>{{c.course_credit}}</td>
                     <td>{{c.course_type}}</td>
                     <td>{{c.course_capacity}}</td>
                     <td>{{c.course_allowance}}</td>
                     <td>{{c.course_teacher}}</td>
-                    <td>{{c.course_departmen}}</td>
+                    <td>{{c.course_department}}</td>
                     <td>{{c.start_week+"-"+c.end_week}}</td>
                     <td>{{"星期"+c.day_of_week+"  "+c.start+"-"+c.end}}</td>
-                    <td v-if="c.course_allowance > 0" ><button type="button" class="btn btn-primary" v-on:click="add_course(c.id,username)" >选课</button></td>
+                    <td v-if="c.course_allowance > 0" ><button type="button" class="btn btn-primary" v-on:click="add_course(c.course_id,username)" >选课</button></td>
                   </tr>
                   </tbody>
                 </table>
@@ -244,7 +248,7 @@
               <div class="panel-heading" style="color: #204d74;background:lightgreen">
                 <h4 class="panel-title" >
                   <a data-toggle="collapse" data-parent="#accordion"  v-bind:href="'#'+c.course_id">
-                    ({{c.id}}){{c.course_name}}--{{c.course_credit}}分
+                    ({{c.course_id}}){{c.course_name}}--{{c.course_credit}}分
                   </a>
                 </h4>
               </div>
@@ -267,17 +271,17 @@
                   </thead>
                   <tbody>
                   <tr>
-                    <td>{{c.id}}</td>
+                    <td>{{c.course_id}}</td>
                     <td>{{c.course_name}}</td>
                     <td>{{c.course_credit}}</td>
                     <td>{{c.course_type}}</td>
                     <td>{{c.course_capacity}}</td>
                     <td>{{c.course_allowance}}</td>
                     <td>{{c.course_teacher}}</td>
-                    <td>{{c.course_departmen}}</td>
+                    <td>{{c.course_department}}</td>
                     <td>{{c.start_week+"-"+c.end_week}}</td>
                     <td>{{"星期"+c.day_of_week+"  "+c.start+"-"+c.end}}</td>
-                    <td><button type="button" class="btn btn-primary" v-on:click="del_course(c.id,username)">退选</button></td>
+                    <td><button type="button" class="btn btn-primary" v-on:click="del_course(c.course_id,username)">退选</button></td>
                   </tr>
                   </tbody>
                 </table>
@@ -288,15 +292,9 @@
 
         </div>
       </div>
-
+      <br><br><br><br><br><br><br><br><br>
     </div>
-    <div class="panel panel-default" style="width: 80%;allowance: 0 auto">
 
-      <div class="panel-body">
-        <h2>vue</h2>
-      </div>
-
-    </div>
   </div>
 </template>
 
@@ -307,6 +305,7 @@
   export default {
     name: "stu_sel_course",
     data() {
+
       return {
         username: this.$cookie.get('username'),
         realname: this.$cookie.get('realname'),
@@ -325,28 +324,30 @@
         z_x_course:[],
       }
     },
-    created: function () {
+    created(){
+      //alert(123)
       /*将可选课程分为必修与选修*/
       let sel_class={
         year:2019,
         semester:1 ,
-        student_number:this.username
+        student_number:"2"
       };
-      this.$http.post(this.Global_Api + '/schedule/course_list',[]).then((res) =>{
+      this.$http.post(this.Global_Api + '/selecourse/student_inquiry',sel_class).then((res) =>{
         for (let i=0;i<res.body.course_list.length;i++){
-          alert(res.body.course_list[i].course_name)
+          //alert(res.body.course_list[i].course_name)
           if(res.body.course_list[i].course_type==0)
             this.z_b_course.push(res.body.course_list[i])
           else{
             this.z_x_course.push(res.body.course_list[i])
           }
-          if(res.body.course_list[i].course_access==1)
+          if(res.body.course_list[i].course_access==false)
           {
-            this.stu_sel.push(res.body.course_list[i].id)
+            this.stu_sel.push(res.body.course_list[i].course_id)
           }
         }
         //alert(res.body.course_list[0].course_name)
       })
+
     },
     methods: {
       enter_timetable: function () {
@@ -359,64 +360,64 @@
         this.$cookie.delete('username');
       },
       add_course:function(id,stu_name){
-        alert(stu_name+" select  "+id)/*学生选课*/
+        //alert(stu_name+" select  "+id+this.stu_sel)/*学生选课*/
         let add_class={
           student_number:this.username,
-          course_name:id
+          course_id:id
         };
-        this.$http.post(this.Global_Api + '/selecourse/sele_button/', add_class).then((res) =>{
-          if(res.body.select_information=="可选")
-          { this.z_b_cours=[]
-            this.z_x_course=[]
-            this.stu_sel=[]
+        this.$http.post(this.Global_Api + '/selecourse/sele_button', add_class).then((res) =>{
+          if(res.body.error_code==0)
+          {this.stu_sel.push(id)
             alert("选课成功")
-            let sel_class={
-              year:'2019',
-              semester:'1',
-              student_number:this.username
-            };
-            this.$http.post(this.Global_Api + '/selecourse/student_inquiry/2016014//', sel_class).then((res) =>{
-              for (var i in res.body.course_list){
-                if(i.course_type=1)
-                  this.z_b_course.push(i)
-                else{
-                  this.z_x_course.push(i)
-                }
-                if(i.course_access=0)
-                {
-                  this.stu_sel.push(i.id)
-                }
-              }
-            })
+            //location.reload()
+            /*for (var i=0;i<this.stu_sel.length;i++)
+          {alert("ok123")
+            if (this.stu_sel[i]==id)
+            {
+              alert("ok")
+              Vue.set(this.stu_sel,i,"")
+
+            }
+          }*/
           }
           else{
             alert("选课失败")
-            this.z_b_cours=[]
-            this.z_x_course=[]
-            this.stu_sel=[]
-            let sel_class={
-              year:'2019',
-              semester:'1',
-              student_number:this.username
-            };
-            this.$http.post(this.Global_Api + '/selecourse/student_inquiry/2016014//', sel_class).then((res) =>{
-              for (var i in res.body.course_list){
-                if(i.course_type=1)
-                  this.z_b_course.push(i)
-                else{
-                  this.z_x_course.push(i)
-                }
-                if(i.course_access=0)
-                {
-                  this.stu_sel.push(i.id)
-                }
-              }
-            })
           }
         })
       },
       del_course:function(id,stu_name){
-        alert(stu_name+" delete  "+id)/*删除所选课程*/
+        //alert(stu_name+" delete  "+id)/*删除所选课程*/
+        let del_class={
+          student_number:this.username,
+          course_id:id
+        };
+        this.$http.post(this.Global_Api + '/selecourse/dele_button', del_class).then((res) =>{
+          if(res.body.error_code==0)
+          {for(var i=0;i<this.stu_sel.length;i++)
+          {
+            if(this.stu_sel[i]==id)
+            {
+             delete this.stu_sel[i]
+              break
+            }
+          }
+            alert("退选成功")
+            //location.reload()
+            /*for (var i=0;i<this.stu_sel.length;i++)
+          {alert("ok123")
+            if (this.stu_sel[i]==id)
+            {
+              alert("ok")
+              Vue.set(this.stu_sel,i,"")
+
+            }
+          }*/
+          }
+          else{
+            alert("退课失败")
+          }
+        })
+
       },
       getStyle: function (obj, name) {
         if (obj.currentStyle) {
@@ -465,7 +466,7 @@
         return (zero + num).slice(-digit);
       },
       get_course: function () {
-        let data = {
+       /* let data = {
           "year": 2018,
           "semester": 2,
           "student_number": "1",
@@ -478,7 +479,7 @@
               $("."+this.td[j-1]).nextAll()[k].class_count+=m;
             }
           }
-        })
+        })*/
       },
       set_attribution: function () {
         for (let i = 0; i < this.td.length; i++) {
