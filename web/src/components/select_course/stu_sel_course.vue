@@ -72,7 +72,7 @@
         </div>
       </div>
       <div class="row" style="overflow:scroll;">
-        <div v-if="">
+        <div v-html="once">
 
         </div>
       </div>
@@ -274,7 +274,7 @@
                     <td>{{c.course_capacity}}</td>
                     <td>{{c.course_allowance}}</td>
                     <td>{{c.course_teacher}}</td>
-                    <td>{{c.course_departmen}}</td>
+                    <td>{{c.course_department}}</td>
                     <td>{{c.start_week+"-"+c.end_week}}</td>
                     <td>{{"星期"+c.day_of_week+"  "+c.start+"-"+c.end}}</td>
                     <td><button type="button" class="btn btn-primary" v-on:click="del_course(c.id,username)">退选</button></td>
@@ -315,6 +315,38 @@
         week: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
         td:['one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen'],
         count:0,
+        once:`` ,
+        current:`<table class="table table-striped">
+                  <thead>
+                  <tr>
+                    <th>课堂号</th>
+                    <th>课程名</th>
+                    <th>课程学分</th>
+                    <th>课程类型</th>
+                    <th>课程容量</th>
+                    <th>课程余量</th>
+                    <th>任课教师</th>
+                    <th>开课学院</th>
+                    <th>开课周数</th>
+                    <th>上课时间</th>
+                    <th>操作</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td>{{c.id}}</td>
+                    <td>{{c.course_name}}</td>
+                    <td>{{c.course_credit}}</td>
+                    <td>{{c.course_type}}</td>
+                    <td>{{c.course_capacity}}</td>
+                    <td>{{c.course_allowance}}</td>
+                    <td>{{c.course_teacher}}</td>
+                    <td>{{c.course_departmen}}</td>
+                    <td>{{c.start_week+"-"+c.end_week}}</td>
+                    <td>{{"星期"+c.day_of_week+"  "+c.start+"-"+c.end}}</td>
+                  </tr>
+                  </tbody>
+                </table>`,
         day:0,
         max_lp:100,
         min_lp:100,
@@ -401,12 +433,12 @@
             };
             this.$http.post(this.Global_Api + '/selecourse/student_inquiry/2016014//', sel_class).then((res) =>{
               for (var i in res.body.course_list){
-                if(i.course_type=1)
+                if(i.course_type===1)
                   this.z_b_course.push(i)
                 else{
                   this.z_x_course.push(i)
                 }
-                if(i.course_access=0)
+                if(i.course_access===0)
                 {
                   this.stu_sel.push(i.id)
                 }
@@ -471,6 +503,8 @@
           "student_number": "1",
         };
         this.$http.post(this.Global_Api + '/selecourse/course_inquiry', data).then((res) => {
+          alert(res.body.error_code);
+          alert(res.body.timetable.length);
           for (let i = 0; i < res.body.timetable.length; i++) {
             for(let j=res.body.timetable[i].start;j<res.body.timetable[i].end;j++){
               let k=res.body.timetable[i].day_of_week;

@@ -180,7 +180,7 @@
       },
       view_course:function () {
         if (this.user_type == 2) {
-          this.$router.push('/main/stu_sel_course/timetable');
+          this.$router.push('/main/stu_sel_course/stu_timetable');
         } else if (this.user_type == 1) {
           this.$router.push('/main/tea_sel_course');
         } else if(this.user_type == 0) {
