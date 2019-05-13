@@ -88,11 +88,6 @@ export default new Router({
       component: schedule_mob,
     },
     {
-      path: '/main',
-      name: 'Main',
-      component: Main
-    },
-    {
       path: '/main/add_course',
       name: 'Add_course',
       component: Add_course,
