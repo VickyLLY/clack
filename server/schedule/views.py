@@ -18,7 +18,8 @@ def new_course(request):
                                   course_year=request_json['course']['course_year'],
                                   course_semester=request_json['course']['course_semester'],
                                   course_department_id=request_json['course']['course_department_id'],
-                                  course_capacity=request_json['course']['course_capacity'])
+                                  course_capacity=request_json['course']['course_capacity'],
+                                  course_allowance=request_json['course']['course_capacity'])
     try:
         course.save()
     except Exception as e:
@@ -149,7 +150,11 @@ def change_course_capacity(request):
     request_json = json.loads(request.body)
     try:
         course = entity.models.Course.objects.get(id=request_json['course_id'])
-        course.course_capacity = request_json['course_capacity']
+        d = request_json['course_capacity'] - course.course_capacity
+        if course.course_allowance + d < 0:
+            return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": "课程容量小于当前已选该课程的学生数量"})
+        course.course_capacity += d
+        course.course_allowance += d
         course.save()
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": str(e)})
