@@ -21,6 +21,7 @@ import tea_sel_course from "@/components/select_course/tea_sel_course";
 import stu_sel_course from "@/components/select_course/stu_sel_course";
 import stu_timetable from "@/components/select_course/stu_timetable";
 import course_table from "@/components/schedule/course_table";
+import add_notice from "@/components/background/add_notice";
 //成绩管理
 import Stu_navigation from '@/components/scoremng/stu_scoremng/Stu_navigation'
 import navigation from '@/components/scoremng/navigation'
@@ -172,6 +173,11 @@ export default new Router({
       name:'attention',
       component:attention
     },
+    {
+      path:'/main/background/add_notice',
+      name:"add_notice",
+      component:add_notice
+    }
   ],
   mode: 'history' // 去除地址栏中的/#
 })
