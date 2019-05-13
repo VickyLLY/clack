@@ -75,7 +75,6 @@
           this.$router.push({
             path: '/main',
           })
-          location.reload()
         }
     },
     methods: {
@@ -110,12 +109,10 @@
                 this.$router.push({
                   path: '/main_mob',
                 })
-                location.reload()
               } else {
                 this.$router.push({
                   path: '/main',
                 })
-                location.reload()
               }
             }
           })
@@ -123,7 +120,6 @@
       },
       register: function () {
         this.$router.push('/register')
-        location.reload()
       }
     }
   }
