@@ -82,6 +82,7 @@
       <table class="table table-striped table-item ">
         <thead>
         <tr>
+          <th>序号</th>
           <th>课程名称</th>
           <th>课程号</th>
           <th>学分</th>
@@ -93,7 +94,10 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="course in courses">
+        <tr v-for="(course,index) in courses">
+          <router-link to="/main/man_sel_course/man_view_msg" >
+            <td @click="confirm(index)"><font style="margin:0 auto;text-align:center">{{index}}</font></td>
+          </router-link>
           <td>{{course.course_name}}</td>
           <td>{{course.course_id}}</td>
           <td>{{course.course_credit}}</td>
@@ -112,9 +116,7 @@
         <p v-show="infoText">没有查询到相关信息！</p>
       </div>
     </div>
-    <router-link to="/main/man_sel_course/man_view_msg">
-      <button style="position: relative; bottom: 200px; left: 50px;" type="button" class="btn btn-primary" @click="sendCourseList" >查看报表</button>
-    </router-link>
+
     <div>
 
     </div>
@@ -125,6 +127,7 @@
 <script>
   import PC_bar from "../public/PC_bar";
   import bus from "../../assets/manager_to_manager"
+
   export default {
     name: "man_sel_course",
     data () {
@@ -143,10 +146,17 @@
         info_collection:{"course_name":"","course_teacher":"","year":"","academy":"","semester":""},
         border_show:false,
         conditionText:false,
-        infoText:false
+        infoText:false,
+        data:{}
       }
     },
     methods:{
+      confirm:function(index){
+        this.$router.push('/main/man_sel_course/man_view_msg')
+        this.data=this.update_courseList[index]
+        console.log("赋值")
+        console.log(this.data)
+      },
       Filter:function () {
         this.border_show=true;
         if (this.info.year=="all"&&this.info.academy=="all"){
@@ -245,10 +255,8 @@
               this.course_list=res.body.course_list;
             }
           );
-      },
-      sendCourseList:function () {
-        bus.$emit("sendCourseList",this.update_courseList)
       }
+
     },
     created()
     {
@@ -258,6 +266,10 @@
             console.log(this.course_list)
           }
         );
+    },
+    beforeDestroy () {
+      console.log('A before destroy')
+      bus.$emit("getData",this.data);
     },
 
     components:{
