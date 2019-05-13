@@ -9,4 +9,6 @@ urlpatterns = [
     path(r'teacher_download',views.teacher_download,name="teacher_download"),
     path(r'admin_reports',views.admin_reports,name="admin_reports"),
     path(r'course_inquiry',views.course_inquiry,name="course_inquiry"),
+    path(r'set_year_semester',views.set_year_semester,name="set_year_semester"),
+    path(r'inquiry_year_semester',views.inquiry_year_semester,name="inquiry_year_semester"),
 ]

@@ -5,7 +5,7 @@ import json
 import selecourse.models
 from django.http import JsonResponse
 from entity.models import Student, Course,Teacher,Classroom,Department,DateAndClassroom
-from selecourse.models import Selection
+from selecourse.models import Selection,Year_semester
 import entity
 from server import error_code
 
@@ -35,13 +35,14 @@ def student_inquiry(request):
     for course in courses:#遍历通过学年和学期过滤得到的所有课程记录
         dateAndclassroom = DateAndClassroom.objects.get(course_id=course.id)
         classroom=Classroom.objects.get(id=dateAndclassroom.classroom_id)
+        # student_course=Student_course.objects.get(student_id=student.id,course_id=course.id)
         teacher=Teacher.objects.get(id=course.course_teacher_id)
         department=Department.objects.get(id=course.course_department_id)
         flag=True
         if Selection.objects.filter(selection_student_id=student.id,selection_course_id=course.id).exists():
             flag=False
         course_info = {
-                "course_id":course.id,
+                "course_id": course.id,
                 "course_name": course.course_name,
                 "course_credit": course.course_credit,
                 "course_type": course.course_type,
@@ -297,7 +298,7 @@ def  admin_reports(request):
 #学生课表查询接口
 def course_inquiry(request):
     #保存查询学生的课表信息，即已选的所有课程信息
-    timetable=[] #课表
+    course_list=[] #保存课表
 
     request_json = json.loads(request.body)
     year = request_json['year']
@@ -331,8 +332,45 @@ def course_inquiry(request):
                     "start": dateAndclassroom.start,  # 开始节数
                     "end": dateAndclassroom.end,  # 结束节数
                 }
-                timetable.append(course_info)
-    if len(timetable)==0:
-        return JsonResponse({**error_code.CLACK_TIMETABLE_FAIL, 'course_list': timetable})
+                course_list.append(course_info)
+    if len(course_list)==0:
+        return JsonResponse({**error_code.CLACK_TIMETABLE_FAIL, 'course_list': course_list})
     else:
-        return JsonResponse({**error_code.CLACK_SUCCESS, 'course_list': timetable})
+        return JsonResponse({**error_code.CLACK_SUCCESS, 'course_list': course_list})
+
+#管理员设置学期学年
+def set_year_semester(request):
+    #输入year和semester来写入Year_semester表中
+    request_json = json.loads(request.body)
+    year = request_json['year']
+    semester = request_json['semester']
+    inital = Year_semester.objects.all()
+    if inital.count()==0:
+        y_s = Year_semester(year=2016, semester=1)
+        y_s.save()
+    courses=Course.objects.filter(course_year=year,course_semester=semester)
+    if courses.count()==0:
+        return  JsonResponse({**error_code.CLACK_SET_YEAR_SEMESTER_FAIL})
+    else:
+        year_semester = Year_semester.objects.all()
+        temp=Year_semester.objects.get(id=year_semester[0].id)
+        temp.year=year
+        temp.semester=semester
+        temp.save()
+        return JsonResponse({**error_code.CLACK_SUCCESS})
+
+#管理员查询学期学年
+def inquiry_year_semester(request):
+    #返回year和semester
+    year_semester_list=[]
+    year_semester = Year_semester.objects.all()
+
+    if year_semester.count()==0:
+        return JsonResponse({**error_code.CLACK_INQUIRY_YEAR_SEMESTER_FAIL})
+    else:
+        info = {
+            "year": year_semester[0].year,  # 学年
+            "semester": year_semester[0].semester,  # 学期
+        }
+        year_semester_list.append(info)
+        return JsonResponse({**error_code.CLACK_SUCCESS, 'year_semester_list': year_semester_list})
