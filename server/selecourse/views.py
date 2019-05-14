@@ -318,8 +318,12 @@ def course_inquiry(request):
                 dateAndclassroom = DateAndClassroom.objects.get(course_id=course.id)
                 classroom=Classroom.objects.get(id=dateAndclassroom.classroom_id)
                 teacher=Teacher.objects.get(id=course.course_teacher_id)
+                type="必修"
+                if course.course_type==1:
+                    type = "选修"
                 course_info = {
                     "course_name": course.course_name,
+                    "course_type":type,
                     "course_credit": course.course_credit,
                     "classroom_name": classroom.classroom_name,
                     "course_teacher": teacher.teacher_name,
