@@ -1,13 +1,35 @@
 <template>
   <div>
-    <PC_bar></PC_bar>
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <a href="/main" class="navbar-brand"><strong>教务管理系统</strong></a>
+      <ul class="nav navbar-nav">
+        <li><a href="/main/stu_sel_course">自主选课</a></li>
+        <li><a href="javascript:void(0)" @click="enter_timetable">查看课表</a></li>
+        <li><a href="javascript:void(0)" @click="enter_attention">其他注意事项</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="col-md-7">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            {{realname}}
+            <b class="caret"></b>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="#">修改个人信息</a></li>
+            <li><a href="#/" @click="quit">注销</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+    <br><br><br>
+
     <div class="container sl_all_bg newsdisp"  style="min-height: 600px !important;">
 
-      <h3 class="text-center">选课注意事项</h3>
+      <h2 class="text-center"><strong >选课注意事项</strong></h2>
 
       <hr>
 
-      <div class="news_con">
+      <div class="news_con" style="border:1px dotted whitesmoke;border-radius: 3px;">
         <p>
     <span style="font-size: 16.0px;"><span style="">全体本科生和研究生：<br />
   </span></span>
@@ -67,7 +89,7 @@
         </p>
         <p style="text-align: right;">
     <span style="font-size: 16.0px;"><span style=""><br />
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 教务处<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>教务处</strong><br />
   </span></span>
         </p>
       </div>
@@ -76,10 +98,26 @@
 </template>
 
 <script>
-  import PC_bar from "../public/PC_bar"
     export default {
         name: "attention",
-      components: {PC_bar}
+      data() {
+
+        return {
+          username: this.$cookie.get('username'),
+          realname: this.$cookie.get('realname'),
+        }
+      },
+      methods:{
+        enter_timetable: function () {
+          this.$router.push('stu_timetable');
+        },
+        enter_attention: function () {
+          this.$router.push('attention');
+        },
+        quit: function () {
+          this.$cookie.delete('username');
+        },
+      }
     }
 </script>
 

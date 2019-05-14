@@ -1,12 +1,33 @@
 <template>
   <div>
-    <PC_bar></PC_bar>
-    <table id="kblist_table" class="table table-hover table-bordered text-center timetable">
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <a href="/main" class="navbar-brand"><strong>教务管理系统</strong></a>
+      <ul class="nav navbar-nav">
+        <li><a href="/main/stu_sel_course">自主选课</a></li>
+        <li><a href="javascript:void(0)" @click="enter_timetable">查看课表</a></li>
+        <li><a href="javascript:void(0)" @click="enter_attention">其他注意事项</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="col-md-7">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            {{realname}}
+            <b class="caret"></b>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="#">修改个人信息</a></li>
+            <li><a href="/" @click="quit">注销</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+    <br><br><br>
+    <table id="kblist_table" class="table table-hover table-bordered text-center timetable text-center">
       <tbody>
       <tr>
         <td colspan="4">
           <div class="timetable_title">
-            <h6 class="pull-left">2018-2019学年第2学期</h6>{{realname}}的课表<h6 class="pull-right">
+            <h6 class="pull-left">2018-2019学年第1学期</h6>{{realname}}的课表<h6 class="pull-right">
             　学号：{{user_student_number}}</h6>
           </div>
         </td>
@@ -32,7 +53,7 @@
             <span class="glyphicon glyphicon-calendar">{{"周数："+x.start_week+"-"+x.end_week}}</span>
             <br>
             <span class="glyphicon glyphicon-map-marker">{{"上课地点："+x.location}}</span><br>
-            <span class="glyphicon glyphicon-tower">{{"教师："}}</span>
+            <span class="glyphicon glyphicon-tower">{{"教师："+x.teacher}}</span>
           </div>
         </td>
       </tr>
@@ -51,7 +72,7 @@
             <span class="glyphicon glyphicon-calendar">{{"周数："+x.start_week+"-"+x.end_week}}</span>
             <br>
             <span class="glyphicon glyphicon-map-marker">{{"上课地点："+x.location}}</span><br>
-            <span class="glyphicon glyphicon-tower">{{"教师："}}</span>
+            <span class="glyphicon glyphicon-tower">{{"教师："+x.teacher}}</span>
           </div>
         </td>
       </tr>
@@ -70,7 +91,7 @@
             <span class="glyphicon glyphicon-calendar">{{"周数："+x.start_week+"-"+x.end_week}}</span>
             <br>
             <span class="glyphicon glyphicon-map-marker">{{"上课地点："+x.location}}</span><br>
-            <span class="glyphicon glyphicon-tower">{{"教师："}}</span>
+            <span class="glyphicon glyphicon-tower">{{"教师："+x.teacher}}</span>
           </div>
         </td>
       </tr>
@@ -89,7 +110,7 @@
             <span class="glyphicon glyphicon-calendar">{{"周数："+x.start_week+"-"+x.end_week}}</span>
             <br>
             <span class="glyphicon glyphicon-map-marker">{{"上课地点："+x.location}}</span><br>
-            <span class="glyphicon glyphicon-tower">{{"教师："}}</span>
+            <span class="glyphicon glyphicon-tower">{{"教师："+x.teacher}}</span>
           </div>
         </td>
       </tr>
@@ -108,7 +129,7 @@
             <span class="glyphicon glyphicon-calendar">{{"周数："+x.start_week+"-"+x.end_week}}</span>
             <br>
             <span class="glyphicon glyphicon-map-marker">{{"上课地点："+x.location}}</span><br>
-            <span class="glyphicon glyphicon-tower">{{"教师："}}</span>
+            <span class="glyphicon glyphicon-tower">{{"教师："+x.teacher}}</span>
           </div>
         </td>
       </tr>
@@ -164,90 +185,131 @@
     components: {
       PC_bar
     },
+    methods:{
+      enter_timetable: function () {
+        this.$router.push('stu_timetable');
+      },
+      enter_attention: function () {
+        this.$router.push('attention');
+      },
+      quit: function () {
+        this.$cookie.delete('username');
+      },
+      course_sort:function(){
+          this.course1.sort(function (a,b) {
+            return a.start-b.start;
+          });
+        this.course2.sort(function (a,b) {
+          return a.start-b.start;
+        });
+        this.course3.sort(function (a,b) {
+          return a.start-b.start;
+        });
+        this.course4.sort(function (a,b) {
+          return a.start-b.start;
+        });
+        this.course5.sort(function (a,b) {
+          return a.start-b.start;
+        });
+        this.course6.sort(function (a,b) {
+          return a.start-b.start;
+        });
+        this.course7.sort(function (a,b) {
+          return a.start-b.start;
+        });
+      }
+    },
     mounted() {
       if (this.$cookie.get('username') == null || this.$cookie.get('user_type')!=='2') {
         this.$router.push('/')
       }
       else {
         let data = {
-          "student_number": this.user_student_number//记得改变post的学生id
+          "year":2018,
+          "semester":1,
+          "student_number": this.username//记得改变post的学生id
         };
-        this.$http.post(this.Global_Api + '/schedule/student_course_list', data).then((res) => {
-          for (var i in res.body.course_list) {
-            if (res.body.course_list[i].date_and_classroom.length == 0) {
-              continue;
+        this.$http.post(this.Global_Api + '/selecourse/course_inquiry', data).then((res) => {
+          for (let i=0;i<res.body.course_list.length;i++) {
+            if (res.body.course_list[i].length === 0) {
+              break;
             } else {
-              for (let j = 0; j < res.body.course_list[i].date_and_classroom.length; j++) {
-                let a = res.body.course_list[i].date_and_classroom[j].day_of_week;
-                let c = res.body.course_list[i].date_and_classroom[j];
+                let a = res.body.course_list[i].day_of_week;
                 let b = res.body.course_list[i];
                 if (a === 1) {
                   this.course1.push({
                     course_name: b.course_name,
-                    start: c.start,
-                    end: c.end,
-                    start_week: c.start_week,
-                    end_week: c.end_week,
-                    location: c.classroom.classroom_name,
+                    start: b.start,
+                    end: b.end,
+                    start_week: b.start_week,
+                    end_week: b.end_week,
+                    location: b.classroom_name,
+                    teacher:b.course_teacher,
                   });
                 } else if (a === 2) {
                   this.course2.push({
                     course_name: b.course_name,
-                    start: c.start,
-                    end: c.end,
-                    start_week: c.start_week,
-                    end_week: c.end_week,
-                    location: c.classroom.classroom_name,
+                    start: b.start,
+                    end: b.end,
+                    start_week: b.start_week,
+                    end_week: b.end_week,
+                    location: b.classroom_name,
+                    teacher:b.course_teacher,
                   });
                 } else if (a === 3) {
                   this.course3.push({
                     course_name: b.course_name,
-                    start: c.start,
-                    end: c.end,
-                    start_week: c.start_week,
-                    end_week: c.end_week,
-                    location: c.classroom.classroom_name,
+                    start: b.start,
+                    end: b.end,
+                    start_week: b.start_week,
+                    end_week: b.end_week,
+                    location: b.classroom_name,
+                    teacher:b.course_teacher,
                   });
                 } else if (a === 4) {
                   this.course4.push({
                     course_name: b.course_name,
-                    start: c.start,
-                    end: c.end,
-                    start_week: c.start_week,
-                    end_week: c.end_week,
-                    location: c.classroom.classroom_name,
+                    start: b.start,
+                    end: b.end,
+                    start_week: b.start_week,
+                    end_week: b.end_week,
+                    location: b.classroom_name,
+                    teacher:b.course_teacher,
                   });
                 } else if (a === 5) {
                   this.course5.push({
                     course_name: b.course_name,
-                    start: c.start,
-                    end: c.end,
-                    start_week: c.start_week,
-                    end_week: c.end_week,
-                    location: c.classroom.classroom_name,
+                    start: b.start,
+                    end: b.end,
+                    start_week: b.start_week,
+                    end_week: b.end_week,
+                    location: b.classroom_name,
+                    teacher:b.course_teacher,
                   });
                 } else if (a === 6) {
                   this.course6.push({
                     course_name: b.course_name,
-                    start: c.start,
-                    end: c.end,
-                    start_week: c.start_week,
-                    end_week: c.end_week,
-                    location: c.classroom.classroom_name,
+                    start: b.start,
+                    end: b.end,
+                    start_week: b.start_week,
+                    end_week: b.end_week,
+                    location: b.classroom_name,
+                    teacher:b.course_teacher,
                   });
                 } else if (a === 7) {
                   this.course7.push({
                     course_name: b.course_name,
-                    start: c.start,
-                    end: c.end,
-                    start_week: c.start_week,
-                    end_week: c.end_week,
-                    location: c.classroom.classroom_name,
+                    start: b.start,
+                    end: b.end,
+                    start_week: b.start_week,
+                    end_week: b.end_week,
+                    location: b.classroom_name,
+                    teacher:b.course_teacher,
                   });
                 }
               }
             }
-          }
+          this.course_sort();
           if (this.course1.length === 0) {
             document.getElementById('xq_1').style.display = 'none';
           }
@@ -271,12 +333,12 @@
           }
         });
       }
+
     },
-    methods: {},
     data() {
       return {
         realname: this.$cookie.get('realname'),
-        user_student_number: this.$cookie.get('user_student_number'),
+        username: this.$cookie.get('username'),
         course1: [],
         course2: [],
         course3: [],

@@ -72,7 +72,27 @@
             <input v-model="info.teacher" type="text" placeholder=" 请输入老师名字查询">
           </div>
         </div>
+      </form>
 
+      <form class="select_form">
+        <div class="select_year">
+          <label>设置学年</label>
+          <select  v-model="select_year">
+            <option value="2019" selected="selected">2019</option>
+            <option value="2020">2020</option>
+            <option value="2021">2021</option>
+          </select>
+        </div>
+
+        <div class="select_semester">
+          <label>设置学期</label>
+          <select  v-model="select_semester">
+            <option value="1" selected="selected">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+        </div>
+        <button v-on:click="Submit()" type="button"  style="position: relative; left: 320px" class="btn btn-primary " >提交</button>
       </form>
     </div>
     <div class="button">
@@ -82,7 +102,6 @@
       <table class="table table-striped table-item ">
         <thead>
         <tr>
-          <th>序号</th>
           <th>课程名称</th>
           <th>课程号</th>
           <th>学分</th>
@@ -96,17 +115,15 @@
         <tbody>
         <tr v-for="(course,index) in courses">
           <router-link to="/main/man_sel_course/man_view_msg" >
-            <td @click="confirm(index)"><font style="margin:0 auto;text-align:center">{{index}}</font></td>
+            <td @click="confirm(index)" class="td">{{course.course_name}}</td>
           </router-link>
-          <td>{{course.course_name}}</td>
           <td>{{course.course_id}}</td>
           <td>{{course.course_credit}}</td>
-          <td>{{course.course_teacher}}</td>
-          <td>{{course.classroom_id}}</td>
-          <td>{{course.start_week}}</td>
-          <td>{{course.end_week}}</td>
-          <td>{{course.course_year}}</td>
-
+          <td>{{course.teachers[0].teacher_name}}</td>
+          <td>{{course.date_and_classroom[0].classroom.classroom_name}}</td>
+          <td>{{course.date_and_classroom[0].start_week}}</td>
+          <td>{{course.date_and_classroom[0].end_week}}</td>
+          <td>{{course.date_and_classroom[0].year}}</td>
         </tr>
         </tbody>
       </table>
@@ -127,6 +144,7 @@
 <script>
   import PC_bar from "../public/PC_bar";
   import bus from "../../assets/manager_to_manager"
+  import login from "../public/login";
 
   export default {
     name: "man_sel_course",
@@ -147,16 +165,25 @@
         border_show:false,
         conditionText:false,
         infoText:false,
-        data:{}
+        data:{},
+        select_year:"2019",
+        select_semester:"1"
       }
     },
     methods:{
       confirm:function(index){
         this.$router.push('/main/man_sel_course/man_view_msg')
         this.data=this.update_courseList[index]
-        console.log("赋值")
-        console.log(this.data)
       },
+      Submit:function(){
+        this.$http.post(this.Global_Api + '/selecourse/set_year_semester', {
+          year:this.select_year,
+          semester:this.select_semester,
+        }).then(res=>{
+          console.log(res)
+        })
+      },
+
       Filter:function () {
         this.border_show=true;
         if (this.info.year=="all"&&this.info.academy=="all"){
@@ -172,8 +199,6 @@
           alert(("请指定academy！"));
           return ;
         }
-        // this.courses=this.course_list;
-        console.log(this.course_list);
 
         if(this.info.year!="all"&&this.info.academy!="all"){
           this.info_collection.year=this.info.year;
@@ -195,27 +220,13 @@
           this.info_collection.course_teacher="null";
         }
 
-        // console.log(this.info_collection.year);
-        console.log(this.info_collection.academy);
-        // console.log(this.info_collection.semester);
-        // console.log(this.info_collection.course_name);
-        // console.log(this.info_collection.course_teacher);
+
 
         //过滤年份
         this.course_list = this.course_list.filter((kecheng) => {
-          // console.log("过滤年份"+kecheng.course_year);
           return kecheng.course_year==this.info_collection.year;
         });
 
-        console.log(this.course_list);
-
-        // //过滤学院
-        // this.course_list = this.course_list.filter((kecheng) => {
-        //   // console.log("过滤学院"+kecheng.course_department.department_name);
-        //   return kecheng.course_department.department_name == this.info_collection.academy;
-        // });
-        //
-        // console.log(this.course_list);
 
 
         //过滤学期
@@ -225,7 +236,6 @@
         });
 
 
-        console.log(this.course_list);
 
         //过滤课程
         if(this.info_collection.course_name!="null") {
@@ -237,11 +247,12 @@
 
         if(this.info_collection.course_teacher!="null"){
           this.course_list=this.course_list.filter((kecheng) => {
-            // console.log("过滤老师"+kecheng.course_name);
             return kecheng.course_teacher.match((this.info_collection.course_teacher))
           })
         }
         this.courses=this.course_list;
+        console.log("keke")
+        console.log(this.courses)
         this.update_courseList=this.course_list;
 
         if(this.courses.length==0)
@@ -263,12 +274,10 @@
       this.$http.post(this.Global_Api + '/schedule/course_list',[])
         .then((res)=>{
             this.course_list=res.body.course_list;
-            console.log(this.course_list)
           }
         );
     },
     beforeDestroy () {
-      console.log('A before destroy')
       bus.$emit("getData",this.data);
     },
 
@@ -325,6 +334,9 @@
   th{
     border: 1px solid #e3e3e3;
   }
+  td{
+    border: 1px solid #e3e3e3;
+  }
   tbody{
     border: 1px solid #2aabd2;
   }
@@ -374,6 +386,28 @@
   p{
     text-align: center;
     line-height: 100px;
+  }
+  .td{
+    position: relative;
+    left: 40px;
+    top: 8px;
+    border: 1px solid #ffffff;
+  }
+  .select_form{
+    display: flex;
+    flex-direction: row;
+  }
+  .select_year{
+    position: relative;
+    left: 125px;
+  }
+  .select_semester{
+    position: relative;
+    left: 285px;
+  }
+  .select_form{
+    position: relative;
+    top:120px;
   }
 
 </style>
