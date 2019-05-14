@@ -7,6 +7,9 @@ import  os
 import entity.models
 import dst.models
 from server.decorators import admin_required,login_required
+import tkinter as tk
+from tkinter import filedialog
+
 
 
 # Create your views here.
@@ -289,12 +292,22 @@ def upload_score(request):
 # 教师下载学生的论文文件
 @login_required
 def download(request):
+    # 获取当前文件位置，用于拼接绝对路径
     request_json = json.loads(request.body)
+    snum = request_json['student_number']
+    result = dst.models.DissertationFile.objects.filter(stu_number=sum)
+    result = str(result[0].dissertation_file_path)
+    ori_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    ori_path = ori_path + str(result)
+    # ori_path = "C:/Users/11384/Desktop/test2/temp/temp/mysite/test01app/temp_file/考试安排.txt"
     try:
-        response = StreamingHttpResponse(open(request_json["file_path"], 'rb'))
-        response['content_type'] = "application/octet-stream"
-        response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(request_json["file_path"])
-        return response
+        fp = open(ori_path, "r")
+        root = tk.Tk()
+        root.withdraw()
+        path = filedialog.asksaveasfilename() #选择存放位置
+        with open(path, 'w') as f:
+            for line in fp:
+                f.write(line)
     except Exception:
             raise Http404
 
