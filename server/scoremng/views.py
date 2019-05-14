@@ -175,7 +175,7 @@ def courses_comment(request):
     # 拿着学生的学号，课程的课号，和评论往数据库中填
     # 找到这条成绩记录
     try:
-        score = scoremng.models.Score.objects.filter(student_id=student.id, course_id=course.id)[0]
+        score = scoremng.models.Score.objects.get(student_id=student.id, course_id=course.id)
     except Exception:
         return JsonResponse({**error_code.CLACK_SCORE_NOT_EXISTS})
 
