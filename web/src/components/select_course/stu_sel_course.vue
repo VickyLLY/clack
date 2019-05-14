@@ -20,7 +20,7 @@
           </a>
           <ul class="dropdown-menu">
             <li><a href="#">修改个人信息</a></li>
-            <li><a href="#/" @click="quit">注销</a></li>
+            <li><a href="/" @click="quit">注销</a></li>
           </ul>
         </li>
       </ul>
