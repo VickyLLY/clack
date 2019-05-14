@@ -22,12 +22,12 @@
       </ul>
     </nav>
     <br><br><br>
-    <table id="kblist_table" class="table table-hover table-bordered text-center timetable">
+    <table id="kblist_table" class="table table-hover table-bordered text-center timetable text-center">
       <tbody>
       <tr>
         <td colspan="4">
           <div class="timetable_title">
-            <h6 class="pull-left">2018-2019学年第2学期</h6>{{realname}}的课表<h6 class="pull-right">
+            <h6 class="pull-left">2018-2019学年第1学期</h6>{{realname}}的课表<h6 class="pull-right">
             　学号：{{user_student_number}}</h6>
           </div>
         </td>
@@ -53,7 +53,7 @@
             <span class="glyphicon glyphicon-calendar">{{"周数："+x.start_week+"-"+x.end_week}}</span>
             <br>
             <span class="glyphicon glyphicon-map-marker">{{"上课地点："+x.location}}</span><br>
-            <span class="glyphicon glyphicon-tower">{{"教师："}}</span>
+            <span class="glyphicon glyphicon-tower">{{"教师："+x.teacher}}</span>
           </div>
         </td>
       </tr>
@@ -72,7 +72,7 @@
             <span class="glyphicon glyphicon-calendar">{{"周数："+x.start_week+"-"+x.end_week}}</span>
             <br>
             <span class="glyphicon glyphicon-map-marker">{{"上课地点："+x.location}}</span><br>
-            <span class="glyphicon glyphicon-tower">{{"教师："}}</span>
+            <span class="glyphicon glyphicon-tower">{{"教师："+x.teacher}}</span>
           </div>
         </td>
       </tr>
@@ -91,7 +91,7 @@
             <span class="glyphicon glyphicon-calendar">{{"周数："+x.start_week+"-"+x.end_week}}</span>
             <br>
             <span class="glyphicon glyphicon-map-marker">{{"上课地点："+x.location}}</span><br>
-            <span class="glyphicon glyphicon-tower">{{"教师："}}</span>
+            <span class="glyphicon glyphicon-tower">{{"教师："+x.teacher}}</span>
           </div>
         </td>
       </tr>
@@ -110,7 +110,7 @@
             <span class="glyphicon glyphicon-calendar">{{"周数："+x.start_week+"-"+x.end_week}}</span>
             <br>
             <span class="glyphicon glyphicon-map-marker">{{"上课地点："+x.location}}</span><br>
-            <span class="glyphicon glyphicon-tower">{{"教师："}}</span>
+            <span class="glyphicon glyphicon-tower">{{"教师："+x.teacher}}</span>
           </div>
         </td>
       </tr>
@@ -129,7 +129,7 @@
             <span class="glyphicon glyphicon-calendar">{{"周数："+x.start_week+"-"+x.end_week}}</span>
             <br>
             <span class="glyphicon glyphicon-map-marker">{{"上课地点："+x.location}}</span><br>
-            <span class="glyphicon glyphicon-tower">{{"教师："}}</span>
+            <span class="glyphicon glyphicon-tower">{{"教师："+x.teacher}}</span>
           </div>
         </td>
       </tr>
@@ -202,84 +202,90 @@
       }
       else {
         let data = {
+          "year":2018,
+          "semester":1,
           "student_number": this.user_student_number//记得改变post的学生id
         };
-        this.$http.post(this.Global_Api + '/schedule/student_course_list', data).then((res) => {
-          for (var i in res.body.course_list) {
-            if (res.body.course_list[i].date_and_classroom.length == 0) {
-              continue;
+        this.$http.post(this.Global_Api + '/selecourse/course_inquiry', data).then((res) => {
+          for (let i=0;i<res.body.course_list.length;i++) {
+            if (res.body.course_list[i].length === 0) {
+              break;
             } else {
-              for (let j = 0; j < res.body.course_list[i].date_and_classroom.length; j++) {
-                let a = res.body.course_list[i].date_and_classroom[j].day_of_week;
-                let c = res.body.course_list[i].date_and_classroom[j];
+                let a = res.body.course_list[i].day_of_week;
                 let b = res.body.course_list[i];
                 if (a === 1) {
                   this.course1.push({
                     course_name: b.course_name,
-                    start: c.start,
-                    end: c.end,
-                    start_week: c.start_week,
-                    end_week: c.end_week,
-                    location: c.classroom.classroom_name,
+                    start: b.start,
+                    end: b.end,
+                    start_week: b.start_week,
+                    end_week: b.end_week,
+                    location: b.classroom_name,
+                    teacher:b.course_teacher,
                   });
                 } else if (a === 2) {
                   this.course2.push({
                     course_name: b.course_name,
-                    start: c.start,
-                    end: c.end,
-                    start_week: c.start_week,
-                    end_week: c.end_week,
-                    location: c.classroom.classroom_name,
+                    start: b.start,
+                    end: b.end,
+                    start_week: b.start_week,
+                    end_week: b.end_week,
+                    location: b.classroom_name,
+                    teacher:b.course_teacher,
                   });
                 } else if (a === 3) {
                   this.course3.push({
                     course_name: b.course_name,
-                    start: c.start,
-                    end: c.end,
-                    start_week: c.start_week,
-                    end_week: c.end_week,
-                    location: c.classroom.classroom_name,
+                    start: b.start,
+                    end: b.end,
+                    start_week: b.start_week,
+                    end_week: b.end_week,
+                    location: b.classroom_name,
+                    teacher:b.course_teacher,
                   });
                 } else if (a === 4) {
                   this.course4.push({
                     course_name: b.course_name,
-                    start: c.start,
-                    end: c.end,
-                    start_week: c.start_week,
-                    end_week: c.end_week,
-                    location: c.classroom.classroom_name,
+                    start: b.start,
+                    end: b.end,
+                    start_week: b.start_week,
+                    end_week: b.end_week,
+                    location: b.classroom_name,
+                    teacher:b.course_teacher,
                   });
                 } else if (a === 5) {
                   this.course5.push({
                     course_name: b.course_name,
-                    start: c.start,
-                    end: c.end,
-                    start_week: c.start_week,
-                    end_week: c.end_week,
-                    location: c.classroom.classroom_name,
+                    start: b.start,
+                    end: b.end,
+                    start_week: b.start_week,
+                    end_week: b.end_week,
+                    location: b.classroom_name,
+                    teacher:b.course_teacher,
                   });
                 } else if (a === 6) {
                   this.course6.push({
                     course_name: b.course_name,
-                    start: c.start,
-                    end: c.end,
-                    start_week: c.start_week,
-                    end_week: c.end_week,
-                    location: c.classroom.classroom_name,
+                    start: b.start,
+                    end: b.end,
+                    start_week: b.start_week,
+                    end_week: b.end_week,
+                    location: b.classroom_name,
+                    teacher:b.course_teacher,
                   });
                 } else if (a === 7) {
                   this.course7.push({
                     course_name: b.course_name,
-                    start: c.start,
-                    end: c.end,
-                    start_week: c.start_week,
-                    end_week: c.end_week,
-                    location: c.classroom.classroom_name,
+                    start: b.start,
+                    end: b.end,
+                    start_week: b.start_week,
+                    end_week: b.end_week,
+                    location: b.classroom_name,
+                    teacher:b.course_teacher,
                   });
                 }
               }
             }
-          }
           if (this.course1.length === 0) {
             document.getElementById('xq_1').style.display = 'none';
           }
