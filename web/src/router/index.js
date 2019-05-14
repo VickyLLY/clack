@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Login from '@/components/public/login'  //登录
 import Register from '@/components/public/register' //注册
 import Main from '@/components/public/main' //PC端主页
+import NewsDetail from '@/components/background/news_detail'//通知详情
 import edit_classroom from '@/components/background/edit_classroom'
 import edit_major from '@/components/background/edit_major'
 import edit_student from '@/components/background/edit_student'
@@ -184,6 +185,10 @@ export default new Router({
       name:'attention',
       component:attention
     },
+    {
+      path:'/main/news_detail/:id',
+      component:NewsDetail,
+    }
   ],
   mode: 'history' // 去除地址栏中的/#
 })
