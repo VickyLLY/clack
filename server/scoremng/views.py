@@ -31,7 +31,7 @@ def admin_check_scores(request):
             'course_name': certain_course.course_name,
             'course_type': certain_course.course_type,
             'course_year': certain_course.course_year,
-            'course_semester': certain_course.course_semeste,
+            'course_semester': certain_course.course_semester,
             'course_credit': certain_course.course_credit,
             'course_avg_score': 0,
         }
@@ -67,6 +67,7 @@ def admin_check_scores(request):
             avg_score = 0
         else:
             avg_score = score_amount / student_amount
+        print('选修',certain_course.course_name, '的有', student_amount, '人，这们课的总分是', score_amount, '均分是', avg_score)
         course_score['course_avg_score'] = avg_score
         avg_score_list.append(course_score)
     return  JsonResponse({**error_code.CLACK_SUCCESS, 'avg_score_list': avg_score_list})
@@ -155,22 +156,26 @@ def courses_comment(request):
     print(student_number)
 
     try:
-        student_id = Student.objects.get(student_number=student_number).id
+        student = Student.objects.get(student_number=student_number)
     except Exception:
         return JsonResponse({**error_code.CLACK_STUDENT_NOT_EXISTS})
+    # print('student_id', student.id)
 
     try:
-        course_id = Course.objects.get(course_name=course_name,
+        course = Course.objects.get(course_name=course_name,
                                        course_year=int(course_year),
-                                       course_semester=int(course_semester)).id
-        print(type(course_year), type(course_semester))  # 仍然是str，后续可以放心使用
+                                       course_semester=int(course_semester))
+        # print(type(course_year), type(course_semester))  # 仍然是str，后续可以放心使用
     except Exception:
         return JsonResponse({**error_code.CLACK_COURSE_NOT_EXISTS})
 
+    # print('course_id', course.id)
+    print('student_id', student.id, 'course_id', course.id)
+    # print(type(student.id), type(course.id))
     # 拿着学生的学号，课程的课号，和评论往数据库中填
     # 找到这条成绩记录
     try:
-        score = scoremng.models.Score.objects.get(student_id=student_id, course_id=course_id)
+        score = scoremng.models.Score.objects.filter(student_id=student.id, course_id=course.id)[0]
     except Exception:
         return JsonResponse({**error_code.CLACK_SCORE_NOT_EXISTS})
 
@@ -550,7 +555,7 @@ def teacher_download_scores(request):
 
 # 老师上传成绩
 # 目前状态：已完成
-# 修改数据库后：未完成
+# 修改数据库后：已完成
 def teacher_upload(request):
     request_json = json.loads(request.body)
     teacher_number = request_json['teacher_number']
