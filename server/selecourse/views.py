@@ -98,7 +98,7 @@ def teacher_inquiry(request):
         temp ={
                     "teacher_name":teacher.teacher_name,
                     "course_name": course.course_name,
-                    "course_number":course.course_number,
+                    "course_id":course.id,
                     "course_type":type,
                     "course_credit":course.course_credit,
                     "course_allowance":course.course_allowance,#课程余量
