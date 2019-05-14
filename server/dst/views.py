@@ -425,3 +425,15 @@ def stu_view_grade(request):
         'comment': res.grade_comment,
     }]
     return JsonResponse({**error_code.CLACK_SUCCESS,'stu_view_grade': result_list})
+
+@login_required
+def del_select(request):
+    request_json = json.loads(request.body)
+    query_result = list(
+        entity.models.User.objects.filter(user_name=request_json['user_name']))
+    user = query_result[0]
+    snum=user.user_student_id
+    result = dst.models.Application.objects.filter(student_id=snum)
+    result.delete()
+    return JsonResponse({**error_code.CLACK_SUCCESS})
+
