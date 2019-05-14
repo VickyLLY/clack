@@ -1,9 +1,9 @@
 <template>
-  <div style="overflow: hidden;position:relative;">
+  <div style="overflow: hidden;position:relative;min-height: 700px;min-width: 1000px;">
     <nav class="navbar navbar-default navbar-fixed-top">
       <a href="/main" class="navbar-brand"><strong>教务管理系统</strong></a>
       <ul class="nav navbar-nav">
-        <li><a href="">自主选课</a></li>
+        <li><a href="/main/stu_sel_course">自主选课</a></li>
         <li><a href="javascript:void(0)" @click="enter_timetable">查看课表</a></li>
         <li><a href="javascript:void(0)" @click="enter_attention">其他注意事项</a></li>
       </ul>
@@ -27,8 +27,8 @@
     </nav>
     <br><br><br>
 
-    <div id="aside" class="container pull-right "
-         style="width:700px;height:900px;border:1px solid red;position:absolute;top:100px;right:-630px;background: white;">
+    <div id="aside" class="container pull-right; "
+         style="width:700px;height:900px;border:1px solid red;border-left:none;position:absolute;top:100px;right:-630px;background: white;resize:none;">
       <div class="row">
         <div class="col-lg-1" style="background: red;height:700px;position: relative;">
           <p class="glyphicon glyphicon-arrow-left" style="width: 30px;height:30px;position: absolute;top:50px;"></p>
@@ -59,54 +59,81 @@
             </tr>
             <tr>
               <td colspan="3"><span class="little_course"
-                                    style="width: 25px;height: 15px;display: inline-block;vertical-align: center"></span><span>上课周数0-5周</span>
+                                    style="width: 25px;height: 15px;display: inline-block;position: relative;top: 2px;"></span><span>上课周数0-5周</span>
               </td>
               <td colspan="3"><span class="middle_course"
-                                    style="width: 25px;height: 15px;display: inline-block;"></span><span>上课周数5-10周</span>
+                                    style="width: 25px;height: 15px;display: inline-block;position: relative;top: 2px"></span><span>上课周数5-10周</span>
               </td>
               <td colspan="3"><span class="large_course"
-                                    style="width: 25px;height: 15px;display: inline-block"></span><span>上课周数大于10周</span>
+                                    style="width: 25px;height: 15px;display: inline-block;position: relative;top: 2px"></span><span>上课周数大于10周</span>
               </td>
             </tr>
           </table>
         </div>
       </div>
-      <div class="row" style="overflow:scroll;">
-        <div v-html="once">
-
+      <div class="row" style="overflow:scroll;position: absolute;top:330px;left:88px;height:370px;width:615px;text-align:left;" >
+        <div v-for="c in selected_course">
+          <div class="panel panel-default">
+            <table class="table table-striped">
+              <thead>
+              <tr>
+                <th>课程名</th>
+                <th>学分</th>
+                <th>教室</th>
+                <th>类型</th>
+                <th>任课教师</th>
+                <th>开课周数</th>
+                <th>上课时间</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>{{c[0]}}</td>
+                <td>{{c[1]}}</td>
+                <td>{{c[2]}}</td>
+                <td>{{c[9]}}</td>
+                <td>{{c[3]}}</td>
+                <td>{{c[4]+"-"+c[5]}}</td>
+                <td>{{"星期"+c[6]+" "+c[7]+"-"+c[8]+"节"}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
-    <div class="panel panel-default" style="width: 95%;allowance: 0 auto">
+
+    <div class="panel panel-default" style="height:90%;width: 95%;allowance: 0 auto">
 
       <div class="panel-body">
         <div class="panel-heading">
-          <h2  style="text-align:center;"><strong>2019学年第1学期选课</strong></h2>
+          <h2 style="text-align:center;"><strong>2019学年第1学期选课</strong></h2>
           <h3 style="text-align:right;">
             <!--<font size="3" ><strong>剩余<font color="red">{{day}}</font>天</strong></font>
             <font size="2">选课要求总学分最低<font color="red">{{min_lp}}</font></font>
             <font size="2">最高学分<font color="red">{{max_lp}}</font></font>
             <font size="2">已获得学分<font color="red">{{get_lp}}</font></font>
             <font size="2">本学期已选<font color="red">{{sel_lp}}</font></font>-->
-            <font size="3" style="color: #204d74;background: #66afe9">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</font>
-            <font size="3" ><strong>待选</strong></font>
+            <font size="3"
+                  style="color: #204d74;background: #66afe9">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</font>
+            <font size="3"><strong>待选</strong></font>
             <font size="3" style="color: #204d74;background: lightgreen">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</font>
-            <font size="3" ><strong>已选</strong></font>
+            <font size="3"><strong>已选</strong></font>
           </h3>
         </div><!--选课标题-->
         <hr/>
         <div>
           <h1>
-            <font size="3" color="red" ><span class="glyphicon glyphicon-list-alt"></span> <strong>专业必修</strong></font>
+            <font size="3" color="red"><span class="glyphicon glyphicon-list-alt"></span> <strong>专业必修</strong></font>
             <!--<font size="2">要求修读<font color="red">2</font>学分,</font>
             <font size="2">以获得<font color="red">2</font>学分,</font>
             <font size="2">本学期已选<font color="red">2</font>学分</font>-->
           </h1>
-          <div v-for="c in z_b_course">
+          <div v-for="c in z_b_course" style="">
             <div v-if="-1==stu_sel.indexOf(c.course_id)" class="panel panel-default">
               <div class="panel-heading" style="color: #204d74;background: #66afe9">
-                <h4 class="panel-title" >
-                  <a data-toggle="collapse" data-parent="#accordion"  v-bind:href="'#'+c.course_id">
+                <h4 class="panel-title">
+                  <a data-toggle="collapse" data-parent="#accordion" v-bind:href="'#'+c.course_id">
                     ({{c.course_id}}){{c.course_name}}--{{c.course_credit}}分
                   </a>
                 </h4>
@@ -129,7 +156,7 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr >
+                  <tr>
                     <td>{{c.course_id}}</td>
                     <td>{{c.course_name}}</td>
                     <td>{{c.course_credit}}</td>
@@ -139,8 +166,11 @@
                     <td>{{c.course_teacher}}</td>
                     <td>{{c.course_department}}</td>
                     <td>{{c.start_week+"-"+c.end_week}}</td>
-                    <td>{{"星期"+c.day_of_week+"  "+c.start+"-"+c.end}}</td>
-                    <td v-if="c.course_allowance > 0" ><button type="button" class="btn btn-primary" v-on:click="add_course(c.course_id,username)" >选课</button></td>
+                    <td>{{"星期"+c.day_of_week+" "+c.start+"-"+c.end}}</td>
+                    <td v-if="c.course_allowance > 0">
+                      <button type="button" class="btn btn-primary" v-on:click="add_course(c.course_id,username)">选课
+                      </button>
+                    </td>
                   </tr>
                   </tbody>
                 </table>
@@ -148,8 +178,8 @@
             </div>
             <div v-else>
               <div class="panel-heading" style="color: #204d74;background:lightgreen">
-                <h4 class="panel-title" >
-                  <a data-toggle="collapse" data-parent="#accordion"  v-bind:href="'#'+c.course_id">
+                <h4 class="panel-title">
+                  <a data-toggle="collapse" data-parent="#accordion" v-bind:href="'#'+c.course_id">
                     ({{c.course_id}}){{c.course_name}}--{{c.course_credit}}分
                   </a>
                 </h4>
@@ -182,8 +212,11 @@
                     <td>{{c.course_teacher}}</td>
                     <td>{{c.course_department}}</td>
                     <td>{{c.start_week+"-"+c.end_week}}</td>
-                    <td>{{"星期"+c.day_of_week+"  "+c.start+"-"+c.end}}</td>
-                    <td><button type="button" class="btn btn-primary" v-on:click="del_course(c.course_id,username)">退选</button></td>
+                    <td>{{"星期"+c.day_of_week+" "+c.start+"-"+c.end}}</td>
+                    <td>
+                      <button type="button" class="btn btn-primary" v-on:click="del_course(c.course_id,username)">退选
+                      </button>
+                    </td>
                   </tr>
                   </tbody>
                 </table>
@@ -193,7 +226,7 @@
         </div>
         <div>
           <h1>
-            <font size="3" color="red" ><span class="glyphicon glyphicon-list-alt"></span> <strong>专业选修</strong></font>
+            <font size="3" color="red"><span class="glyphicon glyphicon-list-alt"></span> <strong>专业选修</strong></font>
             <!--<font size="2">要求修读<font color="red">2</font>学分,</font>
             <font size="2">以获得<font color="red">{{get_lp}}2</font>学分,</font>
             <font size="2">本学期已选<font color="red">{{sel_lp}}2</font>学分</font>-->
@@ -203,8 +236,8 @@
           <div v-for="c in z_x_course">
             <div v-if="-1==stu_sel.indexOf(c.course_id)" class="panel panel-default">
               <div class="panel-heading" style="color: #204d74;background: #66afe9">
-                <h4 class="panel-title" >
-                  <a data-toggle="collapse" data-parent="#accordion"  v-bind:href="'#'+c.course_id">
+                <h4 class="panel-title">
+                  <a data-toggle="collapse" data-parent="#accordion" v-bind:href="'#'+c.course_id">
                     ({{c.course_id}}){{c.course_name}}--{{c.course_credit}}分
                   </a>
                 </h4>
@@ -237,8 +270,11 @@
                     <td>{{c.course_teacher}}</td>
                     <td>{{c.course_department}}</td>
                     <td>{{c.start_week+"-"+c.end_week}}</td>
-                    <td>{{"星期"+c.day_of_week+"  "+c.start+"-"+c.end}}</td>
-                    <td v-if="c.course_allowance > 0" ><button type="button" class="btn btn-primary" v-on:click="add_course(c.course_id,username)" >选课</button></td>
+                    <td>{{"星期"+c.day_of_week+" "+c.start+"-"+c.end}}</td>
+                    <td v-if="c.course_allowance > 0">
+                      <button type="button" class="btn btn-primary" v-on:click="add_course(c.course_id,username)">选课
+                      </button>
+                    </td>
                   </tr>
                   </tbody>
                 </table>
@@ -246,8 +282,8 @@
             </div>
             <div v-else>
               <div class="panel-heading" style="color: #204d74;background:lightgreen">
-                <h4 class="panel-title" >
-                  <a data-toggle="collapse" data-parent="#accordion"  v-bind:href="'#'+c.course_id">
+                <h4 class="panel-title">
+                  <a data-toggle="collapse" data-parent="#accordion" v-bind:href="'#'+c.course_id">
                     ({{c.course_id}}){{c.course_name}}--{{c.course_credit}}分
                   </a>
                 </h4>
@@ -280,8 +316,11 @@
                     <td>{{c.course_teacher}}</td>
                     <td>{{c.course_department}}</td>
                     <td>{{c.start_week+"-"+c.end_week}}</td>
-                    <td>{{"星期"+c.day_of_week+"  "+c.start+"-"+c.end}}</td>
-                    <td><button type="button" class="btn btn-primary" v-on:click="del_course(c.course_id,username)">退选</button></td>
+                    <td>{{"星期"+c.day_of_week+" "+c.start+"-"+c.end}}</td>
+                    <td>
+                      <button type="button" class="btn btn-primary" v-on:click="del_course(c.course_id,username)">退选
+                      </button>
+                    </td>
                   </tr>
                   </tbody>
                 </table>
@@ -312,42 +351,43 @@
         time: '',
         date: '',
         week: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
-        td:['one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen'],
-        count:0,
-        once:`` ,
+        td: ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen'],
+        count: 0,
+        once: ``,
         current: ``,
-        day:0,
-        max_lp:100,
-        min_lp:100,
-        get_lp:50,
-        sel_lp:50,
-        stu_sel:[],
-        z_b_course:[],
-        z_x_course:[],
+        day: 0,
+        max_lp: 100,
+        min_lp: 100,
+        get_lp: 50,
+        sel_lp: 50,
+        stu_sel: [],
+        z_b_course: [],
+        z_x_course: [],
+        selected_course: [],
+        course:
+          ``,
       }
     },
-    created(){
-      //alert(123)
+    created() {
       /*将可选课程分为必修与选修*/
-      let sel_class={
-        "year":2018,
-        "semester":1 ,
-        "student_number":this.username
+      let sel_class = {
+        "year": 2018,
+        "semester": 1,
+        "student_number": this.username
       };
-      this.$http.post(this.Global_Api + '/selecourse/student_inquiry',sel_class).then((res) =>{
-        for (let i=0;i<res.body.course_list.length;i++){
+      this.$http.post(this.Global_Api + '/selecourse/student_inquiry', sel_class).then((res) => {
+        for (let i = 0; i < res.body.course_list.length; i++) {
           //alert(res.body.course_list[i].course_name)
-          if(res.body.course_list[i].course_type==0)
+          if (res.body.course_list[i].course_type == 0)
             this.z_b_course.push(res.body.course_list[i])
-          else{
+          else {
             this.z_x_course.push(res.body.course_list[i])
           }
-          if(res.body.course_list[i].course_access==false)
-          {
+          if (res.body.course_list[i].course_access == false) {
             this.stu_sel.push(res.body.course_list[i].course_id)
           }
-          if(this.stu_sel.length)
-            this.count=this.stu_sel.length;
+          if (this.stu_sel.length)
+            this.count = this.stu_sel.length;
         }
         //alert(res.body.course_list[0].course_name)
       })
@@ -363,17 +403,18 @@
       quit: function () {
         this.$cookie.delete('username');
       },
-      add_course:function(id,stu_name){
+      add_course: function (id, stu_name) {
         //alert(stu_name+" select  "+id+this.stu_sel)/*学生选课*/
-        let add_class={
-          student_number:this.username,
-          course_id:id
+        let add_class = {
+          student_number: this.username,
+          course_id: id
         };
-        this.$http.post(this.Global_Api + '/selecourse/sele_button', add_class).then((res) =>{
-          if(res.body.error_code==0)
-          {this.stu_sel.push(id)
+        this.$http.post(this.Global_Api + '/selecourse/sele_button', add_class).then((res) => {
+          if (res.body.error_code == 0) {
+            this.stu_sel.push(id)
             alert("选课成功")
             this.count++;
+
             //location.reload()
             /*for (var i=0;i<this.stu_sel.length;i++)
           {alert("ok123")
@@ -384,28 +425,25 @@
 
             }
           }*/
-          }
-          else{
+          } else {
             alert("选课失败")
           }
         })
       },
-      del_course:function(id,stu_name){
+      del_course: function (id, stu_name) {
         //alert(stu_name+" delete  "+id)/*删除所选课程*/
-        let del_class={
-          student_number:this.username,
-          course_id:id
+        let del_class = {
+          student_number: this.username,
+          course_id: id
         };
-        this.$http.post(this.Global_Api + '/selecourse/dele_button', del_class).then((res) =>{
-          if(res.body.error_code==0)
-          {for(var i=0;i<this.stu_sel.length;i++)
-          {
-            if(this.stu_sel[i]==id)
-            {
-             delete this.stu_sel[i]
-              break
+        this.$http.post(this.Global_Api + '/selecourse/dele_button', del_class).then((res) => {
+          if (res.body.error_code == 0) {
+            for (var i = 0; i < this.stu_sel.length; i++) {
+              if (this.stu_sel[i] == id) {
+                delete this.stu_sel[i]
+                break
+              }
             }
-          }
             alert("退选成功")
             this.count--;
             //location.reload()
@@ -418,8 +456,7 @@
 
             }
           }*/
-          }
-          else{
+          } else {
             alert("退课失败")
           }
         })
@@ -472,7 +509,6 @@
         return (zero + num).slice(-digit);
       },
       reColor: function () {
-        alert("get_course");
         let data = {
           "year": 2018,
           "semester": 1,
@@ -481,16 +517,19 @@
         this.$http.post(this.Global_Api + '/selecourse/course_inquiry', data).then((res) => {
           // alert(res.body.error_code);
           // alert(res.body.course_list.length);
+          this.selected_course=[];
+          for(let co of res.body.course_list){
+            this.selected_course.push([co.course_name,co.course_credit,co.classroom_name,co.course_teacher,co.start_week,co.end_week,co.day_of_week,co.start,co.end,co.course_type]);
+          }
           for (let i = 0; i < res.body.course_list.length; i++) {
-            for(let j=res.body.course_list[i].start;j<=res.body.course_list[i].end;j++){
-              let k=res.body.course_list[i].day_of_week;
-              let m=res.body.course_list[i].end_week-res.body.course_list[i].start_week+1;
-              let selector=$("."+this.td[j-1]);
-              let new_attr=String(parseInt(selector.nextAll()[k-1].getAttribute("class_count"))+5);
-              selector.nextAll()[k-1].setAttribute("class_count",new_attr);
+            for (let j = res.body.course_list[i].start; j <= res.body.course_list[i].end; j++) {
+              let k = res.body.course_list[i].day_of_week;
+              let m = res.body.course_list[i].end_week - res.body.course_list[i].start_week + 1;
+              let selector = $("." + this.td[j - 1]);
+              let new_attr = String(parseInt(selector.nextAll()[k - 1].getAttribute("class_count")) + m);
+              selector.nextAll()[k - 1].setAttribute("class_count", new_attr);
             }
           }
-          alert("reColor");
           for (let i = 0; i < this.td.length; i++) {
             let selector = this.td[i];
             for (let j of $("." + selector).nextAll()) {
@@ -508,19 +547,25 @@
         })
       },
       set_attribution: function () {
-        alert("set");
         for (let i = 0; i < this.td.length; i++) {
           let selector = this.td[i];
           $("." + selector).nextAll().attr("class_count", 0);
         }
       },
+
     },
     mounted: function () {
       var that = this;
       var oDiv1 = document.getElementById('aside');
+
       this.$nextTick(() => {
-        that.set_attribution();
-        that.reColor();
+        if (that.timer1) {
+          clearInterval(that.timer1);
+        }
+        that.timer1 = setInterval(() => {
+          that.set_attribution();
+          that.reColor();
+        }, 2000);
         if (that.timer) {
           clearInterval(that.timer);
         }
