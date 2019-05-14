@@ -90,3 +90,11 @@ CLACK_INQUIRY_YEAR_SEMESTER_FAIL={"error_code": 27, "error_message": "查询学�
 #获取报表失败
 CLACK_REPORT_FAIL={"error_code": 28, "error_message": "获取报表失败"}
 
+#目标不存在
+CLACK_NOT_EXISTS={"error_code": 29, "error_message": "此目标不存在"}
+
+#学生选题限选一个且已经选择课题
+CLACK_STUDENT_SELECT_DST_EXISTS={"error_code": 30, "error_message": "已经选择课题"}
+
+#上传文件失败
+CLACK_DISSERTATION_UPLOAD_FILE_FAILED={"error_code": 31, "error_message": "上传论文失败"}
