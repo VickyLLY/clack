@@ -16,7 +16,7 @@
           </a>
           <ul class="dropdown-menu">
             <li><a href="#">修改个人信息</a></li>
-            <li><a href="#/" @click="quit">注销</a></li>
+            <li><a href="/" @click="quit">注销</a></li>
           </ul>
         </li>
       </ul>
@@ -195,6 +195,29 @@
       quit: function () {
         this.$cookie.delete('username');
       },
+      course_sort:function(){
+          this.course1.sort(function (a,b) {
+            return a.start-b.start;
+          });
+        this.course2.sort(function (a,b) {
+          return a.start-b.start;
+        });
+        this.course3.sort(function (a,b) {
+          return a.start-b.start;
+        });
+        this.course4.sort(function (a,b) {
+          return a.start-b.start;
+        });
+        this.course5.sort(function (a,b) {
+          return a.start-b.start;
+        });
+        this.course6.sort(function (a,b) {
+          return a.start-b.start;
+        });
+        this.course7.sort(function (a,b) {
+          return a.start-b.start;
+        });
+      }
     },
     mounted() {
       if (this.$cookie.get('username') == null || this.$cookie.get('user_type')!=='2') {
@@ -204,7 +227,7 @@
         let data = {
           "year":2018,
           "semester":1,
-          "student_number": this.user_student_number//记得改变post的学生id
+          "student_number": this.username//记得改变post的学生id
         };
         this.$http.post(this.Global_Api + '/selecourse/course_inquiry', data).then((res) => {
           for (let i=0;i<res.body.course_list.length;i++) {
@@ -286,6 +309,7 @@
                 }
               }
             }
+          this.course_sort();
           if (this.course1.length === 0) {
             document.getElementById('xq_1').style.display = 'none';
           }
@@ -309,11 +333,12 @@
           }
         });
       }
+
     },
     data() {
       return {
         realname: this.$cookie.get('realname'),
-        user_student_number: this.$cookie.get('user_student_number'),
+        username: this.$cookie.get('username'),
         course1: [],
         course2: [],
         course3: [],
