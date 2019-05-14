@@ -92,11 +92,14 @@ def teacher_inquiry(request):
         except Exception:
             return JsonResponse({**error_code.CLACK_CLASSROOM_NOT_EXISTS})
         department=Department.objects.get(id=course.course_department_id)
+        type="必修"
+        if course.course_type==1:
+            type = "选修"
         temp ={
                     "teacher_name":teacher.teacher_name,
                     "course_name": course.course_name,
                     "course_number":course.course_number,
-                    "course_type":course.course_type,
+                    "course_type":type,
                     "course_credit":course.course_credit,
                     "course_allowance":course.course_allowance,#课程余量
                     "course_capacity":course.course_capacity,#课程容量
