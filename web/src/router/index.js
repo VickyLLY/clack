@@ -29,7 +29,6 @@ import teacher_course_table from "@/components/schedule/teacher_course_table";
 import add_semester from "@/components/schedule/add_semester";
 
 //成绩管理
-import Stu_navigation from '@/components/scoremng/stu_scoremng/Stu_navigation'
 import navigation from '@/components/scoremng/navigation'
 import Stu_score from '@/components/scoremng/stu_scoremng/stu_score'
 import Stu_evaluation from '@/components/scoremng/stu_scoremng/stu_evaluation'

@@ -170,11 +170,11 @@
       }
       else {
         let data = {
-          "student_number": this.user_student_number//记得改变post的学生id
+          "student_number": this.user_student_number,//记得改变post的学生id
           "year": this.year,
           "semester": this.semester,
           "user_name": this.$cookie.get('username'),
-          "user_token": this.$cookie.get('user_token')\
+          "user_token": this.$cookie.get('user_token')
         };
         this.$http.post(this.Global_Api + '/schedule/student_course_list', data).then((res) => {
           for (var i in res.body.course_list) {
