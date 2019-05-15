@@ -121,12 +121,52 @@
                   :course="select_course"
                   @del="delete_time"
                   @add_del="add_del"
-                  @myfun="change"
             >
             </test>
         </div>
         <h3 id="title3" style=" margin-left: 20px; margin-top:40px;display: none">考试时间地点</h3>
-        <div id="change-block3">
+        <div id="change-block3" style="padding: 20px 30px;position: relative;">
+          <div v-if="added_exam!==null">
+            <div style="white-space: pre-wrap;display: inline-block; margin-bottom: 15px;position: relative">
+
+
+              <span>  考  试  名  称:</span>
+              <input type="text"  class="form-control" v-model="exam_name" required="required"><br>
+              <div>
+              <span>考试开始时间:</span>
+                <date-picker id="qwe" v-model="start_date_time" :config="config" ></date-picker>
+              <br>
+              </div>
+              <div>
+              <span>考试结束时间:</span>
+                <date-picker v-model="end_date_time" :config="config" style="position: absolute"></date-picker>
+              <br>
+              </div>
+              <div>
+              <span> 考  试  地  点:</span>
+                <v-select class="select-pt"
+                      max-height="80px"
+                      v-model="exam_classroom"
+                      :options="exam_classrooms"
+                      required="required"
+                style="width: 250px;">
+                </v-select>
+              <button class="btn btn-info-exam " style="color: black" @click="exam_confirm_change">√</button>
+              </div>
+            </div>
+          </div>
+          <div class="hello">
+            <button v-if="!exam_exist" @click="add_exam" class="btn2 btn-success">+</button>
+            <arrange_exam v-for=" (x,index) in exam_items"
+                  :key="index"
+                  :index="index"
+                  :exam_items="exam_items"
+                  :course="select_course"
+                  @del="item_delete"
+                  @add_del="add_exam_delete"
+            >
+            </arrange_exam>
+          </div>
         </div>
       </div>
     </div>
@@ -139,7 +179,12 @@
   import get_year_semester from './get_year_semester'
   import PC_bar from '../public/PC_bar'
   import department_list from '../public/department_list'
+  import arrange_exam from './arrange_exam'
+  // Import this component
+  import datePicker from 'vue-bootstrap-datetimepicker';
 
+  // Import date picker css
+  import 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css';
   export default {
     name: "arrange_course",
     components: {
@@ -148,10 +193,27 @@
       department_list,
       get_coursetype,
       test,
+      datePicker,
+      arrange_exam
     },
     data() {
 
       return {
+        //考试信息
+        exam_exist:false,
+        config: {
+          format: 'YYYY-MM-DD HH:mm',
+          useCurrent: false,
+        },
+        added_exam:null,
+        exam_items:[],
+        exam_classroom:null,
+        exam_classrooms:[],
+        start_date_time:null,
+        end_date_time:null,
+        exam_name:null,
+
+        //课程信息
         year: undefined,
         semester: undefined,
         department_id: undefined,
@@ -208,9 +270,81 @@
           };
           this.teacher_list.push(each);
         }
+      });
+      this.$http.post(this.Global_Api + '/schedule/classroom_list', {}).then((res) => {
+        console.log(res.body.error_message)
+        for (let i = 0; i < res.body.classroom_list.length; i++) {
+          let dic={
+            label:res.body.classroom_list[i].classroom_name,
+            value:res.body.classroom_list[i].classroom_id,
+          }
+          this.exam_classrooms.push(dic);
+        }
       })
     },
     methods: {
+      exam_confirm_change:function(){
+        let data={
+          user_name:this.$cookie.get('username'),
+          user_token:this.$cookie.get('user_token'),
+          exam_name:this.exam_name,
+          start_date_time: this.start_date_time,
+          end_date_time: this.end_date_time,
+          exam_id: this.added_exam.exam_id,
+          classroom_id: this.exam_classroom.value,
+        };
+        // console.log(data);
+        this.$http.post(this.Global_Api + '/schedule/modify_exam', data).then((res) => {
+          alert(res.body.error_message)
+          if(res.body.error_code===0){
+                data = {};
+                if (typeof (this.year) != "undefined")
+                  data['course_year'] = this.year;
+                if (typeof (this.semester) != "undefined")
+                  data['course_semester'] = this.semester;
+                if (typeof (this.department_id) != "undefined")
+                  data['course_department_id'] = this.department_id;
+                if (typeof (this.coursetype) != "undefined")
+                  data['course_type'] = this.coursetype;
+                this.course = [];
+                this.$http.post(this.Global_Api + '/schedule/course_list', data).then((res) => {
+                  this.list = res.body.course_list
+                  for (let i = 0; i < this.list.length; i++)
+                    this.course.push(this.list[i])
+                })
+              }
+          })
+      },
+      item_delete:function(e){
+        this.exam_items.splice(e,1);
+      },
+      add_exam:function(){
+        this.exam_items.push({exam_name:''})
+      },
+      add_exam_delete:function(index){//  确认添加后将其从添加数组中删除
+        let data={
+          "user_name": this.$cookie.get('username'),
+          "user_token": this.$cookie.get('user_token'),
+          "course_id": this.select_course.course_id
+        };
+        this.$http.post(this.Global_Api + '/schedule/course_info', data).then((res) => {
+          console.log(res.body.error_message)
+          if(res.body.error_code===0) {
+            let val = res.body.course;
+            console.log(val);
+            this.added_exam = JSON.parse(JSON.stringify(val.exams[0]));
+            this.exam_name = this.added_exam.exam_name;
+            this.start_date_time = this.added_exam.date_and_classroom[0].start_date_time;
+            this.end_date_time = this.added_exam.date_and_classroom[0].end_date_time;
+            this.exam_classroom = {
+              label:this.added_exam.date_and_classroom[0].classroom.classroom_name,
+              value:this.added_exam.date_and_classroom[0].classroom.classroom_id,
+            };
+          }
+        });
+        this.exam_items.splice(index,1);
+        this.exam_exist = true;
+      },
       delete_time: function (e) {
         this.items.splice(e, 1)
       },
@@ -286,7 +420,7 @@
             this.copy_added=JSON.parse(JSON.stringify(this.added)) //深拷贝
 
           }
-        })
+        });
         this.items.splice(index, 1)
       },
       add: function () {
@@ -359,6 +493,23 @@
         })
       },
       choose_course: function (val) {
+        if(val.exams.length!==0) {
+          this.added_exam = JSON.parse(JSON.stringify(val.exams[0]));
+          this.exam_name = this.added_exam.exam_name;
+          this.start_date_time = this.added_exam.date_and_classroom[0].start_date_time;
+          this.end_date_time = this.added_exam.date_and_classroom[0].end_date_time;
+          this.exam_classroom = {
+            label:this.added_exam.date_and_classroom[0].classroom.classroom_name,
+            value:this.added_exam.date_and_classroom[0].classroom.classroom_id,
+          };
+          this.exam_exist = true;
+        }
+        else {
+          this.added_exam = null;
+          this.exam_exist = false;
+        }
+        // console.log(this.added_exam)
+        // console.log(val.exams)
         this.items=[];
         this.select_course = val;
         if(this.select_course.teachers.length!==0){
@@ -941,6 +1092,12 @@
     vertical-align: 0px;
     animation: donghua 2s;
   }
+  .btn-info-exam {
+       margin-left: 20px;
+       height: 30px;
+       vertical-align: 0px;
+       animation: donghua 2s;
+     }
 
   #change-block v-select {
     width: 50px;
