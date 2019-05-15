@@ -338,8 +338,8 @@ class DateAndClassroom(models.Model):
             return {
                 "id": self.id,
                 "classroom": self.classroom.to_dict(),
-                "start_date_time": self.start_date_time,
-                "end_date_time": self.end_date_time
+                "start_date_time": self.start_date_time.strftime("%Y-%m-%d %H:%M"),
+                "end_date_time": self.end_date_time.strftime("%Y-%m-%d %H:%M")
             }
 
 
