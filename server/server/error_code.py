@@ -36,10 +36,8 @@ CLACK_NO_PERMISSION = {"error_code": 9, "error_message": "没有调用这个接�
 # student不存在
 CLACK_STUDENT_NOT_EXISTS = {"error_code": 10, "error_message": "查询的学生不存在"}
 
-
-# 不存在
+# student不存在
 CLACK_TEACHER_NOT_EXISTS = {"error_code": 11, "error_message": "查询的教师不存在"}
-
 
 # course不存在
 CLACK_COURSE_NOT_EXISTS = {"error_code": 12, "error_message": "查询的课程不存在"}
@@ -71,26 +69,32 @@ CLACK_DELETE_FAIL = {"error_code": 20, "error_message": "删除失败"}
 #选课失败
 CLACK_SELECTION_FAIL = {"error_code": 21, "error_message": "选课失败"}
 
+#学生查询课表失败
+CLACK_TIMETABLE_FAIL={"error_code": 22, "error_message": "查询课表失败"}
+
 #DateAndClassroom查询失败
-CLACK_DATEANDCLASSROOM_NOT_EXISTS = {"error_code": 22, "error_message": "查询日期和班级失败"}
+CLACK_DATEANDCLASSROOM_NOT_EXISTS = {"error_code": 23, "error_message": "查询日期和班级失败"}
 
 #下载失败
-CLACK_DOWNLOAD_FAILED = {"error_code": 23, "error_message": "下载失败"}
-
-# 目标不存在
-CLACK_NOT_EXISTS = {"error_code":24 , "error_message": "此目标不存在"}
-
-# teacher不存在
-CLACK_TEACHER_NOT_EXISTS = {"error_code": 25, "error_message": "查询的教师不存在"}
-
-#学生选题限选一个且已经选择课题
-CLACK_STUDENT_SELECT_DST_EXISTS = {"error_code": 26, "error_message": "已经选择课题"}
-
-# 上传文件失败
-CLACK_DISSERTATION_UPLOAD_FILE_FAILED = {"error_code": 27, "error_message": "上传论文失败"}
-
-#学生查询课表失败
-CLACK_TIMETABLE_FAIL={"error_code": 28, "error_message": "查询课表失败"}
+CLACK_DOWNLOAD_FAILED = {"error_code": 24, "error_message": "下载失败"}
 
 #课程余量修改失败
-CLACK_ALLOWANCE_UPDATE_FAILED={"error_code": 29, "error_message": "课程余量修改失败"}
+CLACK_ALLOWANCE_UPDATE_FAILED={"error_code": 25, "error_message": "课程余量修改失败"}
+
+#设置学年学期失败
+CLACK_SET_YEAR_SEMESTER_FAIL={"error_code": 26, "error_message": "设置学年学期失败"}
+
+#查询学年学期失败
+CLACK_INQUIRY_YEAR_SEMESTER_FAIL={"error_code": 27, "error_message": "查询学年学期失败"}
+
+#获取报表失败
+CLACK_REPORT_FAIL={"error_code": 28, "error_message": "获取报表失败"}
+
+#目标不存在
+CLACK_NOT_EXISTS={"error_code": 29, "error_message": "此目标不存在"}
+
+#学生选题限选一个且已经选择课题
+CLACK_STUDENT_SELECT_DST_EXISTS={"error_code": 30, "error_message": "已经选择课题"}
+
+#上传文件失败
+CLACK_DISSERTATION_UPLOAD_FILE_FAILED={"error_code": 31, "error_message": "上传论文失败"}

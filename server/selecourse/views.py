@@ -4,8 +4,8 @@ import json
 
 import selecourse.models
 from django.http import JsonResponse
-from entity.models import Student, Course,Teacher,Classroom,Department,DateAndClassroom
-from selecourse.models import Selection
+from entity.models import Student,Banji,Course,Teacher,Classroom,Department,DateAndClassroom
+from selecourse.models import Selection,Year_semester
 import entity
 from server import error_code
 
@@ -42,6 +42,7 @@ def student_inquiry(request):
         if Selection.objects.filter(selection_student_id=student.id,selection_course_id=course.id).exists():
             flag=False
         course_info = {
+                "course_id": course.id,
                 "course_name": course.course_name,
                 "course_credit": course.course_credit,
                 "course_type": course.course_type,
@@ -71,7 +72,6 @@ def teacher_inquiry(request):
     year = request_json['year']
     semester = request_json['semester']
     teacher_number = request_json['teacher_number']
-    course_name = request_json['course_name']
 
     #通过老师工号获得对应的老师记录
     try:
@@ -80,38 +80,33 @@ def teacher_inquiry(request):
         return JsonResponse({**error_code.CLACK_TEACHER_NOT_EXISTS})
 
     try:
-        # 通过老师记录获得老师所教授的课程
-        course = Course.objects.get(course_year=year,course_semester=semester,course_teacher_id=teacher.id,course_name=course_name)
+        # 通过老师记录获得老师所教授的全部课程记录
+        courses = Course.objects.filter(course_year=year,course_semester=semester,course_teacher_id=teacher.id)
     except Exception:
         return JsonResponse({**error_code.CLACK_COURSE_NOT_EXISTS})
-
-
-    try:
-        #如果课程存在，则获取该指定课程的上课教室
-        dateandroom=DateAndClassroom.objects.get(course_id=course.id)
-        classroom=Classroom.objects.get(id=dateandroom.classroom_id)
-    except Exception:
-        return JsonResponse({**error_code.CLACK_CLASSROOM_NOT_EXISTS})
-
-    #在selection中通过课程id过滤得到对应的学生
-    seles=Selection.objects.filter(selection_course_id=course.id)
-    for sele in seles:
-            #通过选课表中的记录过滤的到学生记录
-            try:
-                student=Student.objects.get(id=sele.selection_student_id)
-            except Exception:
-                return JsonResponse({**error_code.CLACK_STUDENT_NOT_EXISTS})
-            temp ={
-                "teacher_name":teacher.teacher_name,
-                "student_name": student.student_name,
-                "student_number": student.student_number,
-                 "course_name":course.course_name,
-                 "classroom_name":classroom.classroom_name,
-                 "course_credit":course.course_credit,
-                 "course_allowance":course.course_allowance,#课程余量
-                 "course_capacity":course.course_capacity,#课程容量
+    for course in courses:
+        try:
+            #如果课程存在，则获取该指定课程的上课教室
+            dateandroom=DateAndClassroom.objects.get(course_id=course.id)
+            classroom=Classroom.objects.get(id=dateandroom.classroom_id)
+        except Exception:
+            return JsonResponse({**error_code.CLACK_CLASSROOM_NOT_EXISTS})
+        department=Department.objects.get(id=course.course_department_id)
+        type="必修"
+        if course.course_type==1:
+            type = "选修"
+        temp ={
+                    "teacher_name":teacher.teacher_name,
+                    "course_name": course.course_name,
+                    "course_id":course.id,
+                    "course_type":type,
+                    "course_credit":course.course_credit,
+                    "course_allowance":course.course_allowance,#课程余量
+                    "course_capacity":course.course_capacity,#课程容量
+                    "course_classroom":classroom.classroom_name,
+                    "course_department":department.department_name,
                 }
-            course_student_list.append(temp)
+        course_student_list.append(temp)
     return JsonResponse({**error_code.CLACK_SUCCESS, 'course_student_list': course_student_list})
 
 #学生选课,在课程信息表中点击有权选但未选的课程进行选课操作
@@ -234,29 +229,33 @@ def teacher_download(request):
 
     # 通过课程名和老师id得到对应的course
     try:
-        course = Course.objects.get(course_name=course_name,course_teacher_id=teacher.id)
+        course = Course.objects.get(course_name=course_name,course_teacher_id=teacher.id,year= year,semester =semester)
     except Exception:
         return JsonResponse({**error_code.CLACK_COURSE_NOT_EXISTS})
-    # 通过学年和学期筛选对应的课程
-    if year == course.course_year and semester == course.course_semester:
-        # 在selection中过滤得到
-        seles = Selection.objects.filter(selection_course_id=course.id)
-
-        #从得到的选课记录中的selection_student_id过滤得到对应的student_name
-        for sele in seles:
-                try:
-                    student = Student.objects.get(id=sele.selection_student_id)
-                except Exception:
-                    return JsonResponse({**error_code.CLACK_STUDENT_NOT_EXISTS})
-                temp = {
-                    "course_name": course.course_name,
-                    "student_name": student.student_name,
-                    "student_number": student.student_number,
+    # 在selection中过滤得到
+    seles = Selection.objects.filter(selection_course_id=course.id)
+    #从得到的选课记录中的selection_student_id过滤得到对应的student_name
+    for sele in seles:
+        try:
+            student = Student.objects.get(id=sele.selection_student_id)
+        except Exception:
+            return JsonResponse({**error_code.CLACK_STUDENT_NOT_EXISTS})
+        try:
+            banji=Banji.objects.get(id=student.student_banji_id)
+        except Exception:
+            return JsonResponse({**error_code.CLACK_BANJI_NOT_EXISTS})
+        temp = {
+                "course_name": course.course_name,
+                "student_name": student.student_name,
+                "student_number": student.student_number,
+                "student_banji":banji.banji_name,
                 }
-                student_list.append(temp)
-        return JsonResponse({**error_code.CLACK_SUCCESS, 'course_student_list': student_list})
-    else:
+        student_list.append(temp)
+    if len(student_list)==0:
         return JsonResponse({**error_code.CLACK_DOWNLOAD_FAILED})
+    else:
+        return JsonResponse({**error_code.CLACK_SUCCESS, 'course_student_list': student_list})
+
 
 #向管理员提供各类报表
 def  admin_reports(request):
@@ -280,7 +279,6 @@ def  admin_reports(request):
         teacher=Teacher.objects.get(teacher_name=teacher_name)
     except Exception:
         return JsonResponse({**error_code.CLACK_TEACHER_NOT_EXISTS})
-    print(department.id,teacher.id)
     try:
         course=Course.objects.get(course_year=year,course_semester=semester,course_name=course_name,course_department_id=department.id,course_teacher_id=teacher.id)
     except Exception:
@@ -291,13 +289,16 @@ def  admin_reports(request):
             "course_capacity": course.course_capacity,#课程容量
             }
     reports_list.append(info)
+    if len(reports_list)==0:
+        return JsonResponse({**error_code.CLACK_REPORT_FAIL})
     #将课程容量和课程已选人数加入到reports_list中进行返回
-    return JsonResponse({**error_code.CLACK_SUCCESS, 'reports_list': reports_list})
+    else:
+        return JsonResponse({**error_code.CLACK_SUCCESS, 'reports_list': reports_list})
 
 #学生课表查询接口
 def course_inquiry(request):
     #保存查询学生的课表信息，即已选的所有课程信息
-    timetable=[] #课表
+    course_list=[] #保存课表
 
     request_json = json.loads(request.body)
     year = request_json['year']
@@ -315,14 +316,17 @@ def course_inquiry(request):
             course=Course.objects.get(id=sele.selection_course_id)
         except Exception:
             return JsonResponse({**error_code.CLACK_COURSE_NOT_EXISTS})
-        # print(course.id)
         #通过课程记录获得对应的DateAndClassroom
         if year == course.course_year and semester == course.course_semester:
                 dateAndclassroom = DateAndClassroom.objects.get(course_id=course.id)
                 classroom=Classroom.objects.get(id=dateAndclassroom.classroom_id)
                 teacher=Teacher.objects.get(id=course.course_teacher_id)
+                type="必修"
+                if course.course_type==1:
+                    type = "选修"
                 course_info = {
                     "course_name": course.course_name,
+                    "course_type":type,
                     "course_credit": course.course_credit,
                     "classroom_name": classroom.classroom_name,
                     "course_teacher": teacher.teacher_name,
@@ -332,8 +336,45 @@ def course_inquiry(request):
                     "start": dateAndclassroom.start,  # 开始节数
                     "end": dateAndclassroom.end,  # 结束节数
                 }
-                timetable.append(course_info)
-    if len(timetable)==0:
-        return JsonResponse({**error_code.CLACK_TIMETABLE_FAIL, 'course_list': timetable})
+                course_list.append(course_info)
+    if len(course_list)==0:
+        return JsonResponse({**error_code.CLACK_TIMETABLE_FAIL})
     else:
-        return JsonResponse({**error_code.CLACK_SUCCESS, 'course_list': timetable})
+        return JsonResponse({**error_code.CLACK_SUCCESS, 'course_list': course_list})
+
+#管理员设置学期学年
+def set_year_semester(request):
+    #输入year和semester来写入Year_semester表中
+    request_json = json.loads(request.body)
+    year = request_json['year']
+    semester = request_json['semester']
+    inital = Year_semester.objects.all()
+    if inital.count()==0:
+        y_s = Year_semester(year=2016, semester=1)
+        y_s.save()
+    courses=Course.objects.filter(course_year=year,course_semester=semester)
+    if courses.count()==0:
+        return  JsonResponse({**error_code.CLACK_SET_YEAR_SEMESTER_FAIL})
+    else:
+        year_semester = Year_semester.objects.all()
+        temp=Year_semester.objects.get(id=year_semester[0].id)
+        temp.year=year
+        temp.semester=semester
+        temp.save()
+        return JsonResponse({**error_code.CLACK_SUCCESS})
+
+#管理员查询学期学年
+def inquiry_year_semester(request):
+    #返回year和semester
+    year_semester_list=[]
+    year_semester = Year_semester.objects.all()
+
+    if year_semester.count()==0:
+        return JsonResponse({**error_code.CLACK_INQUIRY_YEAR_SEMESTER_FAIL})
+    else:
+        info = {
+            "year": year_semester[0].year,  # 学年
+            "semester": year_semester[0].semester,  # 学期
+        }
+        year_semester_list.append(info)
+        return JsonResponse({**error_code.CLACK_SUCCESS, 'year_semester_list': year_semester_list})
