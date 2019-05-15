@@ -53,18 +53,14 @@
       }
     },
     created() {
-      bus.$on("getData",(data)=>{
-        this.getData(data)
-        console.log("created 传值")
-        console.log(this.msg)
-      })
-
+      // bus.$on("getData",(data)=>this.getData(data))
+      this.msg=this.$route.params.msg
     },
 
     mounted() {
       console.log("mounted周期后的值")
+      this.getd();
       console.log(this.msg)
-
       this.$http.post(this.Global_Api + '/selecourse/admin_reports', {
         year:this.msg.course_year,
         semester:this.msg.course_semester,
@@ -92,6 +88,16 @@
         this.msg=data
         this.teacher_name=data.teachers[0].teacher_name
         this.department_name=data.course_department.department_name
+        console.log("jieshou")
+        console.log(data)
+      },
+
+      getd:function(){
+        this.msg = this.$route.params.msg
+        this.teacher_name=this.msg.teachers[0].teacher_name
+        this.department_name=this.msg.course_department.department_name
+        console.log("jieshou")
+        console.log(this.msg)
       },
 
       drawCircle: function (list) {

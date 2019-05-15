@@ -40,8 +40,10 @@ import Tea_query from '@/components/scoremng/tea_scoremng/teacher_query'
 import man_view_msg from "@/components/select_course/man_view_msg";
 import attention from "@/components/select_course/attention";
 
+
 Vue.use(VueCookie)
 Vue.use(Router)
+
 
 export default new Router({
   routes: [
