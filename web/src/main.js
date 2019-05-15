@@ -9,7 +9,13 @@ import $ from 'jquery'   //引入jQuery
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import '../node_modules/bootstrap/dist/js/bootstrap.min'
 import vSelect from 'vue-select'
+import datePicker from 'vue-bootstrap-datetimepicker';
 
+// Import date picker css
+import 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css';
+Vue.component('date-pick',datePicker)
+import Blob from '../src/excel/Blob.js'
+import Export2Excel from '../src/excel/Export2Excel.js'
 Vue.component('v-select', vSelect)
 Vue.use(Resource)
 Vue.prototype.Global_Api=Api.Global_Api

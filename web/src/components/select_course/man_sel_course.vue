@@ -36,17 +36,17 @@
             <label>学院</label>
             <select  v-model="info.academy" class="select">
               <option value="all" selected="selected">全部</option>
-              <option value="01">化学工程学院</option>
-              <option value="02">材料科学与工程学院</option>
-              <option value="03">机电工程学院</option>
-              <option value="04">信息科学与技术学院</option>
-              <option value="05">经济管理学院</option>
-              <option value="06">理学院</option>
-              <option value="07">文法学院</option>
-              <option value="08">生命科学与技术学院</option>
-              <option value="09">马克思主义学院</option>
-              <option value="10">国际教育学院</option>
-              <option value="11">巴黎居里工程师学院</option>
+              <option value="化学工程学院">化学工程学院</option>
+              <option value="材料科学与工程学院">材料科学与工程学院</option>
+              <option value="机电工程学院">机电工程学院</option>
+              <option value="信息学院">信息学院</option>
+              <option value="经济管理学院">经济管理学院</option>
+              <option value="理学院">理学院</option>
+              <option value="文法学院">文法学院</option>
+              <option value="生命科学与技术学院">生命科学与技术学院</option>
+              <option value="马克思主义学院">马克思主义学院</option>
+              <option value="国际教育学院">国际教育学院</option>
+              <option value="巴黎居里工程师学院">巴黎居里工程师学院</option>
             </select>
           </div>
 
@@ -72,7 +72,27 @@
             <input v-model="info.teacher" type="text" placeholder=" 请输入老师名字查询">
           </div>
         </div>
+      </form>
 
+      <form class="select_form">
+        <div class="select_year">
+          <label>设置学年</label>
+          <select  v-model="select_year">
+            <option value="2019" selected="selected">2019</option>
+            <option value="2020">2020</option>
+            <option value="2021">2021</option>
+          </select>
+        </div>
+
+        <div class="select_semester">
+          <label>设置学期</label>
+          <select  v-model="select_semester">
+            <option value="1" selected="selected">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+        </div>
+        <button v-on:click="Submit()" type="button"  style="position: relative; left: 320px" class="btn btn-primary " >提交</button>
       </form>
     </div>
     <div class="button">
@@ -82,18 +102,28 @@
       <table class="table table-striped table-item ">
         <thead>
         <tr>
-          <th>course_name</th>
-          <th>course_id</th>
-          <th>teaching</th>
-          <th>classroom</th>
+          <th>课程名称</th>
+          <th>课程号</th>
+          <th>学分</th>
+          <th>任课老师</th>
+          <th>上课教室</th>
+          <th>起始周</th>
+          <th>结束周</th>
+          <th>学年</th>
         </tr>
         </thead>
         <tbody>
-        <tr v-for="course in courses">
-          <td>{{course.course_name}}</td>
+        <tr v-for="(course,index) in courses">
+          <router-link to="/main/man_sel_course/man_view_msg" >
+            <td @click="confirm(index)" class="td">{{course.course_name}}</td>
+          </router-link>
           <td>{{course.course_id}}</td>
-          <td>{{course.teaching}}</td>
-          <td>{{course.classroom}}</td>
+          <td>{{course.course_credit}}</td>
+          <td>{{course.teachers[0].teacher_name}}</td>
+          <td>{{course.date_and_classroom[0].classroom.classroom_name}}</td>
+          <td>{{course.date_and_classroom[0].start_week}}</td>
+          <td>{{course.date_and_classroom[0].end_week}}</td>
+          <td>{{course.date_and_classroom[0].year}}</td>
         </tr>
         </tbody>
       </table>
@@ -103,11 +133,19 @@
         <p v-show="infoText">没有查询到相关信息！</p>
       </div>
     </div>
+
+    <div>
+
+    </div>
+
   </div>
 </template>
 
 <script>
   import PC_bar from "../public/PC_bar";
+  import bus from "../../assets/manager_to_manager"
+  import login from "../public/login";
+
   export default {
     name: "man_sel_course",
     data () {
@@ -117,17 +155,35 @@
           academy:"all",
           semester:"1",
           course:"",
-          teacher:""
+          teacher:"",
         },
+        course_list:[],
         courses:[],
+        update_courseList:[],
         flag:-1,
-        info_collection:{"course_name":"","teaching":"","year":"","academy":"","semester":""},
+        info_collection:{"course_name":"","course_teacher":"","year":"","academy":"","semester":""},
         border_show:false,
         conditionText:false,
-        infoText:false
+        infoText:false,
+        data:{},
+        select_year:"2019",
+        select_semester:"1"
       }
     },
     methods:{
+      confirm:function(index){
+        this.$router.push('/main/man_sel_course/man_view_msg')
+        this.data=this.update_courseList[index]
+      },
+      Submit:function(){
+        this.$http.post(this.Global_Api + '/selecourse/set_year_semester', {
+          year:this.select_year,
+          semester:this.select_semester,
+        }).then(res=>{
+          console.log(res)
+        })
+      },
+
       Filter:function () {
         this.border_show=true;
         if (this.info.year=="all"&&this.info.academy=="all"){
@@ -144,16 +200,6 @@
           return ;
         }
 
-        this.courses=[
-          {"course_name":"a","course_id":"01","teaching":"t","classroom":"aa","year":"2010","academy":"01","semester":"1"},
-          {"course_name":"a","course_id":"01","teaching":"t","classroom":"aa","year":"2010","academy":"02","semester":"2"},
-          {"course_name":"a","course_id":"01","teaching":"t","classroom":"aa","year":"2012","academy":"02","semester":"2"},
-          {"course_name":"a","course_id":"01","teaching":"t","classroom":"aa","year":"2011","academy":"01","semester":"1"},
-          {"course_name":"a","course_id":"01","teaching":"t","classroom":"aa","year":"2011","academy":"03","semester":"1"},
-          {"course_name":"bb","course_id":"01","teaching":"t","classroom":"aa","year":"2011","academy":"01","semester":"1"},
-          {"course_name":"b","course_id":"01","teaching":"t","classroom":"aa","year":"2012","academy":"01","semester":"1"},
-        ];
-
         if(this.info.year!="all"&&this.info.academy!="all"){
           this.info_collection.year=this.info.year;
           this.info_collection.academy=this.info.academy;
@@ -168,51 +214,71 @@
         }
 
         if(this.info.teacher!=""){
-          this.info_collection.teaching=this.info.teacher;
+          this.info_collection.course_teacher=this.info.teacher;
         }
         else {
-          this.info_collection.teaching="null";
+          this.info_collection.course_teacher="null";
         }
+
 
 
         //过滤年份
-        this.courses = this.courses.filter((kecheng) => {
-          return kecheng.year==this.info_collection.year;
-        });
-
-
-        //过滤学院
-        this.courses = this.courses.filter((kecheng) => {
-          return kecheng.academy==this.info_collection.academy;
+        this.course_list = this.course_list.filter((kecheng) => {
+          return kecheng.course_year==this.info_collection.year;
         });
 
 
 
         //过滤学期
-        this.courses = this.courses.filter((kecheng) => {
-          return kecheng.semester==this.info_collection.semester;
+        this.course_list = this.course_list.filter((kecheng) => {
+          console.log(kecheng.course_department.department_name);
+          return kecheng.course_semester==this.info_collection.semester;
         });
+
 
 
         //过滤课程
         if(this.info_collection.course_name!="null") {
-          this.courses = this.courses.filter((kecheng) => {
+          this.course_list = this.course_list.filter((kecheng) => {
+            // console.log("过滤课程"+kecheng.course_name);
             return kecheng.course_name.match(this.info_collection.course_name)
           });
         }
 
-        if(this.info_collection.teaching!="null"){
-          this.courses=this.courses.filter((kecheng) => {
-            return kecheng.teaching.match((this.info_collection.teaching))
+        if(this.info_collection.course_teacher!="null"){
+          this.course_list=this.course_list.filter((kecheng) => {
+            return kecheng.course_teacher.match((this.info_collection.course_teacher))
           })
         }
+        this.courses=this.course_list;
+        console.log("keke")
+        console.log(this.courses)
+        this.update_courseList=this.course_list;
+
         if(this.courses.length==0)
         {
           this.border_show=false;
           this.conditionText=true;
           this.infoText=true;
         }
+        this.$http.post(this.Global_Api + '/schedule/course_list',[])
+          .then((res)=>{
+              this.course_list=res.body.course_list;
+            }
+          );
       }
+
+    },
+    created()
+    {
+      this.$http.post(this.Global_Api + '/schedule/course_list',[])
+        .then((res)=>{
+            this.course_list=res.body.course_list;
+          }
+        );
+    },
+    beforeDestroy () {
+      bus.$emit("getData",this.data);
     },
 
     components:{
@@ -268,6 +334,9 @@
   th{
     border: 1px solid #e3e3e3;
   }
+  td{
+    border: 1px solid #e3e3e3;
+  }
   tbody{
     border: 1px solid #2aabd2;
   }
@@ -318,6 +387,30 @@
     text-align: center;
     line-height: 100px;
   }
+  .td{
+    position: relative;
+    left: 40px;
+    top: 8px;
+    border: 1px solid #ffffff;
+  }
+  .select_form{
+    display: flex;
+    flex-direction: row;
+  }
+  .select_year{
+    position: relative;
+    left: 125px;
+  }
+  .select_semester{
+    position: relative;
+    left: 285px;
+  }
+  .select_form{
+    position: relative;
+    top:120px;
+  }
 
 </style>
+
+
 

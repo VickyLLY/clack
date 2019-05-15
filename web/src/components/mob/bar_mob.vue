@@ -15,15 +15,23 @@
              <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">排课子系统</a>
            </li>-->
           <li>
-            <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">排课子系统</a>
+            <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" @click="funfun">排课子系统</a>
             <ul class="collapse list-unstyled" id="pageSubmenu">
-              <li>
+              <li v-if="user_type==1">
+                <a @click="schedule_mob">查看课表</a>
+              </li>
+              <li v-if="user_type==2">
                 <a @click="schedule_mob">查看课表</a>
               </li>
             </ul>
           </li>
           <li>
-            <a v-on:click="">选课子系统</a>
+            <a href="#pageSubmenuxk" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">选课子系统</a>
+            <ul class="collapse list-unstyled" id="pageSubmenuxk">
+              <li>
+                <a @click="sel_course_mob">查看课表及选课情况</a>
+              </li>
+            </ul>
           </li>
           <li>
             <a v-on:click="">后台管理子系统</a>
@@ -55,11 +63,11 @@
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="nav navbar-nav ml-auto">
-                <li class="nav-item active">
-                  <a v-on:click="" class="nav-link" href="#">修改用户信息</a>
-                </li>
+<!--                <li class="nav-item active">-->
+<!--                  <a v-on:click="" class="nav-link" href="#">修改用户信息</a>-->
+<!--                </li>-->
                 <li class="nav-item">
-                  <a  href="#/" @click="quit" class="nav-link" >注销</a>
+                  <a  href="/" @click="quit" class="nav-link" >注销</a>
                 </li>
               </ul>
             </div>
@@ -77,10 +85,12 @@
 
 <script>
   export default {
+    name: "bar_mob",
     data(){
       return{
         username:this.$cookie.get('username'),
         realname:this.$cookie.get('realname'),
+        user_type: this.$cookie.get('user_type'),
       }
     },
     created(){
@@ -93,14 +103,41 @@
       })
     },
     methods:{
+      sel_course_mob:function(){
+        if(this.user_type==2){
+          this.$router.push({
+            path: '/main_mob/stu_sel_course_mob',
+          })
+        }
+        else if(this.user_type==1){
+          this.$router.push({
+            path: '/main_mob/tea_sel_course_mob',
+          })
+        }else if(this.user_type==0){
+          alert("管理员请去PC端操作");
+        }else{
+          alert("系统未知错误，请联系相关人员");
+        }
+      },
+      funfun:function(){
+        if(this.user_type==0){
+          alert("管理员在手机端无排课子系统功能");
+        }
+      },
       quit:function () {
         this.$cookie.delete('username');
-
       },
       schedule_mob:function () {
-        this.$router.push({
-          path: '/schedule_mob',
-        })
+        if(this.user_type==2){
+          this.$router.push({
+            path: '/schedule_mob',
+          })
+        }
+        else if(this.user_type==1){
+          this.$router.push({
+            path: '/schedule_mob_tea',
+          })
+        }
       },
       main_mob:function () {
         this.$router.push({
