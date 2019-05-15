@@ -6,7 +6,7 @@
       <tr>
         <td colspan="4">
           <div class="timetable_title">
-            <h6 class="pull-left">2018-2019学年第2学期</h6>{{realname}}的课表<h6 class="pull-right">
+            <h6 class="pull-left">2019学年第1学期</h6>{{realname}}的课表<h6 class="pull-right">
             　学号：{{user_student_number}}</h6>
           </div>
         </td>
@@ -170,7 +170,11 @@
       }
       else {
         let data = {
-          "student_number": this.user_student_number//记得改变post的学生id
+          "student_number": this.user_student_number,//记得改变post的学生id
+          "year": this.year,
+          "semester": this.semester,
+          "user_name": this.$cookie.get('username'),
+          "user_token": this.$cookie.get('user_token')
         };
         this.$http.post(this.Global_Api + '/schedule/student_course_list', data).then((res) => {
           for (var i in res.body.course_list) {
@@ -284,6 +288,8 @@
         course5: [],
         course6: [],
         course7: [],
+        year: 2019,
+        semester: 1,
       }
     },
   }
