@@ -31,10 +31,12 @@ import add_semester from "@/components/schedule/add_semester";
 
 //成绩管理
 import navigation from '@/components/scoremng/navigation'
+import Admin_score from '@/components/scoremng/admin_scoremng/admin_score'
 import Stu_score from '@/components/scoremng/stu_scoremng/stu_score'
 import Stu_evaluation from '@/components/scoremng/stu_scoremng/stu_evaluation'
 import Tea_upload from '@/components/scoremng/tea_scoremng/teacher_upload'
 import Tea_query from '@/components/scoremng/tea_scoremng/teacher_query'
+
 import man_view_msg from "@/components/select_course/man_view_msg";
 import attention from "@/components/select_course/attention";
 
@@ -166,6 +168,11 @@ export default new Router({
       name:'navigation',
       component:navigation,
       children: [
+        {
+          path:'admin_score',
+          name:'admin_score',
+          component:Admin_score
+        },
         {
           path:'stu_score',
           name:'stu_score',

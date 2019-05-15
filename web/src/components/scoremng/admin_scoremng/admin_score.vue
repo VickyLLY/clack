@@ -4,7 +4,7 @@
 
 <script>
     export default {
-        name: "stu_navigation"
+        name: "admin_score"
     }
 </script>
 
