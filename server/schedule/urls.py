@@ -19,5 +19,8 @@ urlpatterns = [
     path(r'del_dc', views.del_dc, name='del_dc'),
     path(r'course_info', views.course_info, name='course_info'),
     path(r'teacher_list', views.teacher_list, name='teacher_list'),
-    path(r'course_add_teacher', views.course_add_teacher, name='course_add_teacher')
+    path(r'course_add_teacher', views.course_add_teacher, name='course_add_teacher'),
+    path(r'add_exam', views.add_exam, name='add_exam'),
+    path(r'modify_exam', views.modify_exam, name='modify_exam'),
+    path(r'del_exam', views.del_exam, name='del_exam')
 ]

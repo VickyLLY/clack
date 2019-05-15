@@ -6,6 +6,7 @@ import entity.models
 from server.decorators import admin_required, login_required
 import schedule.models
 from django.db import IntegrityError, transaction
+import datetime
 
 
 # Create your views here.
@@ -261,3 +262,48 @@ def teacher_course_list(request):
         return JsonResponse({**error_code.CLACK_SUCCESS, "course_list": result})
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": str(e)})
+
+
+# WARNING 目前只支持一个课程对应一个考试,如果多次添加只保留最后一次添加
+@admin_required
+def add_exam(request):
+    request_json = json.loads(request.body)
+    try:
+        with transaction.atomic():
+            entity.models.Exam.objects.filter(exam_course_id=request_json['exam_course_id']).delete()
+            exam = entity.models.Exam(exam_name=request_json['exam_name'],
+                                      exam_course_id=request_json['exam_course_id'])
+            exam.save()
+            dc = entity.models.DateAndClassroom(type=1,
+                                                classroom_id=request_json['classroom_id'])
+            dc.start_date_time = datetime.datetime.strptime(request_json['start_date_time'], '%Y-%m-%d %H:%M')
+            dc.end_date_time = datetime.datetime.strptime(request_json['end_date_time'], '%Y-%m-%d %H:%M')
+            dc.exam_id = exam.id
+            dc.save()
+        return JsonResponse({**error_code.CLACK_SUCCESS})
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": str(e)})
+
+
+@admin_required
+def modify_exam(request):
+    request_json = json.loads(request.body)
+    try:
+        with transaction.atomic():
+            exam = entity.models.Exam.objects.get(id=request_json['exam_id'])
+            exam.exam_name = request_json['exam_name']
+            exam.save()
+            dc = exam.dateandclassroom_set.all()[0]
+            dc.classroom_id = request_json['classroom_id']
+            dc.start_date_time = datetime.datetime.strptime(request_json['start_date_time'], '%Y-%m-%d %H:%M')
+            dc.end_date_time = datetime.datetime.strptime(request_json['end_date_time'], '%Y-%m-%d %H:%M')
+            dc.exam_id = exam.id
+            dc.save()
+        return JsonResponse({**error_code.CLACK_SUCCESS})
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": str(e)})
+
+
+@admin_required
+def del_exam(request):
+    return JsonResponse({**error_code.CLACK_UNIMPLEMENTED_API})

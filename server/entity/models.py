@@ -126,7 +126,8 @@ class Course(models.Model):
             # "course_department_id": self.course_department_id
             "course_department": self.course_department.to_dict(),
             "date_and_classroom": [dc.to_dict() for dc in self.dateandclassroom_set.all()],
-            "teachers": teachers
+            "teachers": teachers,
+            "exams": [exam.to_dict() for exam in self.exam_set.all()]
         }
 
 
@@ -134,6 +135,15 @@ class Course(models.Model):
 class Exam(models.Model):
     exam_name = models.TextField(default='')
     exam_course = models.ForeignKey(Course, on_delete=models.CASCADE, null=False)
+
+    def to_dict(self):
+        return {
+            "exam_id": self.id,
+            "exam_name": self.exam_name,
+            "date_and_classroom": [dc.to_dict() for dc in self.dateandclassroom_set.all()],
+            # 返回course id防止循环调用
+            "exam_course_id": self.exam_course_id
+        }
 
 
 # 学生
@@ -199,19 +209,19 @@ class DateAndClassroom(models.Model):
     # 对应课程
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
     # 学年开始年份
-    year = models.IntegerField(blank=True)
+    year = models.IntegerField(blank=True, null=True)
     # 所在学期 1 2 3
-    semester = models.IntegerField(blank=True)
+    semester = models.IntegerField(blank=True, null=True)
     # 开始周数
-    start_week = models.IntegerField(blank=True)
+    start_week = models.IntegerField(blank=True, null=True)
     # 结束周数
-    end_week = models.IntegerField(blank=True)
+    end_week = models.IntegerField(blank=True, null=True)
     # 星期几 1, 2, ... 6, 7
-    day_of_week = models.IntegerField(blank=True)
+    day_of_week = models.IntegerField(blank=True, null=True)
     # 第几节开始 1,2 ...
-    start = models.IntegerField(blank=True)
+    start = models.IntegerField(blank=True, null=True)
     # 第几节结束 1,2 ...
-    end = models.IntegerField(blank=True)
+    end = models.IntegerField(blank=True, null=True)
     # type 0 结束 -----------------------
 
     # type 1 开始 -----------------------
@@ -257,8 +267,8 @@ class DateAndClassroom(models.Model):
             super(DateAndClassroom, self).save(*args, **kwargs)
             return
         # TODO 判断节次不能大于13
-        Semester.objects.get(year=self.year, semester=self.semester)
         if self.type == 0:
+            Semester.objects.get(year=self.year, semester=self.semester)
             if self.start_week > self.end_week:
                 raise Exception("开始周大于结束周")
             if self.start > self.end:
@@ -315,6 +325,13 @@ class DateAndClassroom(models.Model):
                 "day_of_week": self.day_of_week,
                 "start": self.start,
                 "end": self.end
+            }
+        if self.type == 1:
+            return {
+                "id": self.id,
+                "classroom": self.classroom.to_dict(),
+                "start_date_time": self.start_date_time.strftime("%Y-%m-%d %H:%M"),
+                "end_date_time": self.end_date_time.strftime("%Y-%m-%d %H:%M")
             }
 
 
