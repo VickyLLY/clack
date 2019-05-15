@@ -26,7 +26,12 @@
             </ul>
           </li>
           <li>
-            <a v-on:click="">选课子系统</a>
+            <a href="#pageSubmenuxk" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">选课子系统</a>
+            <ul class="collapse list-unstyled" id="pageSubmenuxk">
+              <li>
+                <a @click="sel_course_mob">查看课表及选课情况</a>
+              </li>
+            </ul>
           </li>
           <li>
             <a v-on:click="">后台管理子系统</a>
@@ -80,6 +85,7 @@
 
 <script>
   export default {
+    name: "bar_mob",
     data(){
       return{
         username:this.$cookie.get('username'),
@@ -97,6 +103,22 @@
       })
     },
     methods:{
+      sel_course_mob:function(){
+        if(this.user_type==2){
+          this.$router.push({
+            path: '/main_mob/stu_sel_course_mob',
+          })
+        }
+        else if(this.user_type==1){
+          this.$router.push({
+            path: '/main_mob/tea_sel_course_mob',
+          })
+        }else if(this.user_type==0){
+          alert("管理员请去PC端操作");
+        }else{
+          alert("系统未知错误，请联系相关人员");
+        }
+      },
       funfun:function(){
         if(this.user_type==0){
           alert("管理员在手机端无排课子系统功能");
