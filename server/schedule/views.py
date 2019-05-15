@@ -7,6 +7,7 @@ from server.decorators import admin_required, login_required
 import schedule.models
 from django.db import IntegrityError, transaction
 import datetime
+import selecourse.models
 
 
 # Create your views here.
@@ -186,11 +187,12 @@ def mock_xuanke(request):
 
 
 def student_course_list(request):
-    # TODO 替换mock,权限
     request_json = json.loads(request.body)
     try:
-        mocks = schedule.models.MockStudentCourse.objects.filter(student__student_number=request_json['student_number'])
-        result = [mock.course.to_dict() for mock in mocks]
+        selections = selecourse.models.Selection.objects.filter(selection_student=request_json['student_number'])
+        selections = selections.filter(selection_course__course_year=request_json['year'])
+        selections = selections.filter(selection_course__course_semester=request_json['semester'])
+        result = [selection.selection_course.to_dict() for selection in selections]
         return JsonResponse({**error_code.CLACK_SUCCESS, "course_list": result})
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "error_message": str(e)})
