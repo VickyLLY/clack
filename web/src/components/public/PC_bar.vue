@@ -14,7 +14,9 @@
                 <!--0 admin ,1 teacher, 2 student-->
                 <li><a href="javascript:void(0)" v-if="user_type===0" @click="add_course">添加课程</a></li>
                 <li><a href="javascript:void(0)" v-if="user_type===0" @click="arrange_course">安排课程</a></li>
-                <li><a href="javascript:void(0)" v-if="user_type===2" @click="check_course_table">查看课表</a></li>
+                <li><a href="javascript:void(0)" v-if="user_type===0" @click="add_semester">添加学期</a></li>
+                <li><a href="javascript:void(0)" v-if="user_type===2" @click="stu_check_course_table">查看课表(学生)</a></li>
+                <li><a href="javascript:void(0)" v-if="user_type===1" @click="tea_check_course_table">查看课表(教师)</a></li>
               </ul>
             </li>
             <li><a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -89,6 +91,9 @@
         else {
           alert("你没有管理员权限");
         }
+      },
+      add_semester:function(){
+          this.$router.push({name:"add_semester"})
       },
       arrange_course: function () {
         this.$router.push('/main/arrange_semester');
@@ -180,7 +185,7 @@
       },
       view_course:function () {
         if (this.user_type == 2) {
-          this.$router.push('/main/stu_sel_course/timetable');
+          this.$router.push('/main/stu_sel_course/stu_timetable');
         } else if (this.user_type == 1) {
           this.$router.push('/main/tea_sel_course');
         } else if(this.user_type == 0) {
@@ -189,8 +194,11 @@
           alert("系统出现未知错误");
         }
       },
-      check_course_table:function () {
+      stu_check_course_table:function () {
         this.$router.push({name:'course_table'});
+      },
+      tea_check_course_table:function(){
+        this.$router.push({name:'tea_course_table'})
       },
       scoremng:function () {
         this.$router.push('/main/navigation')
