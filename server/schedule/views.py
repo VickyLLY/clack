@@ -186,10 +186,12 @@ def mock_xuanke(request):
     return JsonResponse({**error_code.CLACK_SUCCESS})
 
 
+@login_required
 def student_course_list(request):
     request_json = json.loads(request.body)
     try:
-        selections = selecourse.models.Selection.objects.filter(selection_student=request_json['student_number'])
+        selections = selecourse.models.Selection.objects.filter(
+            selection_student__student_number=request_json['student_number'])
         selections = selections.filter(selection_course__course_year=request_json['year'])
         selections = selections.filter(selection_course__course_semester=request_json['semester'])
         result = [selection.selection_course.to_dict() for selection in selections]
