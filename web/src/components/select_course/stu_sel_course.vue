@@ -364,11 +364,18 @@
         z_b_course: [],
         z_x_course: [],
         selected_course: [],
-        course:
-          ``,
+        year:0,
+        semester:0,
+
       }
     },
     created() {
+      // this.$http.get(this.Global_Api + '/selecourse/inquiry_year_semester').then((res) => {
+      //   this.year=res.body.year_semester_list[0];
+      //   this.semester=res.body.year_semester_list[1];
+      //   alert(this.year);
+      //   alert(this.semester);
+      // });
       /*将可选课程分为必修与选修*/
       let sel_class = {
         "year": 2019,

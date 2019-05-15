@@ -15,6 +15,8 @@ import Arrange_course from '@/components/schedule/arrange_course'
 import VueCookie from 'vue-cookie'
 import test from '@/components/mob/test'
 import bar_mob from '@/components/mob/bar_mob'
+import stu_sel_course_mob from '@/components/mob/stu_sel_course_mob'
+import tea_sel_course_mob from '@/components/mob/tea_sel_course_mob'
 import main_mob from "@/components/mob/main_mob";
 import schedule_mob from "@/components/mob/schedule_mob";
 import schedule_mob_tea from "@/components/mob/schedule_mob_tea";
@@ -146,6 +148,16 @@ export default new Router({
       path: '/main/stu_sel_course/stu_timetable',
       name: 'stu_timetable',
       component: stu_timetable
+    },
+    {
+      path: '/main_mob/stu_sel_course_mob',
+      name: 'stu_sel_course_mob',
+      component: stu_sel_course_mob
+    },
+    {
+      path: '/main_mob/tea_sel_course_mob',
+      name: 'tea_sel_course_mob',
+      component: tea_sel_course_mob
     },
     //成绩管理
     {
