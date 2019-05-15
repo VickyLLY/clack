@@ -225,7 +225,7 @@
       }
       else {
         let data = {
-          "year":2018,
+          "year":2019,
           "semester":1,
           "student_number": this.username//记得改变post的学生id
         };
