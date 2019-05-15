@@ -43,7 +43,7 @@ CLACK_TEACHER_NOT_EXISTS = {"error_code": 11, "error_message": "查询的教师�
 CLACK_COURSE_NOT_EXISTS = {"error_code": 12, "error_message": "查询的课程不存在"}
 
 # 学生的成绩score不存在
-CLACK_SCORE_NOT_EXISTS = {"error_code": 13, "error_message": "这名学生的成绩不存在"}
+CLACK_SCORE_NOT_EXISTS = {"error_code": 13, "error_message": "这名学生的成绩不存在或者数据库中存在两门同样的成绩"}
 
 # 老师没有教过这名学生
 CLACK_TEACH_NOT_EXISTS = {"error_code": 14, "error_message": "这名老师没有教过这名学生课"}
