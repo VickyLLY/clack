@@ -13,3 +13,6 @@ class Score(models.Model):
     score = models.IntegerField(default=0, null=False)
     comment = models.TextField(default='', null=True)
 
+    class Meta:
+        unique_together = ('student', 'course')
+
