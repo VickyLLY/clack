@@ -40,6 +40,7 @@
               <li><a href="javascript:void(0)" @click="edit_major">编辑专业信息</a></li>
               <li><a href="javascript:void(0)" @click="edit_department">编辑学院信息</a></li>
               <li><a href="javascript:void(0)" @click="edit_class">编辑班级信息</a></li>
+              <li><a href="javascript:void(0)" @click="add_notice">发布公告通知</a></li>
             </ul>
           </li>
             <li><a href="">毕业设计管理子系统</a></li>
@@ -202,6 +203,9 @@
       scoremng:function () {
         this.$router.push('/main/navigation')
       },
+      add_notice:function () {
+        this.$router.push('/main/background/add_notice')
+      }
     }
   }
 </script>

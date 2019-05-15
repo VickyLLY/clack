@@ -25,11 +25,11 @@ import tea_sel_course from "@/components/select_course/tea_sel_course";
 import stu_sel_course from "@/components/select_course/stu_sel_course";
 import stu_timetable from "@/components/select_course/stu_timetable";
 import course_table from "@/components/schedule/course_table";
+import add_notice from "@/components/background/add_notice";
 import teacher_course_table from "@/components/schedule/teacher_course_table";
 import add_semester from "@/components/schedule/add_semester";
 
 //成绩管理
-import Stu_navigation from '@/components/scoremng/stu_scoremng/Stu_navigation'
 import navigation from '@/components/scoremng/navigation'
 import Stu_score from '@/components/scoremng/stu_scoremng/stu_score'
 import Stu_evaluation from '@/components/scoremng/stu_scoremng/stu_evaluation'
@@ -192,6 +192,11 @@ export default new Router({
       path:'/main/stu_sel_course/attention',
       name:'attention',
       component:attention
+    },
+    {
+      path:'/main/background/add_notice',
+      name:"add_notice",
+      component:add_notice
     },
     {
       path:'/main/news_detail/:id',
