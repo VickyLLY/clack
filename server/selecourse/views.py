@@ -120,11 +120,6 @@ def sele_button(request):
         course = Course.objects.get(id=course_id)
     except Exception:
         return JsonResponse({**error_code.CLACK_COURSE_NOT_EXISTS})
-    #通过课程course找到其对应的DateAndClassroom信息
-    try:
-        date_info=DateAndClassroom.objects.get(course_id=course.id)
-    except Exception:
-        return JsonResponse({**error_code.CLACK_DATEANDCLASSROOM_NOT_EXISTS})
     #通过学生名找到对应的学生记录
     try:
         student=Student.objects.get(student_number=student_number)
@@ -133,49 +128,47 @@ def sele_button(request):
     #通过student.id过滤得到该学生所有的选课记录，即所有已选的课程
     seles=Selection.objects.filter(selection_student_id=student.id)
     if seles.count()==0:
-        course.course_allowance =course.course_allowance-1  # 课程余量减去1
-        try:
-            course.save()
-        except Exception:
-            return JsonResponse({**error_code.CLACK_ALLOWANCE_UPDATE_FAILED})
-        sele_cou =Selection(selection_course_id=course.id, selection_student_id=student.id)
-        # 存储到数据库中
-        try:
-            sele_cou.save()
-        except Exception:
-            return JsonResponse({**error_code.CLACK_SAVE_FAIL})
-        return JsonResponse({**error_code.CLACK_SUCCESS})
-    else:#判断课程是否出现冲突
-        flag=True
-        for sele in seles:
-            #通过每一条sele得到对应的course
-            cou=Course.objects.get(id=sele.selection_course_id)
-            #通过得到的课程cou，过滤得到其对应的DateAndClassroom
-            date_selected=DateAndClassroom.objects.get(course_id=cou.id)
-            if date_info.start_week <= date_selected.end_week and date_info.end_week >=date_selected.start_week:
-                #表示周数有交叉
-                if date_info.day_of_week==date_selected.day_of_week:
-                    #表示一周之内的星期有交叉
-                    if date_info.start <= date_selected.end and date_info.end >=date_selected.start:
-                        #一天之内上课节数有交叉
-                        flag=False #此时表明课程发生了冲突
-            if flag==False:
-                break
-        if flag and course.course_allowance>0:
-            #如果无冲突且课程余量不为0，则执行加入课程操作
-            course.course_allowance = course.course_allowance - 1  # 课程余量减去1
+        if course.course_allowance > 0:
+            course.course_allowance =course.course_allowance-1  # 课程余量减去1
             try:
                 course.save()
             except Exception:
-              return JsonResponse({**error_code.CLACK_ALLOWANCE_UPDATE_FAILED})
+                return JsonResponse({**error_code.CLACK_ALLOWANCE_UPDATE_FAILED})
             sele_cou =Selection(selection_course_id=course.id, selection_student_id=student.id)
             # 存储到数据库中
             try:
                 sele_cou.save()
             except Exception:
-              return JsonResponse({**error_code.CLACK_SAVE_FAIL})
+                return JsonResponse({**error_code.CLACK_SAVE_FAIL})
             return JsonResponse({**error_code.CLACK_SUCCESS})
-        else: #选课失败
+        else:
+            return JsonResponse({**error_code.CLACK_SELECTION_FAIL})
+    else:#判断课程是否出现冲突
+        flag=True
+        for sele in seles:
+            #通过每一条sele得到对应的course
+            cou=Course.objects.get(id=sele.selection_course_id)
+            if course.conflict(cou):#如果发生了冲突
+                flag=False
+                break
+        if flag:#没有发生冲突
+            if course.course_allowance>0:
+                    # 如果无冲突且课程余量不为0，则执行加入课程操作
+                    course.course_allowance = course.course_allowance - 1  # 课程余量减去1
+                    try:
+                        course.save()
+                    except Exception:
+                        return JsonResponse({**error_code.CLACK_ALLOWANCE_UPDATE_FAILED})
+                    sele_cou = Selection(selection_course_id=course.id, selection_student_id=student.id)
+                    # 存储到数据库中
+                    try:
+                        sele_cou.save()
+                    except Exception:
+                        return JsonResponse({**error_code.CLACK_SAVE_FAIL})
+                    return JsonResponse({**error_code.CLACK_SUCCESS})
+            else:
+                return JsonResponse({**error_code.CLACK_SELECTION_FAIL})
+        else:#发生了冲突
             return JsonResponse({**error_code.CLACK_SELECTION_FAIL})
 
 #学生在课程信息表中点击已选的课程后面的删除按钮进行删除选课操作
