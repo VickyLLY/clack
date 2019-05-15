@@ -218,18 +218,18 @@ def teacher_download(request):
     request_json = json.loads(request.body)
     year = request_json['year']
     semester = request_json['semester']
-    teacher_name=request_json['teacher_name']
-    course_name = request_json['course_name']
+    teacher_number=request_json['teacher_number']
+    course_id = request_json['course_id']
 
     try:
         #通过老师名得到对应的老师记录,默认老师不存在重名
-        teacher=Teacher.objects.get(teacher_name=teacher_name)
+        teacher=Teacher.objects.get(teacher_number=teacher_number)
     except Exception:
         return JsonResponse({**error_code.CLACK_TEACHER_NOT_EXISTS})
 
     # 通过课程名和老师id得到对应的course
     try:
-        course = Course.objects.get(course_name=course_name,course_teacher_id=teacher.id,year= year,semester =semester)
+        course = Course.objects.get(id=course_id)
     except Exception:
         return JsonResponse({**error_code.CLACK_COURSE_NOT_EXISTS})
     # 在selection中过滤得到
