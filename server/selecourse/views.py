@@ -218,18 +218,11 @@ def teacher_download(request):
     request_json = json.loads(request.body)
     year = request_json['year']
     semester = request_json['semester']
-    teacher_number=request_json['teacher_number']
     course_id = request_json['course_id']
 
+    # 通过课程id得到对应的course
     try:
-        #通过老师名得到对应的老师记录,默认老师不存在重名
-        teacher=Teacher.objects.get(teacher_number=teacher_number)
-    except Exception:
-        return JsonResponse({**error_code.CLACK_TEACHER_NOT_EXISTS})
-
-    # 通过课程名和老师id得到对应的course
-    try:
-        course = Course.objects.get(id=course_id)
+        course = Course.objects.get(id=course_id,course_year=year,course_semester=semester)
     except Exception:
         return JsonResponse({**error_code.CLACK_COURSE_NOT_EXISTS})
     # 在selection中过滤得到
@@ -254,7 +247,7 @@ def teacher_download(request):
     if len(student_list)==0:
         return JsonResponse({**error_code.CLACK_DOWNLOAD_FAILED})
     else:
-        return JsonResponse({**error_code.CLACK_SUCCESS, 'course_student_list': student_list})
+        return JsonResponse({**error_code.CLACK_SUCCESS, 'student_list': student_list})
 
 
 #向管理员提供各类报表
