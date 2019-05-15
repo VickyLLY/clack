@@ -11,8 +11,7 @@
           <div v-if="user_type==='0'">
             <ul class="nav nav-pills nav-stacked">
               <li class="active"><a href="#">学生成绩管理</a></li>
-              <li><a ><router-link :to="{name:''}">提交学生成绩</router-link></a></li>
-              <li><a ><router-link :to="{name:''}">修改学生成绩</router-link></a></li>
+              <li><a ><router-link :to="{name:'admin_score'}">查看学生成绩</router-link></a></li>
             </ul>
           </div>
           <!--    教师导航栏-->
