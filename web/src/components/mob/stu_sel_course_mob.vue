@@ -1,28 +1,7 @@
 <template>
   <div>
-    <nav class="navbar navbar-default navbar-fixed-top">
-      <a href="/main" class="navbar-brand"><strong>教务管理系统</strong></a>
-      <ul class="nav navbar-nav">
-        <li><a href="/main/stu_sel_course">自主选课</a></li>
-        <li><a href="javascript:void(0)" @click="enter_timetable">查看课表</a></li>
-        <li><a href="javascript:void(0)" @click="enter_attention">其他注意事项</a></li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li class="col-md-7">
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            {{realname}}
-            <b class="caret"></b>
-          </a>
-          <ul class="dropdown-menu">
-            <li><a href="#">修改个人信息</a></li>
-            <li><a href="/" @click="quit">注销</a></li>
-          </ul>
-        </li>
-      </ul>
-    </nav>
-    <br><br><br>
-    <table id="kblist_table" class="table table-hover table-bordered text-center timetable text-center">
+    <bar_mob>
+    <table id="kblist_table" class="table table-hover table-bordered text-center timetable">
       <tbody>
       <tr>
         <td colspan="4">
@@ -173,17 +152,40 @@
       </tr>
       </tbody>
     </table>
-
+    </bar_mob>
   </div>
 </template>
 
 <script>
-  import PC_bar from '../public/PC_bar'
+  import bar_mob from '../mob/bar_mob'
 
   export default {
-    name: "stu_timetable",
+    name: "stu_sel_course",
     components: {
-      PC_bar
+      bar_mob
+    },
+    data(){
+      return{
+        username:this.$cookie.get('username'),
+        realname:this.$cookie.get('realname'),
+        user_type: this.$cookie.get('user_type'),
+        course1: [],
+        course2: [],
+        course3: [],
+        course4: [],
+        course5: [],
+        course6: [],
+        course7: [],
+      }
+    },
+    created(){
+      this.$nextTick(function () {
+        $('#sidebarCollapse').on('click',
+          function () {
+            $('#sidebar').toggleClass('active');
+          }
+        )
+      })
     },
     methods:{
       enter_timetable: function () {
@@ -196,9 +198,9 @@
         this.$cookie.delete('username');
       },
       course_sort:function(){
-          this.course1.sort(function (a,b) {
-            return a.start-b.start;
-          });
+        this.course1.sort(function (a,b) {
+          return a.start-b.start;
+        });
         this.course2.sort(function (a,b) {
           return a.start-b.start;
         });
@@ -234,81 +236,81 @@
             if (res.body.course_list[i].length === 0) {
               break;
             } else {
-                let a = res.body.course_list[i].day_of_week;
-                let b = res.body.course_list[i];
-                if (a === 1) {
-                  this.course1.push({
-                    course_name: b.course_name,
-                    start: b.start,
-                    end: b.end,
-                    start_week: b.start_week,
-                    end_week: b.end_week,
-                    location: b.classroom_name,
-                    teacher:b.course_teacher,
-                  });
-                } else if (a === 2) {
-                  this.course2.push({
-                    course_name: b.course_name,
-                    start: b.start,
-                    end: b.end,
-                    start_week: b.start_week,
-                    end_week: b.end_week,
-                    location: b.classroom_name,
-                    teacher:b.course_teacher,
-                  });
-                } else if (a === 3) {
-                  this.course3.push({
-                    course_name: b.course_name,
-                    start: b.start,
-                    end: b.end,
-                    start_week: b.start_week,
-                    end_week: b.end_week,
-                    location: b.classroom_name,
-                    teacher:b.course_teacher,
-                  });
-                } else if (a === 4) {
-                  this.course4.push({
-                    course_name: b.course_name,
-                    start: b.start,
-                    end: b.end,
-                    start_week: b.start_week,
-                    end_week: b.end_week,
-                    location: b.classroom_name,
-                    teacher:b.course_teacher,
-                  });
-                } else if (a === 5) {
-                  this.course5.push({
-                    course_name: b.course_name,
-                    start: b.start,
-                    end: b.end,
-                    start_week: b.start_week,
-                    end_week: b.end_week,
-                    location: b.classroom_name,
-                    teacher:b.course_teacher,
-                  });
-                } else if (a === 6) {
-                  this.course6.push({
-                    course_name: b.course_name,
-                    start: b.start,
-                    end: b.end,
-                    start_week: b.start_week,
-                    end_week: b.end_week,
-                    location: b.classroom_name,
-                    teacher:b.course_teacher,
-                  });
-                } else if (a === 7) {
-                  this.course7.push({
-                    course_name: b.course_name,
-                    start: b.start,
-                    end: b.end,
-                    start_week: b.start_week,
-                    end_week: b.end_week,
-                    location: b.classroom_name,
-                    teacher:b.course_teacher,
-                  });
-                }
+              let a = res.body.course_list[i].day_of_week;
+              let b = res.body.course_list[i];
+              if (a === 1) {
+                this.course1.push({
+                  course_name: b.course_name,
+                  start: b.start,
+                  end: b.end,
+                  start_week: b.start_week,
+                  end_week: b.end_week,
+                  location: b.classroom_name,
+                  teacher:b.course_teacher,
+                });
+              } else if (a === 2) {
+                this.course2.push({
+                  course_name: b.course_name,
+                  start: b.start,
+                  end: b.end,
+                  start_week: b.start_week,
+                  end_week: b.end_week,
+                  location: b.classroom_name,
+                  teacher:b.course_teacher,
+                });
+              } else if (a === 3) {
+                this.course3.push({
+                  course_name: b.course_name,
+                  start: b.start,
+                  end: b.end,
+                  start_week: b.start_week,
+                  end_week: b.end_week,
+                  location: b.classroom_name,
+                  teacher:b.course_teacher,
+                });
+              } else if (a === 4) {
+                this.course4.push({
+                  course_name: b.course_name,
+                  start: b.start,
+                  end: b.end,
+                  start_week: b.start_week,
+                  end_week: b.end_week,
+                  location: b.classroom_name,
+                  teacher:b.course_teacher,
+                });
+              } else if (a === 5) {
+                this.course5.push({
+                  course_name: b.course_name,
+                  start: b.start,
+                  end: b.end,
+                  start_week: b.start_week,
+                  end_week: b.end_week,
+                  location: b.classroom_name,
+                  teacher:b.course_teacher,
+                });
+              } else if (a === 6) {
+                this.course6.push({
+                  course_name: b.course_name,
+                  start: b.start,
+                  end: b.end,
+                  start_week: b.start_week,
+                  end_week: b.end_week,
+                  location: b.classroom_name,
+                  teacher:b.course_teacher,
+                });
+              } else if (a === 7) {
+                this.course7.push({
+                  course_name: b.course_name,
+                  start: b.start,
+                  end: b.end,
+                  start_week: b.start_week,
+                  end_week: b.end_week,
+                  location: b.classroom_name,
+                  teacher:b.course_teacher,
+                });
               }
             }
+          }
           this.course_sort();
           if (this.course1.length === 0) {
             document.getElementById('xq_1').style.display = 'none';
@@ -335,22 +337,11 @@
       }
 
     },
-    data() {
-      return {
-        realname: this.$cookie.get('realname'),
-        username: this.$cookie.get('username'),
-        course1: [],
-        course2: [],
-        course3: [],
-        course4: [],
-        course5: [],
-        course6: [],
-        course7: [],
-      }
-    },
   }
 </script>
 
 <style scoped>
-
+  *{
+    color: black;
+  }
 </style>
