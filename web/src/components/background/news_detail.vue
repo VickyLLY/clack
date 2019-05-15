@@ -22,7 +22,7 @@
   </div>
 </template>
 <script>
-  import PCbar from '../public/Pc_bar'
+  import PCbar from '../public/PC_bar'
   export default {
     data(){
       return {
