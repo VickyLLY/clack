@@ -50,15 +50,39 @@
 </template>
 
 <script>
-    export default {
-      name: "teacher_upload",
-      data() {
-        return {
-          teacher_number: null,
-          list: null,
-          year: '',
-          semester: '',
-          score:[],
+  export default {
+    name: "teacher_upload",
+    data() {
+      return {
+        teacher_number: null,
+        list: null,
+        year: '',
+        semester: '',
+        score:[],
+      }
+    },
+    methods: {
+      tea_find_stu: function () {
+        if (this.year == "" || this.semester == "") {
+          alert("请选择学年和学期")
+        } else {
+          let data = {
+            'year': this.year,
+            'semester': this.semester,
+            'teacher_number': this.$cookie.get('user_teacher_number')
+          };
+          /*接口请求*/
+          this.$http.post(this.Global_Api + '/scoremng/teacher_check_uncommitted_score/', data).then((res) => {
+            if (res.body.error_code !== 0) {
+              alert("error!  " + res.body.error_message)
+            }
+            else {
+              this.list = res.body.uncommitted_student_score_list;
+              if(this.list.length === 0){
+                alert("本学期您没有教授课程！");
+              }
+            }
+          });
         }
       },
       methods: {
