@@ -97,6 +97,27 @@ def dst_list_approval(request):
 
     return JsonResponse({**error_code.CLACK_SUCCESS, 'dst_list': result_list})
 
+@admin_required
+def dst_list_need_approval(request):
+    request_json = json.loads(request.body)
+    dsts = entity.models.DissertationTopic.objects.filter(dissertation_approval=False)
+    result_list=[]
+    for dst in dsts:
+        tname=list(entity.models.Teacher.objects.filter(id=dst.dissertation_tnum_id))
+        tt=tname[0]
+        result_list_te = [{
+            'dissertation_id': dst.id,
+            'dissertation_title': dst.dissertation_title,
+            'dissertation_content': dst.dissertation_content,
+            'dissertation_requirement': dst.dissertation_requirement,
+            'dissertation_capacity': dst.dissertation_capacity,
+            'dissertation_pub_time': dst.dissertation_pub_time,
+            'dissertation_teacher': tt.teacher_name,
+        } ]
+        result_list = result_list + result_list_te
+
+    return JsonResponse({**error_code.CLACK_SUCCESS, 'dst_list': result_list})
+
 @login_required
 def teacher_dst_list(request):
     request_json = json.loads(request.body)
