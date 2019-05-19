@@ -471,3 +471,24 @@ def del_select(request):
     result.delete()
     return JsonResponse({**error_code.CLACK_SUCCESS})
 
+@login_required
+def dst_adjust(request):
+    student_list = dst.models.Application.objects.all()
+    for st in student_list:
+        ex = dst.models.Determination.objects.filter(student_id=st.student_id)
+        if(ex.count()>0):
+            continue
+        while(True) :
+            dst_list = entity.models.DissertationTopic.objects.filter(dissertation_approval=True).order_by('?')[:1]
+            ds = dst_list[0]
+            ex = dst.models.Determination.objects.filter(dissertation_id=ds.id)
+            mx = ds.dissertation_capacity
+            if (ex.count()>=mx):
+                continue
+            temp = dst.models.Determination(
+                dissertation_id=ds.id,
+                student_id=st.student_id,
+            )
+            temp.save()
+            break
+    return JsonResponse({**error_code.CLACK_SUCCESS})
