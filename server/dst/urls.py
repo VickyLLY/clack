@@ -30,4 +30,5 @@ urlpatterns = [
     path(r'get_flag', views.get_flag, name="get_flag"),
     path(r'return_flag',views.return_flag, name='return_flag'),
     path(r'dst_adjust', views.dst_adjust, name='dst_adjust'),
+    path(r'stu_dst_list_temp', views.stu_dst_list_temp, name='stu_dst_list_temp'),
 ]
