@@ -408,7 +408,7 @@
         this.$cookie.delete('username');
       },
       add_course: function (id, stu_name) {
-        //alert(stu_name+" select  "+id+this.stu_sel)/*学生选课*/
+        // alert(stu_name+" select  "+id+this.stu_sel)/*学生选课*/
         let add_class = {
           student_number: this.username,
           course_id: id
