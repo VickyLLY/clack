@@ -136,7 +136,7 @@ def sele_button(request):
         return JsonResponse({**error_code.CLACK_STUDENT_NOT_EXISTS})
     #通过student.id过滤得到该学生所有的选课记录，即所有已选的课程
     seles=Selection.objects.filter(selection_student_id=student.id)
-    if seles.count()==0:
+    if not seles.exists():
         if course.course_allowance > 0:
             course.course_allowance =course.course_allowance-1  # 课程余量减去1
             try:
