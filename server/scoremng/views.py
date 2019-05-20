@@ -759,3 +759,61 @@ def teacher_upload(request):
                             }
                 student_score_list.append(student_score)
     return JsonResponse({**error_code.CLACK_SUCCESS, 'student_score_list': student_score_list})
+
+
+# 查询这个学生学分的获得情况
+def credit_inquiry(request):
+    request_json = json.loads(request.body)
+    student_number = request_json['student_number']
+    try:
+        student = Student.objects.get(student_number=student_number)
+    except Exception:
+        return JsonResponse({**error_code.CLACK_STUDENT_NOT_EXISTS})
+
+    score_list = scoremng.models.Score.objects.filter(student_id=student.id)
+
+    # 必修课需要获得的学分和已经获得了的学分 课程代码是0
+    required_course_credit_gained_sum = 0
+    required_course_credit_aim = 100
+
+    # 选修课需要获得的学分和已经获得了的学分 课程代码是1
+    optional_course_credit_gained_sum = 0
+    optional_course_credit_aim = 50
+
+    # 辅修课需要获得的学分和已经获得了的学分 课程代码是2
+    minor_course_credit_gained_sum = 0
+    minor_course_credit_aim = 20
+
+    for score_item in score_list:
+        course_id = score_item.course_id
+        try:
+            course = Course.objects.get(id=course_id)
+        except Exception:
+            return JsonResponse({**error_code.CLACK_COURSE_NOT_EXISTS})
+        if course.course_type == 0:  # 这门课是必修
+            required_course_credit_gained_sum += course.course_credit
+        elif course.course_type == 1:  # 这门课是选修
+            optional_course_credit_gained_sum += course.course_credit
+        elif course.course_type == 2:  # 这门课是辅修
+            minor_course_credit_gained_sum += course.course_credit
+
+    # 必修课
+    required_course = {
+        'credit_type': 0,
+        'credit_gained_sum': required_course_credit_gained_sum,
+        'credit_aim': required_course_credit_aim,
+    }
+    # 选修课
+    optional_course = {
+        'credit_type': 0,
+        'credit_gained_sum': optional_course_credit_gained_sum,
+        'credit_aim': optional_course_credit_aim,
+    }
+    # 辅修课
+    minor_course = {
+        'credit_type': 0,
+        'credit_gained_sum': minor_course_credit_gained_sum,
+        'credit_aim': minor_course_credit_aim,
+    }
+    credits_list = [required_course, optional_course, minor_course]
+    return JsonResponse({**error_code.CLACK_SUCCESS, 'credits_list': credits_list})
