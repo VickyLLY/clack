@@ -5,7 +5,7 @@ import json
 import jsonschema
 
 # 开启debug模式后login_required,admin_required都会失效
-debug_mode = False
+debug_mode = True
 
 
 def login_required(func):

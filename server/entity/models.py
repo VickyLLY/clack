@@ -105,7 +105,7 @@ class Course(models.Model):
         if course1.id == self.id:
             return False
         for cdc in self.dateandclassroom_set.all():
-            for cdc1 in course1.dateandclassroom_set():
+            for cdc1 in course1.dateandclassroom_set.all():
                 if cdc.conflict(cdc1):
                     return True
         return False
