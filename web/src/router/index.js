@@ -65,6 +65,10 @@ export default new Router({
       component: main_mob,
     },
     {
+      path: '/graduation_mob',
+      component: graduation_mob,
+    },
+    {
       path: '/main',
       name: 'Main',
       component: Main
