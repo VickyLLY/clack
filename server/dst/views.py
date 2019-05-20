@@ -140,29 +140,6 @@ def stu_dst_list(request):
     return JsonResponse({**error_code.CLACK_SUCCESS, 'stu_dst_list': result_list})
 
 @login_required
-def stu_dst_list_temp(request):
-    request_json = json.loads(request.body)
-    query_result = list(
-        entity.models.User.objects.filter(user_name=request_json['user_name']))
-    user = query_result[0]
-    snum = user.user_student_id
-    dd=dst.models.Application.objects.filter(student_id=snum)
-    tnum=dd[0].dissertation_id
-    dsts = entity.models.DissertationTopic.objects.filter(id=tnum)
-    tname = list(entity.models.Teacher.objects.filter(id=dsts[0].dissertation_tnum_id))
-    tt = tname[0]
-    result_list = [{
-        'dissertation_id': dsta.id,
-        'dissertation_title': dsta.dissertation_title,
-        'dissertation_content': dsta.dissertation_content,
-        'dissertation_requirement': dsta.dissertation_requirement,
-        'dissertation_capacity': dsta.dissertation_capacity,
-        'dissertation_pub_time': dsta.dissertation_pub_time,
-        'dissertation_teacher': tt.teacher_name,
-    } for dsta in dsts]
-    return JsonResponse({**error_code.CLACK_SUCCESS, 'stu_dst_list': result_list})
-
-@login_required
 def stu_view_dst(request):
     request_json = json.loads(request.body)
     dstid=request_json['dissertation_id']
@@ -249,7 +226,7 @@ def dst_approval(request):
 
     return JsonResponse({**error_code.CLACK_SUCCESS})
 
-# 教师查看某课题的选择情况
+# 教师查看某课题的选择情况(临时表）
 @login_required
 def view_selected(request):
     request_json = json.loads(request.body)
@@ -258,18 +235,39 @@ def view_selected(request):
     tnum = user.user_teacher_id
     dsts = entity.models.DissertationTopic.objects.filter(dissertation_tnum_id=tnum)
     result_list = []
+    t = dst.models.Application.objects.filter(dissertation_id=dsts[0].id)
     for dsd in dsts:
-        tname = list(dst.models.Application.objects.filter(id=dsd.dissertation_tnum_id))
         result_list_te = [{
             'id':dsd.id,
             'title': dsd.dissertation_title,
             'fixed_capacity': dsd.dissertation_capacity,
-            'now_capacity': len(tname),
+            'now_capacity': len(t),
         }]
         result_list = result_list + result_list_te
 
     return JsonResponse({**error_code.CLACK_SUCCESS, 'view_list': result_list})
 
+
+# 教师查看某课题的选择情况(确定表）
+@login_required
+def view_selected_d(request):
+    request_json = json.loads(request.body)
+    query_result = list(entity.models.User.objects.filter(user_name=request_json['user_name']))
+    user = query_result[0]
+    tnum = user.user_teacher_id
+    dsts = entity.models.DissertationTopic.objects.filter(dissertation_tnum_id=tnum)
+    result_list = []
+    t = dst.models.Determination.objects.filter(dissertation_id=dsts[0].id)
+    for dsd in dsts:
+        result_list_te = [{
+            'id':dsd.id,
+            'title': dsd.dissertation_title,
+            'fixed_capacity': dsd.dissertation_capacity,
+            'now_capacity': len(t),
+        }]
+        result_list = result_list + result_list_te
+
+    return JsonResponse({**error_code.CLACK_SUCCESS, 'view_list': result_list})
 
 # 教师查看所有选择该课题的学生
 @login_required
@@ -571,3 +569,26 @@ def dst_adjust(request):
             temp.save()
             break
     return JsonResponse({**error_code.CLACK_SUCCESS})
+
+@login_required
+def stu_dst_list_temp(request):
+    request_json = json.loads(request.body)
+    query_result = list(
+        entity.models.User.objects.filter(user_name=request_json['user_name']))
+    user = query_result[0]
+    snum = user.user_student_id
+    dd=dst.models.Application.objects.filter(student_id=snum)
+    tnum=dd[0].dissertation_id
+    dsts = entity.models.DissertationTopic.objects.filter(id=tnum)
+    tname = list(entity.models.Teacher.objects.filter(id=dsts[0].dissertation_tnum_id))
+    tt = tname[0]
+    result_list = [{
+        'dissertation_id': dsta.id,
+        'dissertation_title': dsta.dissertation_title,
+        'dissertation_content': dsta.dissertation_content,
+        'dissertation_requirement': dsta.dissertation_requirement,
+        'dissertation_capacity': dsta.dissertation_capacity,
+        'dissertation_pub_time': dsta.dissertation_pub_time,
+        'dissertation_teacher': tt.teacher_name,
+    } for dsta in dsts]
+    return JsonResponse({**error_code.CLACK_SUCCESS, 'stu_dst_list': result_list})
