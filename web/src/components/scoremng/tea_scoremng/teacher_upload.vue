@@ -50,15 +50,38 @@
 </template>
 
 <script>
-    export default {
-      name: "teacher_upload",
-      data() {
-        return {
-          teacher_number: null,
-          list: null,
-          year: '',
-          semester: '',
-          score:[],
+  export default {
+    name: "teacher_upload",
+    data() {
+      return {
+        teacher_number: null,
+        list: null,
+        year: '',
+        semester: '',
+        score: [],
+      }
+    },
+    methods: {
+      tea_find_stu: function () {
+        if (this.year == "" || this.semester == "") {
+          alert("请选择学年和学期")
+        } else {
+          let data = {
+            'year': this.year,
+            'semester': this.semester,
+            'teacher_number': this.$cookie.get('user_teacher_number')
+          };
+          /*接口请求*/
+          this.$http.post(this.Global_Api + '/scoremng/teacher_check_uncommitted_score/', data).then((res) => {
+            if (res.body.error_code !== 0) {
+              alert("error!  " + res.body.error_message)
+            } else {
+              this.list = res.body.uncommitted_student_score_list;
+              if (this.list.length === 0) {
+                alert("本学期您没有教授课程！");
+              }
+            }
+          });
         }
       },
       methods: {
@@ -75,47 +98,45 @@
             this.$http.post(this.Global_Api + '/scoremng/teacher_check_scores/', data).then((res) => {
               if (res.body.error_code !== 0) {
                 alert("error!  " + res.body.error_message)
-              }
-              else {
+              } else {
                 this.list = res.body.student_score_list;
-                if(this.list.length === 0){
+                if (this.list.length === 0) {
                   alert("本学期您没有教授课程！");
                 }
               }
             });
           }
         },
-        submit_score:function (each,index) {
-          if(this.score[index] != ""){
+        submit_score: function (each, index) {
+          if (this.score[index] != "") {
             let data = {
-              'course_name':each.course_name,
-              'course_credit':each.course_credit,
-              'course_type':each.course_type,
-              'course_year':this.year,
-              'course_semester':this.semester,
-              'student_number':each.student_number,
-              'student_name':each.student_name,
-              'student_banji_name':each.student_banji_name,
-              'course_score':this.score[index],
+              'course_name': each.course_name,
+              'course_credit': each.course_credit,
+              'course_type': each.course_type,
+              'course_year': this.year,
+              'course_semester': this.semester,
+              'student_number': each.student_number,
+              'student_name': each.student_name,
+              'student_banji_name': each.student_banji_name,
+              'course_score': this.score[index],
               'teacher_number': this.$cookie.get('user_teacher_number'),
             };
             /*接口请求*/
             this.$http.post(this.Global_Api + '/scoremng/teacher_upload/', data).then((res) => {
               if (res.body.error_code !== 0) {
                 alert("error!  " + res.body.error_message)
-              }
-              else {
+              } else {
                 this.list = res.body.student_score_list;
                 alert("提交成功！");
               }
             });
-          }
-          else{
+          } else {
             alert("请填写学生成绩！");
           }
         },
       },
     }
+  }
 </script>
 
 <style scoped>

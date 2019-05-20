@@ -172,8 +172,11 @@
     },
     methods:{
       confirm:function(index){
-        this.$router.push('/main/man_sel_course/man_view_msg')
+        this.$router.push({name: 'man_view_msg', params: {msg: this.update_courseList[index]}})
         this.data=this.update_courseList[index]
+        console.log("赋值")
+        console.log(this.data)
+        console.log("报表接受数据")
       },
       Submit:function(){
         this.$http.post(this.Global_Api + '/selecourse/set_year_semester', {
