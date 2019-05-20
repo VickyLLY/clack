@@ -140,6 +140,29 @@ def stu_dst_list(request):
     return JsonResponse({**error_code.CLACK_SUCCESS, 'stu_dst_list': result_list})
 
 @login_required
+def stu_dst_list_temp(request):
+    request_json = json.loads(request.body)
+    query_result = list(
+        entity.models.User.objects.filter(user_name=request_json['user_name']))
+    user = query_result[0]
+    snum = user.user_student_id
+    dd=dst.models.Application.objects.filter(student_id=snum)
+    tnum=dd[0].dissertation_id
+    dsts = entity.models.DissertationTopic.objects.filter(id=tnum)
+    tname = list(entity.models.Teacher.objects.filter(id=dsts[0].dissertation_tnum_id))
+    tt = tname[0]
+    result_list = [{
+        'dissertation_id': dsta.id,
+        'dissertation_title': dsta.dissertation_title,
+        'dissertation_content': dsta.dissertation_content,
+        'dissertation_requirement': dsta.dissertation_requirement,
+        'dissertation_capacity': dsta.dissertation_capacity,
+        'dissertation_pub_time': dsta.dissertation_pub_time,
+        'dissertation_teacher': tt.teacher_name,
+    } for dsta in dsts]
+    return JsonResponse({**error_code.CLACK_SUCCESS, 'stu_dst_list': result_list})
+
+@login_required
 def stu_view_dst(request):
     request_json = json.loads(request.body)
     dstid=request_json['dissertation_id']
@@ -183,17 +206,17 @@ def view_published_dissertation(request):
 @login_required
 def view_detail(request):
     request_json = json.loads(request.body)
-    result = entity.models.DissertationTopic.objects.filter(id=request_json['dissertation_id'])
+    tid = request_json['dissertation_id']
+    result = entity.models.DissertationTopic.objects.filter(id=tid)
     dlist = [{
-        'dissertation_id': result[0].id,
-        'dissertation_title': result[0].dissertation_title,
-        'dissertation_content': result[0].dissertation_content,
-        'dissertation_requirement': result[0].dissertation_requirement,
-        'dissertation_capacity': result[0].dissertation_capacity,
-        'dissertation_pub_time': result[0].dissertation_pub_time,
-        'dissertation_approval': result[0].dissertation_approval,
-        'dissertation_tnum':result[0].dissertation_tnum_id
-    }]
+            'dissertation_id': dsta.id,
+            'dissertation_title': dsta.dissertation_title,
+            'dissertation_content': dsta.dissertation_content,
+            'dissertation_requirement': dsta.dissertation_requirement,
+            'dissertation_capacity': dsta.dissertation_capacity,
+            'dissertation_pub_time': dsta.dissertation_pub_time,
+            'dissertation_teacher': tt.teacher_name,
+        } for d in result]
     return JsonResponse({'dlist': dlist})
 
 # 老师修改课题
@@ -205,13 +228,14 @@ def change_dst(request):
     new_content = request_json['dissertation_content']
     new_requirement = request_json['dissertation_requirement']
     new_capacity = request_json['dissertation_capacity']
-    new_time = request_json['dissertation_pub_time']
+    # new_time = request_json['dissertation_pub_time']
+    time = timezone.now()
 
     entity.models.DissertationTopic.objects.filter(id=request_json["dissertation_id"]).update(dissertation_title=new_title)
     entity.models.DissertationTopic.objects.filter(id=request_json["dissertation_id"]).update(dissertation_content=new_content)
     entity.models.DissertationTopic.objects.filter(id=request_json["dissertation_id"]).update(dissertation_requirement=new_requirement)
     entity.models.DissertationTopic.objects.filter(id=request_json["dissertation_id"]).update(dissertation_capacity=new_capacity)
-    entity.models.DissertationTopic.objects.filter(id=request_json["dissertation_id"]).update(dissertation_pub_time=new_time)
+    entity.models.DissertationTopic.objects.filter(id=request_json["dissertation_id"]).update(dissertation_pub_time=time)
     entity.models.DissertationTopic.objects.filter(id=request_json["dissertation_id"]).update(dissertation_approval=False)
 
     return JsonResponse({**error_code.CLACK_SUCCESS})
@@ -229,8 +253,7 @@ def dst_approval(request):
 @login_required
 def view_selected(request):
     request_json = json.loads(request.body)
-    query_result = list(
-        entity.models.User.objects.filter(user_name=request_json['user_name']))
+    query_result = list(entity.models.User.objects.filter(user_name=request_json['user_name']))
     user = query_result[0]
     tnum = user.user_teacher_id
     dsts = entity.models.DissertationTopic.objects.filter(dissertation_tnum_id=tnum)
@@ -238,6 +261,7 @@ def view_selected(request):
     for dsd in dsts:
         tname = list(dst.models.Application.objects.filter(id=dsd.dissertation_tnum_id))
         result_list_te = [{
+            'id':dsd.id,
             'title': dsd.dissertation_title,
             'fixed_capacity': dsd.dissertation_capacity,
             'now_capacity': len(tname),
@@ -254,10 +278,11 @@ def view_student(request):
     dsts = dst.models.Application.objects.filter(dissertation_id=request_json['dissertation_id'])
     result_list = []
     for dsd in dsts:
-        stu_number = dsd.student_id
-        m = entity.models.Student.objects.filter(id=stu_number)
+        stu_id = dsd.student_id
+        m = entity.models.Student.objects.filter(id=stu_id)
         name = m[0].student_name
         banji = m[0].student_banji.id
+        stu_number = m[0].student_number
         major_n = entity.models.Banji.objects.filter(id=banji)
         major_num = major_n[0].id
         mmm = entity.models.Banji.objects.filter(id=major_num)
@@ -268,7 +293,7 @@ def view_student(request):
             'major_name': major,
         }]
         result_list = result_list + result_list_te
-    return JsonResponse({'stu_list': result_list})
+    return JsonResponse({**error_code.CLACK_SUCCESS, 'stu_list': result_list})
 
 # 教师上传学生论文的成绩和评语
 @login_required
@@ -277,16 +302,24 @@ def upload_score(request):
     snum = request_json['student_number']
     stu = entity.models.Student.objects.filter(student_number=snum)
     sid=stu[0].id
+    id = request_json['dissertation_id']
+    score = request_json['score']
+    comment = request_json['comment']
     sc = dst.models.Grade(
-        grade_dissertation_id=request_json['dissertation_id'],
+        grade_dissertation_id=id,
         grade_student_id=sid,
-        grade_grade=request_json['score'],
-        grade_comment=request_json['comment']
+        grade_grade=score,
+        grade_comment=comment
     )
-    try:
-        sc.save()
-    except Exception as e:
-        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": str(e)})
+    temp = dst.models.Grade.objects.filter(grade_student_id=sid ,grade_dissertation_id=id)
+    if len(temp)>0:
+        dst.models.Grade.objects.filter(grade_student_id=sid,grade_dissertation_id=id).update(grade_grade=score)
+        dst.models.Grade.objects.filter(grade_student_id=sid ,grade_dissertation_id=id).update(grade_comment=comment)
+    else:
+        try:
+            sc.save()
+        except Exception as e:
+            return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": str(e)})
     return JsonResponse({**error_code.CLACK_SUCCESS})
 
 # 教师下载学生的论文文件
@@ -295,7 +328,9 @@ def download(request):
     # 获取当前文件位置，用于拼接绝对路径
     request_json = json.loads(request.body)
     snum = request_json['student_number']
-    result = dst.models.DissertationFile.objects.filter(stu_number=sum)
+    stu = entity.models.Student.objects.filter(student_number=snum)
+    sid = stu[0].id
+    result = dst.models.DissertationFile.objects.filter(student_id=sid)
     result = str(result[0].dissertation_file_path)
     ori_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     ori_path = ori_path + str(result)
@@ -317,9 +352,11 @@ def define_stu(request):
     request_json = json.loads(request.body)
     dnum = request_json['dissertation_number']
     snum = request_json['student_number']
+    stu = entity.models.Student.objects.filter(student_number=snum)
+    sid = stu[0].id
     temp = dst.models.Determination(
         dissertation_id=dnum,
-        student_id=snum,
+        student_id=sid,
     )
     try:
         temp.save()
@@ -367,14 +404,13 @@ def select_dst_teacher_name(request):
                 'dissertation_requirement': dst.dissertation_requirement,
                 'dissertation_capacity': dst.dissertation_capacity,
                 'dissertation_approval': dst.dissertation_approval,
-                'dissertation_tnum_id': dst.dissertation_tnum_id,
-                'teacher_name': teacher.teacher_name,
+                'dissertation_pub_time': dst.dissertation_pub_time,
+                'dissertation_teacher': teacher.teacher_name,
             }]
             if(dst.dissertation_approval==True):
                 result_list1 = result_list1 + result_list
         m = m + 1
     return JsonResponse({**error_code.CLACK_SUCCESS, 'select_dst_teacher_name_list': result_list1})
-
 
 @login_required
 def select_dst_dst_title(request):
@@ -391,12 +427,13 @@ def select_dst_dst_title(request):
             'dissertation_requirement': dst.dissertation_requirement,
             'dissertation_capacity': dst.dissertation_capacity,
             'dissertation_approval': dst.dissertation_approval,
-            'dissertation_tnum_id': dst.dissertation_tnum_id,
-            'teacher_name': ss[0].teacher_name,
+            'dissertation_pub_time': dst.dissertation_pub_time,
+            'dissertation_teacher': ss[0].teacher_name,
         }]
         if(dst.dissertation_approval==True):
             result_list1 = result_list1 + result_list
     return JsonResponse({**error_code.CLACK_SUCCESS, 'select_dst_dst_title': result_list1})
+
 
 @login_required
 def upload_file(request):
@@ -450,3 +487,87 @@ def del_select(request):
     result.delete()
     return JsonResponse({**error_code.CLACK_SUCCESS})
 
+# 查看已确定学生信息
+@login_required
+def view_determination(request):
+    request_json = json.loads(request.body)
+    dsts = dst.models.Determination.objects.filter(dissertation_id=request_json['dissertation_id'])
+    result_list = []
+    for dsd in dsts:
+        stu_id = dsd.student_id
+        m = entity.models.Student.objects.filter(id=stu_id)
+        name = m[0].student_name
+        banji = m[0].student_banji.id
+        stu_number = m[0].student_number
+        major_n = entity.models.Banji.objects.filter(id=banji)
+        major_num = major_n[0].id
+        mmm = entity.models.Banji.objects.filter(id=major_num)
+        major = mmm[0].banji_major.major_name
+        result_list_te = [{
+            'student_number': stu_number,
+            'student_name': name,
+            'major_name': major,
+        }]
+        result_list = result_list + result_list_te
+    return JsonResponse({'stu_list': result_list})
+
+@login_required
+def view_time(request):
+        time = timezone.now().month
+        return JsonResponse({**error_code.CLACK_POST_REQUIRED,"time":time})
+
+@admin_required
+def dst_list_need_approval(request):
+    request_json = json.loads(request.body)
+    dsts = entity.models.DissertationTopic.objects.filter(dissertation_approval=False)
+    result_list=[]
+    for dst in dsts:
+        tname=list(entity.models.Teacher.objects.filter(id=dst.dissertation_tnum_id))
+        tt=tname[0]
+        result_list_te = [{
+            'dissertation_id': dst.id,
+            'dissertation_title': dst.dissertation_title,
+            'dissertation_content': dst.dissertation_content,
+            'dissertation_requirement': dst.dissertation_requirement,
+            'dissertation_capacity': dst.dissertation_capacity,
+            'dissertation_pub_time': dst.dissertation_pub_time,
+            'dissertation_teacher': tt.teacher_name,
+        } ]
+        result_list = result_list + result_list_te
+
+    return JsonResponse({**error_code.CLACK_SUCCESS, 'dst_list': result_list})
+
+@admin_required
+def get_flag(request):
+    request_json = json.loads(request.body)
+    flag = dst.models.Flag.objects.filter(id=1).update(flag=request_json["flag"])
+    return JsonResponse({**error_code.CLACK_POST_REQUIRED})
+
+@login_required
+def return_flag(request):
+    request_json = json.loads(request.body)
+    res = dst.models.Flag.objects.filter(id=1)
+    flag = res[0].flag
+    return JsonResponse({**error_code.CLACK_POST_REQUIRED, 'flag': flag})
+
+@login_required
+def dst_adjust(request):
+    student_list = dst.models.Application.objects.all()
+    for st in student_list:
+        ex = dst.models.Determination.objects.filter(student_id=st.student_id)
+        if(ex.count()>0):
+            continue
+        while(True) :
+            dst_list = entity.models.DissertationTopic.objects.filter(dissertation_approval=True).order_by('?')[:1]
+            ds = dst_list[0]
+            ex = dst.models.Determination.objects.filter(dissertation_id=ds.id)
+            mx = ds.dissertation_capacity
+            if (ex.count()>=mx):
+                continue
+            temp = dst.models.Determination(
+                dissertation_id=ds.id,
+                student_id=st.student_id,
+            )
+            temp.save()
+            break
+    return JsonResponse({**error_code.CLACK_SUCCESS})
