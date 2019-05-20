@@ -157,9 +157,8 @@ def sele_button(request):
         for sele in seles:
             #通过每一条sele得到对应的course
             cou=Course.objects.get(id=sele.selection_course_id)
-            if course.conflict(cou):#如果发生了冲突
+            if cou.id==course.id or course.conflict(cou):#如果发生了冲突
                 flag=False
-                break
         if flag:#没有发生冲突
             if course.course_allowance>0:
                     # 如果无冲突且课程余量不为0，则执行加入课程操作
