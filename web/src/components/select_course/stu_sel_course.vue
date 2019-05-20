@@ -408,12 +408,13 @@
         this.$cookie.delete('username');
       },
       add_course: function (id, stu_name) {
-        // alert(stu_name+" select  "+id+this.stu_sel)/*学生选课*/
+        // alert(stu_name+" select  "+id+" "+this.stu_sel)/*学生选课*/
         let add_class = {
           student_number: this.username,
           course_id: id
         };
         this.$http.post(this.Global_Api + '/selecourse/sele_button', add_class).then((res) => {
+          // alert("add success call");
           if (res.body.error_code == 0) {
             this.stu_sel.push(id)
             alert("选课成功")
@@ -430,17 +431,19 @@
             }
           }*/
           } else {
-            alert("选课失败")
+            alert("选课失败");
+            alert(res.body.error_code+res.body.error_message);
           }
         })
       },
       del_course: function (id, stu_name) {
-        //alert(stu_name+" delete  "+id)/*删除所选课程*/
+        // alert(stu_name+" delete  "+id+" "+this.stu_sel);/*删除所选课程*/
         let del_class = {
           student_number: this.username,
           course_id: id
         };
         this.$http.post(this.Global_Api + '/selecourse/dele_button', del_class).then((res) => {
+          // alert("delete success call");
           if (res.body.error_code == 0) {
             for (var i = 0; i < this.stu_sel.length; i++) {
               if (this.stu_sel[i] == id) {
@@ -461,7 +464,8 @@
             }
           }*/
           } else {
-            alert("退课失败")
+            alert("退课失败");
+            alert(res.body.error_code+":"+res.body.error_message);
           }
         })
 
