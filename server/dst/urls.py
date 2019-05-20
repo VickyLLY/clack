@@ -13,6 +13,7 @@ urlpatterns = [
     path(r'view_detail', views.view_detail, name='view_detail'),
     path(r'change_dst', views.change_dst, name='change_dst'),
     path(r'view_selected', views.view_selected, name='view_selected'),
+    path(r'view_selected_d', views.view_selected_d, name='view_selected_d'),
     path(r'view_student', views.view_student, name='view_student'),
     path(r'upload_score', views.upload_score, name='upload_score'),
     path(r'download', views.download, name='download'),
