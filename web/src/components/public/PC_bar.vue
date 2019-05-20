@@ -43,7 +43,23 @@
               <li><a href="javascript:void(0)" @click="add_notice">发布公告通知</a></li>
             </ul>
           </li>
-            <li><a href="">毕业设计管理子系统</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                毕业设计管理子系统
+                <b class="caret"></b>
+              </a>
+              <ul class="dropdown-menu">
+                <!--0 admin ,1 teacher, 2 student-->
+                <li><a href="javascript:void(0)" v-if="user_type===2 && flag===2" @click="topic_select">选择课题</a></li>
+                <li><a href="javascript:void(0)" v-if="user_type===2 &&( flag!==0 && flag!==1)" @click="stu_check_dis(flag)">查看课题</a></li>
+                <li><a href="javascript:void(0)" v-if="user_type===2 && flag===5" @click="stu_defense">答辩信息</a></li>
+                <li><a href="javascript:void(0)" v-if="user_type===2 && flag===6" @click="stu_score_dis">成绩确认</a></li>
+                <li><a href="javascript:void(0)" v-if="user_type===1 && flag===0" @click="topic_release">发布课题</a></li>
+                <li><a href="javascript:void(0)" v-if="user_type===1 &&( flag===0||flag===1 )" @click="tea_topic_check">已发布课题</a></li>
+                <li><a href="javascript:void(0)" v-if="user_type===1 && ( flag!==0 && flag!==1)" @click="tea_topic_check2(flag)">已发布课题</a></li>
+                <li><a href="javascript:void(0)" v-if="user_type===0 " @click="admin_dis">管理毕业设计系统</a></li>
+              </ul>
+            </li>
             <li><a href="javascript:void(0)" @click="scoremng">成绩管理子系统</a></li>
           </ul>
         </ul>
@@ -75,10 +91,18 @@
         username: this.$cookie.get('username'),
         realname: this.$cookie.get('realname'),
         user_type: parseInt(this.$cookie.get('user_type')),
+        flag:'',
       }
     },
     mounted(){
       //alert(typeof this.user_type)
+      let data = {
+        "user_name":this.username,
+        "user_token": this.$cookie.get('user_token'),
+      }
+      this.$http.post(this.Global_Api + '/dst/return_flag', data).then((res) => {
+          this.flag = res.body.flag;
+      })
     },
     methods: {
       quit: function () {
@@ -205,7 +229,69 @@
       },
       add_notice:function () {
         this.$router.push('/main/background/add_notice')
-      }
+      },
+      topic_select:function () {
+        if(this.flag === 9){
+          alert("未到开放时间！")
+        }else{
+          this.$router.push('/main/topic_select')
+        }
+      },
+      stu_defense:function () {
+        if(this.flag === 9){
+          alert("未到开放时间！")
+        }else {
+          this.$router.push('/main/stu_def_view')
+        }
+      },
+      stu_score_dis:function () {
+        if(this.flag === 9){
+          alert("未到开放时间！")
+        }else {
+          this.$router.push('/main/stu_score_dis')
+        }
+      },
+      stu_check_dis:function (flag) {
+        if(this.flag === 9){
+          alert("未到开放时间！")
+        }else {
+          this.$router.push({
+            path: '/main/stu_check_dis',
+            query: {
+              flag: flag
+            }
+          })
+        }
+      },
+      topic_release:function () {
+        if(this.flag === 9){
+          alert("未到开放时间！")
+        }else {
+          this.$router.push('/main/topic_release')
+        }
+      },
+      tea_topic_check:function(){
+        if(this.flag === 9){
+          alert("未到开放时间！")
+        }else {
+          this.$router.push('/main/tea_topic_check')
+        }
+     },
+      tea_topic_check2:function(flag){
+        if(this.flag === 9){
+          alert("未到开放时间！")
+        }else {
+          this.$router.push({
+            path: '/main/tea_topic_check2',
+            query: {
+              flag: flag
+            }
+          })
+        }
+      },
+      admin_dis:function(){
+          this.$router.push('/main/admin_dis')
+      },
     }
   }
 </script>

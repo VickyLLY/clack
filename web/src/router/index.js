@@ -39,6 +39,21 @@ import Tea_query from '@/components/scoremng/tea_scoremng/teacher_query'
 
 import man_view_msg from "@/components/select_course/man_view_msg";
 import attention from "@/components/select_course/attention";
+//毕业设计
+import topic_sel_view from "@/components/dissertation/topic_sel_view";
+import stu_def_view from "@/components/dissertation/stu_def_view";
+import stu_score_dis from "@/components/dissertation/stu_score_dis";
+import stu_check_dis from "@/components/dissertation/stu_check_dis";
+import stu_select from "@/components/dissertation/stu_select";
+import topic_release from "@/components/dissertation/topic_release";
+import tea_topic_check from "@/components/dissertation/tea_topic_check"
+import tea_topic_change from"@/components/dissertation/tea_topic_change"
+import tea_topic_check2 from "@/components/dissertation/tea_topic_check2"
+import tea_stu_comment from "@/components/dissertation/tea_stu_comment";
+import tea_comment from "@/components/dissertation/tea_comment";
+import tea_stu_select from "@/components/dissertation/tea_stu_select";
+import admin_dis from "@/components/dissertation/admin_dis";
+import admin_approval from "@/components/dissertation/admin_approval";
 
 Vue.use(VueCookie)
 Vue.use(Router)
@@ -213,7 +228,77 @@ export default new Router({
       path:'/main/add_semester',
       name:"add_semester",
       component:add_semester
-    }
+    },
+    {
+      path: '/main/topic_select',
+      name: 'topic_sel_view',
+      component: topic_sel_view
+    },
+    {
+      path: '/main/stu_def_view',
+      name: 'stu_def_view',
+      component: stu_def_view
+    },
+    {
+      path:'/main/stu_score_dis',
+      name:'stu_score_dis',
+      component: stu_score_dis
+    },
+    {
+      path:'/main/stu_check_dis',
+      name:'stu_check_dis',
+      component: stu_check_dis
+    },
+    {
+      path:'/stu_select',
+      name:'stu_select',
+      component: stu_select
+    },
+    {
+      path:'/main/topic_release',
+      name:'topic_release',
+      component: topic_release
+    },
+    {
+    path:'/main/tea_topic_check',
+    name:'tea_topic_check',
+    component:tea_topic_check
+  },
+    {
+      path:'/main/tea_topic_check2',
+      name:'tea_topic_check2',
+      component:tea_topic_check2
+    },
+    {
+      path:'/main/tea_topic_change',
+      name:'tea_topic_change',
+      component:tea_topic_change
+    },
+    {
+      path:'/main/tea_stu_select',
+      name:'tea_stu_select',
+      component:tea_stu_select
+    },
+    {
+      path:'/main/tea_stu_comment',
+      name:'tea_stu_comment',
+      component:tea_stu_comment
+    },
+    {
+      path:'/main/tea_comment',
+      name:'tea_comment',
+      component:tea_comment
+    },
+    {
+      path:'/main/admin_dis',
+      name:'admin_dis',
+      component:admin_dis
+    },
+    {
+      path:'/main/admin_approval',
+      name:'admin_approval',
+      component:admin_approval
+    },
   ],
   mode: 'history' // 去除地址栏中的/#
 })
