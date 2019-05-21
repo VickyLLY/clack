@@ -41,6 +41,8 @@
               <li><a href="javascript:void(0)" @click="edit_department">编辑学院信息</a></li>
               <li><a href="javascript:void(0)" @click="edit_class">编辑班级信息</a></li>
               <li><a href="javascript:void(0)" @click="add_notice">发布公告通知</a></li>
+               <li><a href="javascript:void(0)" @click="help">帮助</a></li>
+
             </ul>
           </li>
             <li class="dropdown">
@@ -191,7 +193,7 @@
         // else {
         //   alert('你没有管理员权限');
         // }
-        this.$router.push('/main/help.html');
+        this.$router.push('/main/help');
       },
       arrange_course: function () {
         this.$router.push('/main/arrange_semester')
