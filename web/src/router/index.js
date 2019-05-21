@@ -18,6 +18,7 @@ import bar_mob from '@/components/mob/bar_mob'
 import stu_sel_course_mob from '@/components/mob/stu_sel_course_mob'
 import tea_sel_course_mob from '@/components/mob/tea_sel_course_mob'
 import main_mob from "@/components/mob/main_mob";
+import graduation_mob from "@/components/mob/graduation_mob";
 import schedule_mob from "@/components/mob/schedule_mob";
 import schedule_mob_tea from "@/components/mob/schedule_mob_tea";
 import man_sel_course from "@/components/select_course/man_sel_course";
@@ -300,6 +301,10 @@ export default new Router({
       path:'/main/admin_approval',
       name:'admin_approval',
       component:admin_approval
+    },
+    {
+      path: '/graduation_mob',
+      component: graduation_mob,
     },
   ],
   mode: 'history' // 去除地址栏中的/#
