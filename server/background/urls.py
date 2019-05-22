@@ -31,5 +31,8 @@ urlpatterns = [
     path(r'notice_list_teacher', views.notice_list_teacher, name='notice_list_teacher'),
     path(r'edit_department', views.edit_department, name='edit_department'),
     path(r'del_department', views.del_department, name='del_department'),
+    path(r'design', views.design, name='design'),
+    path(r'group_teacher', views.group_teacher, name='group_teacher'),
+    path(r'time_place', views.time_place, name='time_place'),
 
 ]
