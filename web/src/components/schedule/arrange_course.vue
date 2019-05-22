@@ -45,6 +45,11 @@
             <button id="cs_capacity_but" type="button" class="btn btn-info" style=" color: white" @click="confirm_capacity">√</button>
           </div>
           <div class="change-content">
+            <span>学年学期：</span>
+            <get_year_semester v-if="init" style="width: 250px;display: inline-block" :in_year_semester="in_year_semester" @change_year_semester="change_year_semester"></get_year_semester>
+            <button id="cs_year_semester_but" type="button" class="btn btn-info" style=" color: white" @click="confirm_year_semester">√</button>
+          </div>
+          <div class="change-content">
             <span>开课学院：</span>
             <v-select max-height="80px" :options="department_list" style="width: 250px; display: inline-block" v-model="change_department" @change="department_change"></v-select>
             <button id="cs_department" type="button" class="btn btn-info " style="display:none;!important; color: white" @click="confirm_department">√
@@ -228,6 +233,10 @@
             value: 1
           }
         ],
+        init:false,
+        in_year_semester:null,
+        change_year:null,
+        change_semester:null,
         teacher_list:[],
         department_list:[],
         select_course: null,//当前所选课程
@@ -450,6 +459,18 @@
             this.course.push(this.list[i])
         })
       },
+      change_year_semester(val){
+        if(val!=null) {
+          if (val.year !== this.select_course.course_year || val.semester !== this.select_course.course_semester) {
+            document.getElementById("cs_year_semester_but").style.display = 'block';
+            this.change_year = val.year;
+            this.change_semester = val.semester;
+          }
+          else{
+            document.getElementById("cs_year_semester_but").style.display = 'none';
+          }
+        }
+      },
       department(val) {
         if (val != null)
           this.department_id = val;
@@ -508,8 +529,6 @@
           this.added_exam = null;
           this.exam_exist = false;
         }
-        // console.log(this.added_exam)
-        // console.log(val.exams)
         this.items=[];
         this.select_course = val;
         if(this.select_course.teachers.length!==0){
@@ -522,6 +541,11 @@
         else{
           this.change_teacher = null;
         }
+        this.init = false;
+        this.$nextTick(() => {
+          this.init = true
+        });
+        this.in_year_semester = val.course_year + " - " + val.course_semester
         document.getElementById("change-block").style.display = "block";
         document.getElementById("title").style.display = "block";
         document.getElementById("title2").style.display = "block";
@@ -549,6 +573,7 @@
         document.getElementById('cs_type').style.display = 'none';
         document.getElementById('cs_department').style.display = 'none';
         document.getElementById('cs_teacher').style.display = 'none';
+        document.getElementById("cs_year_semester_but").style.display = 'none';
 
         this.added=[];
         this.classrooms=[];
@@ -785,6 +810,37 @@
               document.getElementById('cs_type').style.display = 'none';
               this.select_course = this.course[this.select_course.course_id-1];
             })
+          }
+        })
+      },
+      confirm_year_semester:function(){
+        let data = {
+          "user_name": this.$cookie.get('username'),
+          "user_token": this.$cookie.get('user_token'),
+          "course_id": this.select_course.course_id,
+          "course_year": this.change_year,
+          "course_semester": this.change_semester
+        };
+        this.$http.post(this.Global_Api + '/schedule/change_course_semester', data).then((res) => {
+          alert(res.body.error_message);
+          if(res.body.error_code===0) {
+            data = {};
+            if (typeof (this.year) != "undefined")
+              data['course_year'] = this.year;
+            if (typeof (this.semester) != "undefined")
+              data['course_semester'] = this.semester;
+            if (typeof (this.department_id) != "undefined")
+              data['course_department_id'] = this.department_id;
+            if (typeof (this.coursetype) != "undefined")
+              data['course_type'] = this.coursetype;
+            this.course = [];
+            this.$http.post(this.Global_Api + '/schedule/course_list', data).then((res) => {
+              this.list = res.body.course_list
+              for (let i = 0; i < this.list.length; i++)
+                this.course.push(this.list[i])
+              this.select_course = this.course[this.select_course.course_id-1];
+            })
+            document.getElementById('cs_year_semester_but').style.display = 'none';
           }
         })
       },

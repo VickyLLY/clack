@@ -13,6 +13,15 @@
 <script>
   export default {
     name: "get_year_semester",
+    props: {
+      in_year_semester:{
+        type:String,
+        default:null,
+      },
+    },
+    mounted() {
+      this.year_semester = this.in_year_semester;
+    },
     data() {
       return {
         test:'',
@@ -66,8 +75,12 @@
     },
     methods:{
       post:function () {
-        if(this.year_semester!=null)
-          this.$emit('listenToChild', this.year_semester.value)
+        if(this.year_semester!=null) {
+          if(this.in_year_semester==null)
+            this.$emit('listenToChild', this.year_semester.value)
+          else
+            this.$emit('change_year_semester', this.year_semester.value)
+        }
         else
           this.$emit('listenToChild', null)
       },
