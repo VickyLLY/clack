@@ -18,6 +18,7 @@ import bar_mob from '@/components/mob/bar_mob'
 import stu_sel_course_mob from '@/components/mob/stu_sel_course_mob'
 import tea_sel_course_mob from '@/components/mob/tea_sel_course_mob'
 import main_mob from "@/components/mob/main_mob";
+import graduation_mob from "@/components/mob/graduation_mob";
 import schedule_mob from "@/components/mob/schedule_mob";
 import schedule_mob_tea from "@/components/mob/schedule_mob_tea";
 import man_sel_course from "@/components/select_course/man_sel_course";
@@ -56,6 +57,23 @@ import tea_stu_select from "@/components/dissertation/tea_stu_select";
 import admin_dis from "@/components/dissertation/admin_dis";
 import admin_approval from "@/components/dissertation/admin_approval";
 
+import help from '@/components/background/help'
+
+
+
+import part1 from '@/components/background/helpcontent/part1'
+import part2 from '@/components/background/helpcontent/part2'
+import part1_1 from '@/components/background/helpcontent/part1_1'
+import part1_2 from '@/components/background/helpcontent/part1_2'
+import part2_1 from '@/components/background/helpcontent/part2_1'
+import part2_2 from '@/components/background/helpcontent/part2_2'
+import part2_3 from '@/components/background/helpcontent/part2_3'
+import part3 from '@/components/background/helpcontent/part3'
+import part4_1 from '@/components/background/helpcontent/part4_1'
+import part4_2 from '@/components/background/helpcontent/part4_2'
+import part4_3 from '@/components/background/helpcontent/part4_3'
+import part5 from '@/components/background/helpcontent/part5'
+import part4 from '@/components/background/helpcontent/part4'
 Vue.use(VueCookie)
 Vue.use(Router)
 
@@ -300,6 +318,85 @@ export default new Router({
       path:'/main/admin_approval',
       name:'admin_approval',
       component:admin_approval
+    },
+    {
+      path: '/graduation_mob',
+      component: graduation_mob,
+    },
+    {
+      path: '/main/help',
+      component: help,
+      children:[
+        {
+          path:'/',
+          component:part1,
+        },
+        {
+          path: 'part1',
+          name : 'part1',
+          component:part1,
+        },
+        {
+          path:'part2',
+          name:'part2',
+          component:part2
+        },
+        {
+          path:'part1_1',
+          name:"part1_1",
+          component:part1_1
+        },
+        {
+          path:'part1_2',
+          name:"part1_2",
+          component:part1_2
+        },
+        {
+          path:'part2_1',
+          name:"part2_1",
+          component:part2_1
+        },
+        {
+          path:'part2_2',
+          name:"part2_2",
+          component:part2_2
+        },
+        {
+          path:'part2_3',
+          name:"part2_3",
+          component:part2_3
+        },
+        {
+          path:'part3',
+          name:"part3",
+          component:part3
+        },
+        {
+          path:'part4',
+          name:"part4",
+          component:part4,
+        },
+        {
+          path:'part4_1',
+          name:"part4_1",
+          component:part4_1
+        },
+        {
+          path:'part4_2',
+          name:"part4_2",
+          component:part4_2
+        },
+        {
+          path:'part4_3',
+          name:"part4_3",
+          component:part4_3
+        },
+        {
+          path:'part5',
+          name:"part5",
+          component:part5
+        }
+      ]
     },
   ],
   mode: 'history' // 去除地址栏中的/#
