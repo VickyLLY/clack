@@ -475,3 +475,74 @@ def time_place(request):
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": str(e)})
     return JsonResponse({**error_code.CLACK_SUCCESS})
+
+
+# 学位警告
+def degree_warning(request):
+    students = Student.objects.all()
+    snum_list = [i.student_number for i in list(students)]
+    students_list = []
+    for i in snum_list:
+        student_number = i
+        try:
+            student = Student.objects.get(student_number=student_number)
+        except Exception:
+            return JsonResponse({**error_code.CLACK_STUDENT_NOT_EXISTS})
+
+        score_list = scoremng.models.Score.objects.filter(student_id=student.id)
+
+        # 必修课需要获得的学分和已经获得了的学分 课程代码是0
+        required_course_credit_gained_sum = 0
+        required_course_credit_aim = 100
+
+        # 选修课需要获得的学分和已经获得了的学分 课程代码是1
+        optional_course_credit_gained_sum = 0
+        optional_course_credit_aim = 50
+
+        # 辅修课需要获得的学分和已经获得了的学分 课程代码是2
+        minor_course_credit_gained_sum = 0
+        minor_course_credit_aim = 20
+
+        for score_item in score_list:
+            course_id = score_item.course_id
+            try:
+                course = Course.objects.get(id=course_id)
+            except Exception:
+                return JsonResponse({**error_code.CLACK_COURSE_NOT_EXISTS})
+            if course.course_type == 0:  # 这门课是必修
+                required_course_credit_gained_sum += course.course_credit
+            elif course.course_type == 1:  # 这门课是选修
+                optional_course_credit_gained_sum += course.course_credit
+            elif course.course_type == 2:  # 这门课是辅修
+                minor_course_credit_gained_sum += course.course_credit
+
+        # 必修课
+        required_course = {
+                    'credit_type': 0,
+                    'credit_gained_sum': required_course_credit_gained_sum,
+                    'credit_aim': required_course_credit_aim,
+        }
+        # 选修课
+        optional_course = {
+                    'credit_type': 1,
+                    'credit_gained_sum': optional_course_credit_gained_sum,
+                    'credit_aim': optional_course_credit_aim,
+                }
+        # 辅修课
+        minor_course = {
+                    'credit_type': 2,
+                    'credit_gained_sum': minor_course_credit_gained_sum,
+                    'credit_aim': minor_course_credit_aim,
+                }
+        if required_course_credit_gained_sum<required_course_credit_aim or optional_course_credit_gained_sum<optional_course_credit_aim or minor_course_credit_gained_sum<minor_course_credit_aim:
+            credits_list = {'student_number':student_number,
+                        'required_course_credit_gained_sum': required_course_credit_gained_sum,
+                        'required_course_credit_aim': required_course_credit_aim,
+                       'optional_course_credit_gained_sum': optional_course_credit_gained_sum,
+                       'optional_course_credit_aim': optional_course_credit_aim,
+                       'minor_course_credit_gained_sum': minor_course_credit_gained_sum,
+                       'minor_course_credit_aim': minor_course_credit_aim,
+                       }
+        # credits_list = [student, required_course, optional_course, minor_course]
+        students_list.append(credits_list)
+    return JsonResponse({**error_code.CLACK_SUCCESS, "students_list":students_list})
