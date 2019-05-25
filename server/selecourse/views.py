@@ -93,18 +93,19 @@ def teacher_inquiry(request):
     for course in courses:
         #如果课程存在，则获取该指定课程的上课教室
         dateandrooms=DateAndClassroom.objects.filter(course_id=course.id)
-        caroom = []
-        for dc in dateandrooms:
-            classroom = Classroom.objects.get(id=dc.classroom_id)
-            temp = {
+        if dateandrooms.exists() and dateandrooms.count()!=0:#如果该门课程没有安排时间，则剔除
+            caroom = []
+            for dc in dateandrooms:
+                classroom = Classroom.objects.get(id=dc.classroom_id)
+                temp = {
                     "classroom_name": classroom.classroom_name,
-            }
-            caroom.append(temp)
-        department=Department.objects.get(id=course.course_department_id)
-        type="必修"
-        if course.course_type==1:
-            type = "选修"
-        temp ={
+                    }
+                caroom.append(temp)
+            department=Department.objects.get(id=course.course_department_id)
+            type="必修"
+            if course.course_type==1:
+                type = "选修"
+            temp ={
                     "teacher_name":teacher.teacher_name,
                     "course_name": course.course_name,
                     "course_id":course.id,
@@ -115,7 +116,7 @@ def teacher_inquiry(request):
                     "course_department":department.department_name,
                     "classroom_info":caroom,
                 }
-        course_student_list.append(temp)
+            course_student_list.append(temp)
     return JsonResponse({**error_code.CLACK_SUCCESS, 'course_student_list': course_student_list})
 
 #学生选课,在课程信息表中点击有权选但未选的课程进行选课操作
