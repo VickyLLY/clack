@@ -33,25 +33,26 @@ def student_inquiry(request):
         return JsonResponse({**error_code.CLACK_COURSE_NOT_EXISTS})
 
     for course in courses:#遍历通过学年和学期过滤得到的所有课程记录
-        caroom = []
         dateAndclassrooms = DateAndClassroom.objects.filter(course_id=course.id)
-        for dc in dateAndclassrooms:
-            classroom=Classroom.objects.get(id=dc.classroom_id)
-            temp={
+        if dateAndclassrooms.exists() and dateAndclassrooms.count() != 0:  # 如果该门课程没有安排时间，则剔除
+            caroom = []
+            for dc in dateAndclassrooms:
+                classroom=Classroom.objects.get(id=dc.classroom_id)
+                temp={
                 "classroom_name":classroom.classroom_name,
                 "start_week": dc.start_week,  # 开始周数
                 "end_week": dc.end_week,  # 结束周数
                 "day_of_week": dc.day_of_week,  # 星期几
                 "start": dc.start,  # 开始节数
                 "end": dc.end,  # 结束节数
-            }
-            caroom.append(temp)
-        teacher=Teacher.objects.get(id=course.course_teacher_id)
-        department=Department.objects.get(id=course.course_department_id)
-        flag=True
-        if Selection.objects.filter(selection_student_id=student.id,selection_course_id=course.id).exists():
-            flag=False
-        course_info = {
+                }
+                caroom.append(temp)
+            teacher=Teacher.objects.get(id=course.course_teacher_id)
+            department=Department.objects.get(id=course.course_department_id)
+            flag=True
+            if Selection.objects.filter(selection_student_id=student.id,selection_course_id=course.id).exists():
+                flag=False
+            course_info = {
                 "course_id": course.id,
                 "course_name": course.course_name,
                 "course_credit": course.course_credit,
@@ -64,8 +65,8 @@ def student_inquiry(request):
                 "course_access": flag,
                 "course_department": department.department_name,
                 "classroom_info": caroom,
-            }
-        course_list.append(course_info)
+                }
+            course_list.append(course_info)
     return JsonResponse({**error_code.CLACK_SUCCESS, 'course_list': course_list})
 
 #老师查询选课情况
@@ -92,13 +93,16 @@ def teacher_inquiry(request):
 
     for course in courses:
         #如果课程存在，则获取该指定课程的上课教室
-        dateandrooms=DateAndClassroom.objects.filter(course_id=course.id)
+        try:
+            dateandrooms=DateAndClassroom.objects.filter(course_id=course.id)
+        except Exception:
+            return JsonResponse({**error_code.CLACK_DATEANDCLASSROOM_NOT_EXISTS})
         caroom = []
         for dc in dateandrooms:
             classroom = Classroom.objects.get(id=dc.classroom_id)
             temp = {
-                    "classroom_name": classroom.classroom_name,
-            }
+                "classroom_name": classroom.classroom_name,
+                }
             caroom.append(temp)
         department=Department.objects.get(id=course.course_department_id)
         type="必修"
