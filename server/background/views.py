@@ -20,6 +20,8 @@ from entity.views import new_banji
 from entity.views import new_department
 from entity.views import new_classroom
 import hashlib
+import scoremng
+from scoremng.models import Course
 
 
 # 发布通知
