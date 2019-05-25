@@ -66,7 +66,7 @@
   </span></span>
         </p>
         <p>
-    <span style="font-size: 16.0px;"><span style="">&nbsp;&nbsp;&nbsp; 6、必修课已预置到学生个人课表，无需选课。<br />
+    <span style="font-size: 16.0px;"><span style="">&nbsp;&nbsp;&nbsp; 6、必修课需要同学们手动添加课程，且必须首要添加。<br />
   三、选课注意事项<br />
   &nbsp;&nbsp;&nbsp;&nbsp;1、请学生网上选修课程时，注意课表的下方部分实践必修课程，虽然实践必修课程没有安排时间，但同学务必到学院核实清楚实践必修课程上课时间、地点，以免和选修课程上课时间冲突。<br />
   </span></span>
