@@ -432,7 +432,8 @@
           }*/
           } else {
             alert("选课失败");
-            alert(res.body.error_code+res.body.error_message);
+            // alert(res.body.error_code+res.body.error_message);
+            alert("时间冲突，请仔细核对后重新选择课程");
           }
         })
       },
