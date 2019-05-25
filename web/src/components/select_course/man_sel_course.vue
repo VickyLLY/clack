@@ -73,27 +73,6 @@
           </div>
         </div>
       </form>
-
-      <form class="select_form">
-        <div class="select_year">
-          <label>设置学年</label>
-          <select  v-model="select_year">
-            <option value="2019" selected="selected">2019</option>
-            <option value="2020">2020</option>
-            <option value="2021">2021</option>
-          </select>
-        </div>
-
-        <div class="select_semester">
-          <label>设置学期</label>
-          <select  v-model="select_semester">
-            <option value="1" selected="selected">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-          </select>
-        </div>
-        <button v-on:click="Submit()" type="button"  style="position: relative; left: 320px" class="btn btn-primary " >提交</button>
-      </form>
     </div>
     <div class="button">
       <button v-on:click="Filter()" type="button" id="btn1" class="btn btn-primary " >查询</button>
@@ -166,17 +145,12 @@
         conditionText:false,
         infoText:false,
         data:{},
-        select_year:"2019",
-        select_semester:"1"
       }
     },
     methods:{
       confirm:function(index){
         this.$router.push({name: 'man_view_msg', params: {msg: this.update_courseList[index]}})
         this.data=this.update_courseList[index]
-        console.log("赋值")
-        console.log(this.data)
-        console.log("报表接受数据")
       },
       Submit:function(){
         this.$http.post(this.Global_Api + '/selecourse/set_year_semester', {
@@ -190,16 +164,16 @@
       Filter:function () {
         this.border_show=true;
         if (this.info.year=="all"&&this.info.academy=="all"){
-          alert("请指定year和academy！");
+          alert("请指定学年和学院！");
           return ;
         }
         else if(this.info.year=="all")
         {
-          alert("请指定year！");
+          alert("请指定学年！");
           return ;
         }
         else if(this.info.academy=="all"){
-          alert(("请指定academy！"));
+          alert(("请指定学院！"));
           return ;
         }
 
