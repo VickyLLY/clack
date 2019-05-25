@@ -27,7 +27,7 @@
       <tr>
         <td colspan="4">
           <div class="timetable_title">
-            <h6 class="pull-left">2018-2019学年第1学期</h6>{{realname}}的课表<h6 class="pull-right">
+            <h6 class="pull-left">2019-2020学年第1学期</h6>{{realname}}的课表<h6 class="pull-right">
             　学号：{{user_student_number}}</h6>
           </div>
         </td>
@@ -225,7 +225,7 @@
       }
       else {
         let data = {
-          "year":2018,
+          "year":2019,
           "semester":1,
           "student_number": this.username//记得改变post的学生id
         };
