@@ -35,4 +35,5 @@ urlpatterns = [
     path(r'group_teacher', views.group_teacher, name='group_teacher'),
     path(r'time_place', views.time_place, name='time_place'),
     path(r'degree_warning', views.degree_warning, name='degree_warning'),
+    path(r'edit_password', views.edit_password, name='edit_password'),
 ]
