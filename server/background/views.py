@@ -109,11 +109,11 @@ def add_student(request):
                           student_end_year=request_json['student']['student_end_year'],
                           )
         student.save()
-        student_user = User(user_name=request_json['student']['student_number'],
-                            user_password=encode_password(request_json['student']['student_number'],),
-                            user_type=2,
-                            user_student_id=student.id)
-        student_user.save()
+        # student_user = User(user_name=request_json['student']['student_number'],
+        #                     user_password=encode_password(request_json['student']['student_number'],),
+        #                     user_type=2,
+        #                     user_student_id=student.id)
+        # student_user.save()
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": str(e)})
     return JsonResponse({**error_code.CLACK_SUCCESS})
@@ -133,7 +133,7 @@ def del_student(request):
     aim_id = request_json['student_number']
     try:
         Student.objects.get(student_number=aim_id).delete()
-        User.objects.get(user_name=aim_id).delete()
+        # User.objects.get(user_name=aim_id).delete()
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": str(e)})
     return JsonResponse({**error_code.CLACK_SUCCESS})
@@ -172,11 +172,11 @@ def add_teacher(request):
                           teacher_department_id=request_json['teacher']['teacher_department_id'],
                           )
         teacher.save()
-        teacher_user = User(user_name=request_json['teacher']['teacher_number'],
-                            user_password=encode_password(request_json['teacher']['teacher_number'],),
-                            user_type=1,
-                            user_teacher_id=teacher.id)
-        teacher_user.save()
+        # teacher_user = User(user_name=request_json['teacher']['teacher_number'],
+        #                     user_password=encode_password(request_json['teacher']['teacher_number'],),
+        #                     user_type=1,
+        #                     user_teacher_id=teacher.id)
+        # teacher_user.save()
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": str(e)})
     return JsonResponse({**error_code.CLACK_SUCCESS})
@@ -195,7 +195,6 @@ def del_teacher(request):
     aim_id = request_json['teacher_number']
     try:
         Teacher.objects.get(teacher_number=aim_id).delete()
-        User.objects.get(user_name=aim_id).delete()
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": str(e)})
     return JsonResponse({**error_code.CLACK_SUCCESS})
@@ -243,6 +242,7 @@ def del_major(request):
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": str(e)})
     return JsonResponse({**error_code.CLACK_SUCCESS})
+
 # 修改专业
 @admin_required
 def edit_major(request):
@@ -259,6 +259,7 @@ def edit_major(request):
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": str(e)})
     return JsonResponse({**error_code.CLACK_SUCCESS})
+
 # 添加学院
 @admin_required
 def add_department(request):
@@ -347,7 +348,7 @@ def del_banji(request):
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": str(e)})
     return JsonResponse({**error_code.CLACK_SUCCESS})
 
-# 添加学院
+# 修改学院
 @admin_required
 def edit_department(request):
     request_json = json.loads(request.body)
@@ -359,7 +360,6 @@ def edit_department(request):
         return JsonResponse({**error_code.CLACK_NOT_EXISTS})
     try:
         Department.objects.filter(id=aim_id).update(department_name=new_name)
-
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": str(e)})
     return JsonResponse({**error_code.CLACK_SUCCESS})
@@ -548,3 +548,25 @@ def degree_warning(request):
         # credits_list = [student, required_course, optional_course, minor_course]
         students_list.append(credits_list)
     return JsonResponse({**error_code.CLACK_SUCCESS, "students_list":students_list})
+
+
+# 用户修改密码
+def edit_password(request):
+    request_json = json.loads(request.body)
+    old_password = request_json['user_password_old']
+    new_password = request_json['user_password_new']
+    aim_id = request_json['user_name']
+    if User.objects.filter(user_name=aim_id).exists() == False:
+        return JsonResponse({**error_code.CLACK_NOT_EXISTS})
+    else:
+        aim = User.objects.get(user_name=aim_id)
+    try:
+        if aim.user_password == encode_password(old_password):
+            # aim.update(user_password=encode_password(new_password))
+            aim.user_password=encode_password(new_password)
+            aim.save()
+        else:
+            return JsonResponse({**error_code.ClACK_ERROR_PASSWORD})
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": str(e)})
+    return JsonResponse({**error_code.CLACK_SUCCESS})

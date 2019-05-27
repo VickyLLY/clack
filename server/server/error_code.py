@@ -98,3 +98,6 @@ CLACK_STUDENT_SELECT_DST_EXISTS={"error_code": 30, "error_message": "已经选�
 
 #上传文件失败
 CLACK_DISSERTATION_UPLOAD_FILE_FAILED={"error_code": 31, "error_message": "上传论文失败"}
+
+# 密码错误
+ClACK_ERROR_PASSWORD = {"error_code": 32, "error_message": "密码错误"}
