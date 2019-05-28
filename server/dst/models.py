@@ -23,3 +23,6 @@ class DissertationFile(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     dissertation_file_path = models.FileField(upload_to=None)
 
+class Flag(models.Model):
+    flag = models.IntegerField(default=-1)
+
