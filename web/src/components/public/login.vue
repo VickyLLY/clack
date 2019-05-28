@@ -109,6 +109,7 @@
                 this.$router.push({
                   path: '/main_mob',
                 })
+                location.reload();
               } else {
                 this.$router.push({
                   path: '/main',
