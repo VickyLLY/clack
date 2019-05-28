@@ -591,4 +591,4 @@ def stu_dst_list_temp(request):
         'dissertation_pub_time': dsta.dissertation_pub_time,
         'dissertation_teacher': tt.teacher_name,
     } for dsta in dsts]
-    return JsonResponse({**error_code.CLACK_SUCCESS, 'stu_dst_list': result_list})
+    return JsonResponse({**error_code.CLACK_SUCCESS, 'dst_list': result_list})
