@@ -32,6 +32,7 @@ urlpatterns = [
     path(r'edit_department', views.edit_department, name='edit_department'),
     path(r'del_department', views.del_department, name='del_department'),
     path(r'design', views.design, name='design'),
+    path(r'design_tea', views.design_tea, name='design_tea'),
     path(r'group_teacher', views.group_teacher, name='group_teacher'),
     path(r'time_place', views.time_place, name='time_place'),
     path(r'degree_warning', views.degree_warning, name='degree_warning'),

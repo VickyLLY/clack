@@ -375,7 +375,7 @@ def del_department(request):
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": str(e)})
     return JsonResponse({**error_code.CLACK_SUCCESS})
 
-# 学生查询答辩安排
+
 @login_required
 def design(request):
     request_json = json.loads(request.body)
@@ -389,7 +389,8 @@ def design(request):
         group = TeacherGroup.objects.filter(group_teacher=teacher_num)
         group_num = group[0].group_number
 
-        teachers = TeacherGroup.objects.filter(group_number=group_num,group_department_id=teacher_depart_id )
+        teachers = TeacherGroup.objects.filter(group_number=group_num )
+
         tea_list = [{
             'teacher_number':t.group_teacher
         }for t in list(teachers)]
@@ -399,7 +400,33 @@ def design(request):
 
     except Exception as e:
         return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": str(e)})
-    return JsonResponse({**error_code.CLACK_SUCCESS,"result_list":schedule+tea_list})
+    return JsonResponse({**error_code.CLACK_SUCCESS,"result_list":schedule})
+
+@login_required
+def design_tea(request):
+    request_json = json.loads(request.body)
+    aim_id = request_json['student_number']
+
+    try:
+        teach = dst.models.Determination.objects.filter(student__student_number=aim_id)
+        teacher_num = teach[0].dissertation.dissertation_tnum.teacher_number
+        teacher_depart_id = teach[0].dissertation.dissertation_tnum.teacher_department_id
+
+        group = TeacherGroup.objects.filter(group_teacher=teacher_num)
+        group_num = group[0].group_number
+
+        teachers = TeacherGroup.objects.filter(group_number=group_num )
+
+        tea_list = [{
+            'teacher_number':t.group_teacher
+        }for t in list(teachers)]
+
+        result = AssignGroup.objects.filter(assign_number=group_num)
+        schedule = [result[0].__str__()]
+
+    except Exception as e:
+        return JsonResponse({**error_code.CLACK_UNEXPECTED_ERROR, "exception": str(e)})
+    return JsonResponse({**error_code.CLACK_SUCCESS,"result_list2":tea_list})
 
 #  老师按专业分组
 def group_teacher(request):
