@@ -4,7 +4,7 @@
       <a href="/main" class="navbar-brand"><strong>教务管理系统</strong></a>
       <ul class="nav navbar-nav">
         <li><a href="/main/stu_sel_course">自主选课</a></li>
-        <li><a href="javascript:void(0)" @click="enter_timetable">查看课表</a></li>
+        <li><a href="/main/stu_sel_course/stu_timetable">查看课表</a></li>
         <li><a href="javascript:void(0)" @click="enter_attention">其他注意事项</a></li>
       </ul>
       <div id="clock">
@@ -28,7 +28,7 @@
     <br><br><br>
 
     <div id="aside" class="container pull-right; "
-         style="width:700px;height:900px;border:1px solid red;border-left:none;position:absolute;top:100px;right:-630px;background: white;resize:none;">
+         style="width:700px;height:70%;border:1px solid red;border-left:none;border-bottom: none; position:absolute;top:100px;right:-630px;background: white;">
       <div class="row">
         <div class="col-lg-1" style="background: red;height:700px;position: relative;">
           <p class="glyphicon glyphicon-arrow-left" style="width: 30px;height:30px;position: absolute;top:50px;"></p>
@@ -71,30 +71,27 @@
           </table>
         </div>
       </div>
-      <div class="row" style="overflow:scroll;position: absolute;top:330px;left:88px;height:370px;width:615px;text-align:left;" >
+      <div class="row"
+           style="overflow:scroll;position: absolute;top:330px;left:88px;height:370px;width:615px;text-align:left;">
         <div v-for="c in selected_course">
           <div class="panel panel-default">
             <table class="table table-striped">
-              <thead>
+              <thead align="left">
               <tr>
-                <th>课程名</th>
-                <th>学分</th>
-                <th>教室</th>
-                <th>类型</th>
-                <th>任课教师</th>
-                <th>开课周数</th>
-                <th>上课时间</th>
+                <th style="display:inline-block;width:120px;height:40px">课程名</th>
+                <th style="display:inline-block;width:70px;height:40px">类型</th>
+                <th style="display:inline-block;width:70px;height:40px">学分</th>
+                <th style="display:inline-block;width:100px;height:40px">任课教师</th>
+                <th style="display:inline-block;width:200px;height:40px">上课安排</th>
               </tr>
               </thead>
               <tbody>
-              <tr>
-                <td>{{c[0]}}</td>
-                <td>{{c[1]}}</td>
-                <td>{{c[2]}}</td>
-                <td>{{c[9]}}</td>
-                <td>{{c[3]}}</td>
-                <td>{{c[4]+"-"+c[5]}}</td>
-                <td>{{"星期"+c[6]+" "+c[7]+"-"+c[8]+"节"}}</td>
+              <tr v-for="co in c.classroom_info">
+                <td style="display:inline-block;width:120px;height:40px">{{c.course_name}}</td>
+                <td style="display:inline-block;width:70px;height:40px">{{c.course_type}}</td>
+                <td style="display:inline-block;width:70px;height:40px">{{c.course_credit}}</td>
+                <td style="display:inline-block;width:100px;height:40px">{{c.course_teacher}}</td>
+                <td style="display:inline-block;width:200px;height:40px">{{co.start_week+'-'+co.end_week+"周"+"  "+"星期"+co.day_of_week+"  "+co.start+'-'+co.end+"节"+"  "+co.classroom_name}}<br/></td>
               </tr>
               </tbody>
             </table>
@@ -107,7 +104,7 @@
 
       <div class="panel-body">
         <div class="panel-heading">
-          <h2 style="text-align:center;"><strong>2019学年第1学期选课</strong></h2>
+          <h2 style="text-align:center;"><strong>2019-2020学年第1学期选课</strong></h2>
           <h3 style="text-align:right;">
             <!--<font size="3" ><strong>剩余<font color="red">{{day}}</font>天</strong></font>
             <font size="2">选课要求总学分最低<font color="red">{{min_lp}}</font></font>
@@ -150,7 +147,6 @@
                     <th>课程余量</th>
                     <th>任课教师</th>
                     <th>开课学院</th>
-                    <th>开课周数</th>
                     <th>上课时间</th>
                     <th>操作</th>
                   </tr>
@@ -165,8 +161,7 @@
                     <td>{{c.course_allowance}}</td>
                     <td>{{c.course_teacher}}</td>
                     <td>{{c.course_department}}</td>
-                    <td>{{c.start_week+"-"+c.end_week}}</td>
-                    <td>{{"星期"+c.day_of_week+" "+c.start+"-"+c.end}}</td>
+                    <td>{{c.class_time}}</td>
                     <td v-if="c.course_allowance > 0">
                       <button type="button" class="btn btn-primary" v-on:click="add_course(c.course_id,username)">选课
                       </button>
@@ -196,7 +191,6 @@
                     <th>课程余量</th>
                     <th>任课教师</th>
                     <th>开课学院</th>
-                    <th>开课周数</th>
                     <th>上课时间</th>
                     <th>操作</th>
                   </tr>
@@ -211,8 +205,7 @@
                     <td>{{c.course_allowance}}</td>
                     <td>{{c.course_teacher}}</td>
                     <td>{{c.course_department}}</td>
-                    <td>{{c.start_week+"-"+c.end_week}}</td>
-                    <td>{{"星期"+c.day_of_week+" "+c.start+"-"+c.end}}</td>
+                    <td>{{c.class_time}}</td>
                     <td>
                       <button type="button" class="btn btn-primary" v-on:click="del_course(c.course_id,username)">退选
                       </button>
@@ -254,7 +247,6 @@
                     <th>课程余量</th>
                     <th>任课教师</th>
                     <th>开课学院</th>
-                    <th>开课周数</th>
                     <th>上课时间</th>
                     <th>操作</th>
                   </tr>
@@ -269,8 +261,7 @@
                     <td>{{c.course_allowance}}</td>
                     <td>{{c.course_teacher}}</td>
                     <td>{{c.course_department}}</td>
-                    <td>{{c.start_week+"-"+c.end_week}}</td>
-                    <td>{{"星期"+c.day_of_week+" "+c.start+"-"+c.end}}</td>
+                    <td>{{c.class_time}}</td>
                     <td v-if="c.course_allowance > 0">
                       <button type="button" class="btn btn-primary" v-on:click="add_course(c.course_id,username)">选课
                       </button>
@@ -315,8 +306,7 @@
                     <td>{{c.course_allowance}}</td>
                     <td>{{c.course_teacher}}</td>
                     <td>{{c.course_department}}</td>
-                    <td>{{c.start_week+"-"+c.end_week}}</td>
-                    <td>{{"星期"+c.day_of_week+" "+c.start+"-"+c.end}}</td>
+                    <td>{{c.class_time}}</td>
                     <td>
                       <button type="button" class="btn btn-primary" v-on:click="del_course(c.course_id,username)">退选
                       </button>
@@ -364,8 +354,8 @@
         z_b_course: [],
         z_x_course: [],
         selected_course: [],
-        year:0,
-        semester:0,
+        year: 0,
+        semester: 0,
 
       }
     },
@@ -385,6 +375,13 @@
       this.$http.post(this.Global_Api + '/selecourse/student_inquiry', sel_class).then((res) => {
         for (let i = 0; i < res.body.course_list.length; i++) {
           //alert(res.body.course_list[i].course_name)
+          for (let j = 0; j < res.body.course_list[i].classroom_info.length; j++) {
+            let x = res.body.course_list[i].classroom_info[j]
+            if (j === 0) {
+              res.body.course_list[i]['class_time'] = ""
+            }
+            res.body.course_list[i]['class_time'] = res.body.course_list[i]['class_time'] +'----' + x.start_week + "-" + x.end_week + "周" + '星期' + x.day_of_week + " 第" + x.start + "节-第" + x.end + "节"
+          }
           if (res.body.course_list[i].course_type == 0)
             this.z_b_course.push(res.body.course_list[i])
           else {
@@ -411,12 +408,13 @@
         this.$cookie.delete('username');
       },
       add_course: function (id, stu_name) {
-        //alert(stu_name+" select  "+id+this.stu_sel)/*学生选课*/
+        // alert(stu_name+" select  "+id+" "+this.stu_sel)/*学生选课*/
         let add_class = {
           student_number: this.username,
           course_id: id
         };
         this.$http.post(this.Global_Api + '/selecourse/sele_button', add_class).then((res) => {
+          // alert("add success call");
           if (res.body.error_code == 0) {
             this.stu_sel.push(id)
             alert("选课成功")
@@ -433,17 +431,20 @@
             }
           }*/
           } else {
-            alert("选课失败")
+            alert("选课失败");
+            // alert(res.body.error_code+res.body.error_message);
+            alert("时间冲突，请仔细核对后重新选择课程");
           }
         })
       },
       del_course: function (id, stu_name) {
-        //alert(stu_name+" delete  "+id)/*删除所选课程*/
+        // alert(stu_name+" delete  "+id+" "+this.stu_sel);/*删除所选课程*/
         let del_class = {
           student_number: this.username,
           course_id: id
         };
         this.$http.post(this.Global_Api + '/selecourse/dele_button', del_class).then((res) => {
+          // alert("delete success call");
           if (res.body.error_code == 0) {
             for (var i = 0; i < this.stu_sel.length; i++) {
               if (this.stu_sel[i] == id) {
@@ -464,7 +465,8 @@
             }
           }*/
           } else {
-            alert("退课失败")
+            alert("退课失败");
+            alert(res.body.error_code+":"+res.body.error_message);
           }
         })
 
@@ -524,17 +526,22 @@
         this.$http.post(this.Global_Api + '/selecourse/course_inquiry', data).then((res) => {
           // alert(res.body.error_code);
           // alert(res.body.course_list.length);
-          this.selected_course=[];
-          for(let co of res.body.course_list){
-            this.selected_course.push([co.course_name,co.course_credit,co.classroom_name,co.course_teacher,co.start_week,co.end_week,co.day_of_week,co.start,co.end,co.course_type]);
+          this.selected_course = [];
+          for (let co of res.body.course_list) {
+            this.selected_course.push(co);
           }
           for (let i = 0; i < res.body.course_list.length; i++) {
-            for (let j = res.body.course_list[i].start; j <= res.body.course_list[i].end; j++) {
-              let k = res.body.course_list[i].day_of_week;
-              let m = res.body.course_list[i].end_week - res.body.course_list[i].start_week + 1;
-              let selector = $("." + this.td[j - 1]);
-              let new_attr = String(parseInt(selector.nextAll()[k - 1].getAttribute("class_count")) + m);
-              selector.nextAll()[k - 1].setAttribute("class_count", new_attr);
+            for(let j=0;j<res.body.course_list[i].classroom_info.length;j++){
+              for (let k = res.body.course_list[i].classroom_info[j].start; k <= res.body.course_list[i].classroom_info[j].end; k++) {
+                // alert("k:"+k)
+                let m = res.body.course_list[i].classroom_info[j].day_of_week;
+                // alert("m:"+m);
+                let n = res.body.course_list[i].classroom_info[j].end_week - res.body.course_list[i].classroom_info[j].start_week + 1;
+                // alert("n:"+n);
+                let selector = $("." + this.td[k - 1]);
+                let new_attr = String(parseInt(selector.nextAll()[m - 1].getAttribute("class_count")) + n);
+                selector.nextAll()[m - 1].setAttribute("class_count", new_attr);
+              }
             }
           }
           for (let i = 0; i < this.td.length; i++) {

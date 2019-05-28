@@ -10,7 +10,7 @@
       <tr>
         <td colspan="4">
           <div class="timetable_title">
-            <h6 class="pull-left">2018-2019学年第2学期</h6>{{realname}}的课表<h6 class="pull-right">　教师工号：{{user_teacher_number}}</h6>
+            <h6 class="pull-left">2019学年第1学期</h6>{{realname}}的课表<h6 class="pull-right">　教师工号：{{user_teacher_number}}</h6>
           </div>
         </td>
       </tr>

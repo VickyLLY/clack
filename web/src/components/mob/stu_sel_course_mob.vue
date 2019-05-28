@@ -6,7 +6,7 @@
       <tr>
         <td colspan="4">
           <div class="timetable_title">
-            <h6 class="pull-left">2018-2019学年第1学期</h6>{{realname}}的课表<h6 class="pull-right">
+            <h6 class="pull-left">2019-2020学年第1学期</h6>{{realname}}的课表<h6 class="pull-right">
             　学号：{{user_student_number}}</h6>
           </div>
         </td>
@@ -227,87 +227,90 @@
       }
       else {
         let data = {
-          "year":2018,
+          "year":2019,
           "semester":1,
           "student_number": this.username//记得改变post的学生id
         };
         this.$http.post(this.Global_Api + '/selecourse/course_inquiry', data).then((res) => {
           for (let i=0;i<res.body.course_list.length;i++) {
             if (res.body.course_list[i].length === 0) {
-              break;
+
             } else {
-              let a = res.body.course_list[i].day_of_week;
-              let b = res.body.course_list[i];
-              if (a === 1) {
-                this.course1.push({
-                  course_name: b.course_name,
-                  start: b.start,
-                  end: b.end,
-                  start_week: b.start_week,
-                  end_week: b.end_week,
-                  location: b.classroom_name,
-                  teacher:b.course_teacher,
-                });
-              } else if (a === 2) {
-                this.course2.push({
-                  course_name: b.course_name,
-                  start: b.start,
-                  end: b.end,
-                  start_week: b.start_week,
-                  end_week: b.end_week,
-                  location: b.classroom_name,
-                  teacher:b.course_teacher,
-                });
-              } else if (a === 3) {
-                this.course3.push({
-                  course_name: b.course_name,
-                  start: b.start,
-                  end: b.end,
-                  start_week: b.start_week,
-                  end_week: b.end_week,
-                  location: b.classroom_name,
-                  teacher:b.course_teacher,
-                });
-              } else if (a === 4) {
-                this.course4.push({
-                  course_name: b.course_name,
-                  start: b.start,
-                  end: b.end,
-                  start_week: b.start_week,
-                  end_week: b.end_week,
-                  location: b.classroom_name,
-                  teacher:b.course_teacher,
-                });
-              } else if (a === 5) {
-                this.course5.push({
-                  course_name: b.course_name,
-                  start: b.start,
-                  end: b.end,
-                  start_week: b.start_week,
-                  end_week: b.end_week,
-                  location: b.classroom_name,
-                  teacher:b.course_teacher,
-                });
-              } else if (a === 6) {
-                this.course6.push({
-                  course_name: b.course_name,
-                  start: b.start,
-                  end: b.end,
-                  start_week: b.start_week,
-                  end_week: b.end_week,
-                  location: b.classroom_name,
-                  teacher:b.course_teacher,
-                });
-              } else if (a === 7) {
-                this.course7.push({
-                  course_name: b.course_name,
-                  start: b.start,
-                  end: b.end,
-                  start_week: b.start_week,
-                  end_week: b.end_week,
-                  location: b.classroom_name,
-                  teacher:b.course_teacher,
-                });
+              for(let j=0;j<res.body.course_list[i].classroom_info.length;j++){
+                let a = res.body.course_list[i].classroom_info[j].day_of_week;
+                let b = res.body.course_list[i].classroom_info[j];
+                let c=res.body.course_list[i];
+                if (a === 1) {
+                  this.course1.push({
+                    course_name: c.course_name,
+                    start: b.start,
+                    end: b.end,
+                    start_week: b.start_week,
+                    end_week: b.end_week,
+                    location: b.classroom_name,
+                    teacher:c.course_teacher,
+                  });
+                } else if (a === 2) {
+                  this.course2.push({
+                    course_name: c.course_name,
+                    start: b.start,
+                    end: b.end,
+                    start_week: b.start_week,
+                    end_week: b.end_week,
+                    location: b.classroom_name,
+                    teacher:c.course_teacher,
+                  });
+                } else if (a === 3) {
+                  this.course3.push({
+                    course_name: c.course_name,
+                    start: b.start,
+                    end: b.end,
+                    start_week: b.start_week,
+                    end_week: b.end_week,
+                    location: b.classroom_name,
+                    teacher:c.course_teacher,
+                  });
+                } else if (a === 4) {
+                  this.course4.push({
+                    course_name: c.course_name,
+                    start: b.start,
+                    end: b.end,
+                    start_week: b.start_week,
+                    end_week: b.end_week,
+                    location: b.classroom_name,
+                    teacher:c.course_teacher,
+                  });
+                } else if (a === 5) {
+                  this.course5.push({
+                    course_name: c.course_name,
+                    start: b.start,
+                    end: b.end,
+                    start_week: b.start_week,
+                    end_week: b.end_week,
+                    location: b.classroom_name,
+                    teacher:c.course_teacher,
+                  });
+                } else if (a === 6) {
+                  this.course6.push({
+                    course_name: c.course_name,
+                    start: b.start,
+                    end: b.end,
+                    start_week: b.start_week,
+                    end_week: b.end_week,
+                    location: b.classroom_name,
+                    teacher:c.course_teacher,
+                  });
+                } else if (a === 7) {
+                  this.course7.push({
+                    course_name: c.course_name,
+                    start: b.start,
+                    end: b.end,
+                    start_week: b.start_week,
+                    end_week: b.end_week,
+                    location: b.classroom_name,
+                    teacher:c.course_teacher,
+                  });
+                }
               }
             }
           }

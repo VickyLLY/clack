@@ -18,8 +18,8 @@
           <div v-else-if="user_type==='1'">
             <ul class="nav nav-pills nav-stacked">
               <li class="active"><a href="#">学生成绩管理</a></li>
-              <li><a ><router-link :to="{name:''}">提交学生成绩</router-link></a></li>
-              <li><a ><router-link :to="{name:''}">修改学生成绩</router-link></a></li>
+              <li><a ><router-link :to="{name:'Tea_upload'}">提交学生成绩</router-link></a></li>
+              <li><a ><router-link :to="{name:'Tea_query'}">查询学生成绩</router-link></a></li>
             </ul>
           </div>
           <!--    学生导航栏-->

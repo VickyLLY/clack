@@ -18,6 +18,7 @@ import bar_mob from '@/components/mob/bar_mob'
 import stu_sel_course_mob from '@/components/mob/stu_sel_course_mob'
 import tea_sel_course_mob from '@/components/mob/tea_sel_course_mob'
 import main_mob from "@/components/mob/main_mob";
+import graduation_mob from "@/components/mob/graduation_mob";
 import schedule_mob from "@/components/mob/schedule_mob";
 import schedule_mob_tea from "@/components/mob/schedule_mob_tea";
 import man_sel_course from "@/components/select_course/man_sel_course";
@@ -25,11 +26,11 @@ import tea_sel_course from "@/components/select_course/tea_sel_course";
 import stu_sel_course from "@/components/select_course/stu_sel_course";
 import stu_timetable from "@/components/select_course/stu_timetable";
 import course_table from "@/components/schedule/course_table";
+import add_notice from "@/components/background/add_notice";
 import teacher_course_table from "@/components/schedule/teacher_course_table";
 import add_semester from "@/components/schedule/add_semester";
 
 //成绩管理
-import Stu_navigation from '@/components/scoremng/stu_scoremng/Stu_navigation'
 import navigation from '@/components/scoremng/navigation'
 import Admin_score from '@/components/scoremng/admin_scoremng/admin_score'
 import Stu_score from '@/components/scoremng/stu_scoremng/stu_score'
@@ -40,8 +41,42 @@ import Tea_query from '@/components/scoremng/tea_scoremng/teacher_query'
 import man_view_msg from "@/components/select_course/man_view_msg";
 import attention from "@/components/select_course/attention";
 
+//毕业设计
+import topic_sel_view from "@/components/dissertation/topic_sel_view";
+import stu_def_view from "@/components/dissertation/stu_def_view";
+import stu_score_dis from "@/components/dissertation/stu_score_dis";
+import stu_check_dis from "@/components/dissertation/stu_check_dis";
+import stu_select from "@/components/dissertation/stu_select";
+import topic_release from "@/components/dissertation/topic_release";
+import tea_topic_check from "@/components/dissertation/tea_topic_check"
+import tea_topic_change from"@/components/dissertation/tea_topic_change"
+import tea_topic_check2 from "@/components/dissertation/tea_topic_check2"
+import tea_stu_comment from "@/components/dissertation/tea_stu_comment";
+import tea_comment from "@/components/dissertation/tea_comment";
+import tea_stu_select from "@/components/dissertation/tea_stu_select";
+import admin_dis from "@/components/dissertation/admin_dis";
+import admin_approval from "@/components/dissertation/admin_approval";
+
+import help from '@/components/background/help'
+
+
+
+import part1 from '@/components/background/helpcontent/part1'
+import part2 from '@/components/background/helpcontent/part2'
+import part1_1 from '@/components/background/helpcontent/part1_1'
+import part1_2 from '@/components/background/helpcontent/part1_2'
+import part2_1 from '@/components/background/helpcontent/part2_1'
+import part2_2 from '@/components/background/helpcontent/part2_2'
+import part2_3 from '@/components/background/helpcontent/part2_3'
+import part3 from '@/components/background/helpcontent/part3'
+import part4_1 from '@/components/background/helpcontent/part4_1'
+import part4_2 from '@/components/background/helpcontent/part4_2'
+import part4_3 from '@/components/background/helpcontent/part4_3'
+import part5 from '@/components/background/helpcontent/part5'
+import part4 from '@/components/background/helpcontent/part4'
 Vue.use(VueCookie)
 Vue.use(Router)
+
 
 export default new Router({
   routes: [
@@ -201,6 +236,11 @@ export default new Router({
       component:attention
     },
     {
+      path:'/main/background/add_notice',
+      name:"add_notice",
+      component:add_notice
+    },
+    {
       path:'/main/news_detail/:id',
       component:NewsDetail,
     },
@@ -208,7 +248,156 @@ export default new Router({
       path:'/main/add_semester',
       name:"add_semester",
       component:add_semester
-    }
+    },
+    {
+      path: '/main/topic_select',
+      name: 'topic_sel_view',
+      component: topic_sel_view
+    },
+    {
+      path: '/main/stu_def_view',
+      name: 'stu_def_view',
+      component: stu_def_view
+    },
+    {
+      path:'/main/stu_score_dis',
+      name:'stu_score_dis',
+      component: stu_score_dis
+    },
+    {
+      path:'/main/stu_check_dis',
+      name:'stu_check_dis',
+      component: stu_check_dis
+    },
+    {
+      path:'/stu_select',
+      name:'stu_select',
+      component: stu_select
+    },
+    {
+      path:'/main/topic_release',
+      name:'topic_release',
+      component: topic_release
+    },
+    {
+      path:'/main/tea_topic_check',
+      name:'tea_topic_check',
+      component:tea_topic_check
+    },
+    {
+      path:'/main/tea_topic_check2',
+      name:'tea_topic_check2',
+      component:tea_topic_check2
+    },
+    {
+      path:'/main/tea_topic_change',
+      name:'tea_topic_change',
+      component:tea_topic_change
+    },
+    {
+      path:'/main/tea_stu_select',
+      name:'tea_stu_select',
+      component:tea_stu_select
+    },
+    {
+      path:'/main/tea_stu_comment',
+      name:'tea_stu_comment',
+      component:tea_stu_comment
+    },
+    {
+      path:'/main/tea_comment',
+      name:'tea_comment',
+      component:tea_comment
+    },
+    {
+      path:'/main/admin_dis',
+      name:'admin_dis',
+      component:admin_dis
+    },
+    {
+      path:'/main/admin_approval',
+      name:'admin_approval',
+      component:admin_approval
+    },
+    {
+      path: '/graduation_mob',
+      component: graduation_mob,
+    },
+    {
+      path: '/main/help',
+      component: help,
+      children:[
+        {
+          path:'/',
+          component:part1,
+        },
+        {
+          path: 'part1',
+          name : 'part1',
+          component:part1,
+        },
+        {
+          path:'part2',
+          name:'part2',
+          component:part2
+        },
+        {
+          path:'part1_1',
+          name:"part1_1",
+          component:part1_1
+        },
+        {
+          path:'part1_2',
+          name:"part1_2",
+          component:part1_2
+        },
+        {
+          path:'part2_1',
+          name:"part2_1",
+          component:part2_1
+        },
+        {
+          path:'part2_2',
+          name:"part2_2",
+          component:part2_2
+        },
+        {
+          path:'part2_3',
+          name:"part2_3",
+          component:part2_3
+        },
+        {
+          path:'part3',
+          name:"part3",
+          component:part3
+        },
+        {
+          path:'part4',
+          name:"part4",
+          component:part4,
+        },
+        {
+          path:'part4_1',
+          name:"part4_1",
+          component:part4_1
+        },
+        {
+          path:'part4_2',
+          name:"part4_2",
+          component:part4_2
+        },
+        {
+          path:'part4_3',
+          name:"part4_3",
+          component:part4_3
+        },
+        {
+          path:'part5',
+          name:"part5",
+          component:part5
+        }
+      ]
+    },
   ],
   mode: 'history' // 去除地址栏中的/#
 })
