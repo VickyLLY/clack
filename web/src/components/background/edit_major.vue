@@ -241,6 +241,8 @@
           type: 'warning'
         }).then(() => {
           this.$http.post(this.Global_Api + '/background/del_major', {
+            user_name: this.user_name,
+            user_token: this.user_token,
             major_id: parseInt(row.major_id)
           }).then(response => {
             if(response.body.error_code === 0) {

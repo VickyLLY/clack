@@ -104,7 +104,7 @@
 
       <div class="panel-body">
         <div class="panel-heading">
-          <h2 style="text-align:center;"><strong>2019学年第1学期选课</strong></h2>
+          <h2 style="text-align:center;"><strong>2019-2020学年第1学期选课</strong></h2>
           <h3 style="text-align:right;">
             <!--<font size="3" ><strong>剩余<font color="red">{{day}}</font>天</strong></font>
             <font size="2">选课要求总学分最低<font color="red">{{min_lp}}</font></font>
@@ -368,7 +368,7 @@
       // });
       /*将可选课程分为必修与选修*/
       let sel_class = {
-        "year": 2018,
+        "year": 2019,
         "semester": 1,
         "student_number": this.username
       };
@@ -519,7 +519,7 @@
       },
       reColor: function () {
         let data = {
-          "year": 2018,
+          "year": 2019,
           "semester": 1,
           "student_number": this.username,
         };
