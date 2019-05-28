@@ -2,46 +2,39 @@
     <div>
       <PC_bar></PC_bar>
       <div>
-<!--              <button type="submit" @click="choose_up">上传</button>-->
         <div>
           <table class="table table-bordered">
                     <tbody v-for="value in list">
             <tr>
               <th>课题号</th>
-<!--              <td>111</td>-->
                                   <td>{{value.dissertation_id}}</td>
             </tr>
             <tr>
               <th>课题名称</th>
-<!--              <td>222</td>-->
                         <td>{{value.dissertation_title}}</td>
             </tr>
             <tr>
               <th>指导教师</th>
-<!--              <td>333</td>-->
                         <td>{{value.dissertation_teacher}}</td>
             </tr>
             <tr>
               <th>课题内容</th>
-<!--              <td>444</td>-->
                         <td>{{value.dissertation_content}}</td>
             </tr>
             <tr>
               <th>备注</th>
-<!--              <td>555</td>-->
                         <td>{{value.dissertation_requirement}}</td>
             </tr>
             <tr>
               <th >容量</th>
-<!--              <td>666</td>-->
                         <td>{{value.dissertation_capacity}}</td>
             </tr>
             <tr>
-              <th v-if="flag===2">操作</th>
-              <td v-if="flag===4">
+              <th v-if="parseInt(flag)===2">操作</th>
+              <td v-if="parseInt(flag)===4">
                 <input type="file" class="file" @change="getFile" placeholder="上传文件"><button type="submit" @click="stu_up">上传</button>
               </td>
-              <td v-if="flag===2"><button type="submit" @click="choose">退选</button></td>
+              <td v-if="parseInt(flag)===2"><button type="submit" @click="choose">退选</button></td>
             </tr>
                     </tbody>
           </table>
@@ -99,7 +92,7 @@
             "user_name": this.user_name,
             "user_token": this.user_token,
           }
-          this.$http.post(this.Global_Api + '/dst/del_select', data).then((res) => {//退选接口没写好呢
+          this.$http.post(this.Global_Api + '/dst/del_select', data).then((res) => {
             if (res.body.error_code !== 0) {
               alert(res.body.error_message)
             } else {
@@ -132,7 +125,7 @@
             if (res.body.error_code !== 0) {
               alert("error!  " + res.body.error_message)
             } else {
-              this.list = res.body.dst_list;
+              this.list = res.body.stu_dst_list;
             }
           })
         }

@@ -78,8 +78,8 @@
             "user_name": this.user_name,
             "user_token": this.user_token,
             "notice":{
-              "notice_receiver": parseInt(this.receiver),
-              "notice_author": parseInt(this.author),
+              "notice_receiver": parseInt(this.notice_receiver),
+              "notice_author": parseInt(this.notice_author),
               "notice_title": this.notice_title,
               "notice_content": this.notice_content,
               "notice_date" : new Date().Format("yyyy-MM-dd HH:mm:ss"),
