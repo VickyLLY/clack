@@ -34,20 +34,7 @@
           <div class="academy">
             <span class="red">*</span>
             <label>学院</label>
-            <select  v-model="info.academy" class="select">
-              <option value="all" selected="selected">全部</option>
-              <option value="化学工程学院">化学工程学院</option>
-              <option value="材料科学与工程学院">材料科学与工程学院</option>
-              <option value="机电工程学院">机电工程学院</option>
-              <option value="信息学院">信息学院</option>
-              <option value="经济管理学院">经济管理学院</option>
-              <option value="理学院">理学院</option>
-              <option value="文法学院">文法学院</option>
-              <option value="生命科学与技术学院">生命科学与技术学院</option>
-              <option value="马克思主义学院">马克思主义学院</option>
-              <option value="国际教育学院">国际教育学院</option>
-              <option value="巴黎居里工程师学院">巴黎居里工程师学院</option>
-            </select>
+            <department class="selcect_academy" @listenToChild="get"></department>
           </div>
 
           <div class="semester">
@@ -122,7 +109,8 @@
 
 <script>
   import PC_bar from "../public/PC_bar";
-  import bus from "../../assets/manager_to_manager"
+  import bus from "../../assets/manager_to_manager";
+  import department from '../public/department_list';
   import login from "../public/login";
 
   export default {
@@ -151,6 +139,9 @@
       confirm:function(index){
         this.$router.push({name: 'man_view_msg', params: {msg: this.update_courseList[index]}})
         this.data=this.update_courseList[index]
+      },
+      get(val) {
+        this.info.academy = val
       },
       Submit:function(){
         this.$http.post(this.Global_Api + '/selecourse/set_year_semester', {
@@ -217,7 +208,6 @@
         //过滤课程
         if(this.info_collection.course_name!="null") {
           this.course_list = this.course_list.filter((kecheng) => {
-            // console.log("过滤课程"+kecheng.course_name);
             return kecheng.course_name.match(this.info_collection.course_name)
           });
         }
@@ -260,6 +250,7 @@
 
     components:{
       "PC_bar":PC_bar,
+      "department":department
     }
   }
 </script>
@@ -385,6 +376,12 @@
   .select_form{
     position: relative;
     top:120px;
+  }
+  .selcect_academy{
+      width: 200px;
+    position: relative;
+    left: 40px;
+    bottom: 30px;
   }
 
 </style>

@@ -15,7 +15,6 @@
       <v-select max-height="80px" placeholder="请选择课程容量" :options="capacity" v-model="course_capacity"></v-select>
       <br>
       <department @listenToChild="get"></department>
-
     </div>
     <br>
     <button type="submit" class="btn btn-default" v-on:click="confirm">确认添加</button>
