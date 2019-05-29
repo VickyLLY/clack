@@ -37,7 +37,7 @@
             <a v-on:click="">后台管理子系统</a>
           </li>
           <li>
-            <a v-on:click="">毕业设计子系统</a>
+            <a v-on:click="graduation_mob">毕业设计子系统</a>
           </li>
           <li>
             <a v-on:click="">成绩管理系统</a>
@@ -118,6 +118,11 @@
         }else{
           alert("系统未知错误，请联系相关人员");
         }
+      },
+      graduation_mob:function(){
+        this.$router.push({
+          path: '/graduation_mob',
+        })
       },
       funfun:function(){
         if(this.user_type==0){
