@@ -134,8 +134,8 @@
         "user_name": this.user_name,
         "user_token": this.user_token,
         "teacher_number": this.user_teacher_number,
-        "year": 2018,
-        "semester": 2
+        "year": 2019,
+        "semester": 1
       };
       this.$http.post(this.Global_Api + '/schedule/teacher_course_list',data).then((res) => {
         alert(1)
