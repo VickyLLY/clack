@@ -74,7 +74,7 @@
               "course_type": parseInt(this.course_type),
               "course_year": parseInt(this.course_year),
               "course_semester": parseInt(this.course_semester),
-              "course_capacity": parseInt(this.capacity),
+              "course_capacity": parseInt(this.course_capacity),
               "course_department_id": parseInt(this.course_department_id)
             },
           }
