@@ -119,7 +119,7 @@
         // 数据输入规则
         data_rules: {
           department_name: [
-            { required: true, message: '请输入教室名称', tigger: 'blur' },
+            { required: true, message: '请输入学院名称', tigger: 'blur' },
             { min: 3, max: 15, message: '长度在3到15个字符', tigger: 'blur' }
           ]
         },
